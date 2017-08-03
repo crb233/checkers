@@ -1,0 +1,17 @@
+{
+    "name": "checkers",
+    "version": "0.0.1",
+    "description": "A simple checkers program for the CS 451 final project",
+    "scripts": {
+        "test": "nyc --reporter=html mocha --recursive"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/crb233/checkers"
+    },
+    "dependencies": {
+        "mocha": "^3.5.0",
+        "nyc": "^11.1.0"
+    },
+    "private": true
+}
