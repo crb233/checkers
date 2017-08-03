@@ -12,6 +12,8 @@ The style and format of each version of this changelog is shown below:
 ```
 
 ## Current
+- installed and configured eslint
+- added open.js to open the coverage file
 - updated the README
 - added this CHANGELOG
 - reorganized the directory structure

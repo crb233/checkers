@@ -4,15 +4,9 @@ Our CS 451 final project hosted on [GitHub](https://github.com/crb233/checkers)
 
 ## Authors
 
-Curtis Bechtel
+Curtis Bechtel, Hajer Karoui, Sam Nathanson, and Julie Soderstrom
 
-Hajer Karoui
-
-Sam Nathanson
-
-Julie Soderstrom
-
-## Contribute
+## Getting Started
 
 To clone this repository:
 
@@ -24,3 +18,18 @@ To contribute:
 - make your changes
 - update the changelog
 - commit
+
+To run tests and see test coverage:
+
+``` $ npm test
+```
+
+To lint a directory or a single JavaScript file:
+
+``` $ npm run lint file/path/here.js
+```
+
+To lint all source and test files:
+
+``` $ npm run lint-all
+```

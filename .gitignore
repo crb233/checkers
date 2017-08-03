@@ -1,1 +1,7 @@
+
+# node.js modules data
 node_modules
+
+# istanbul (nyc) coverage output
+coverage
+.nyc_output
