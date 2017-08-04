@@ -1,0 +1,14 @@
+{
+    "extends": "eslint:recommended",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "rules": {
+        "quotes": ["error", "double"],
+        "semi": ["error", "always"],
+        "indent": ["error", 4],
+        "key-spacing": ["error"],
+        "linebreak-style": ["error", "unix"]
+    }
+}
