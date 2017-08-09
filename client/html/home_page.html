@@ -2,6 +2,8 @@
 <html>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 <script type = "text/javascript">
 //4 types of requests sent to the server
@@ -19,9 +21,8 @@
     function startGame() {
         //var url = "/gameStartReq";
 
-		var form = "";
-		form = '<form class="form-style-9"> Username: <input type="text" class="form-field" id="username" placeholder="username" required><br> Mode:<input type="radio" class="form-field" name="mode" value="1" required> Private<input type="radio" class="form-field"class="form-field" name="mode" value="0" required> Public<br> Color:<input type="radio" class="form-field" name="color" value="bnw" required> Black and White <input type="radio" class="form-field" name="color" value="bnr" required> Black and Red<br><input type="submit" class="form-field" onClick="startGameServer" value="Submit"></form>'
-		document.getElementById("newGameForm").style.visibility = "visible";
+		document.getElementById("joinGameForm").style.display = "none";
+		document.getElementById("newGameForm").style.display = "block";
 		
          }
 
@@ -33,16 +34,19 @@
 		
 		var color = document.querySelector('input[name="color"]:checked').value
 		
-		alert("Username: " +  username);
+		//alert("Username: " +  username);
 		
+		//Construct JSON object to send  to the  server
+		//@Curtis: JSON OBJECT?
+			
 		/*var data;
 				
 		$.ajax({
             type: "GET",
             data: {
-                username: username,
-                tags: tags,
-                paid: paid
+                player1: username,
+				color : color
+				mode: mode
             },
             url: url,
             dataType: "json",
@@ -63,30 +67,107 @@
     }
 
     function showAll() {
-        $(".post").each(function() {
+        $(".game").each(function() {
             $(this).show();
         });
     }
 
+	function joinGame(){
+		document.getElementById("newGameForm").style.display = "none";
+		document.getElementById("joinGameForm").style.display = "block";
+		
+		
+		//prototype for a game
+		var game = '<li class="game">';
+        game += '<article><input type="radio" name="game" value="F8B9C317-8695" onClick="joiGame()">';
+        game += '<header><h2>Game Level:<b><u> Intermediate </b></u><i></h2></header>';
+        game += '<b>Host: CBechtel</b>';
+        game += '<p><b>Color: Black and Red</b><br>'
+		game += '<p><b>GameID: F8B9C317-8695</b><br>'
+        game += '</input></article>';
+        game += '</li>';
+		
+		$('#games').append(game);
+		
+		var game = '<li class="game">';
+        game += '<article><input type="radio" name="game" value="8ACC6999-BEF1" onClick="joiGame()">';
+        game += '<header><h2>Game Level:<b><u> Beginner </b></u><i></h2></header>';
+        game += '<b>Host: HKaroui</b>';
+        game += '<p><b>Color: Black and White</b><br>'
+		game += '<p><b>GameID: 8ACC6999-BEF1</b><br>'
+        game += '</input></article>';
+        game += '</li>';
+		
+		$('#games').append(game);
+		
+		//showGames();
+	}
     
-
-
-
-    function newGames(myHtml, i) {
-
-
-    }
-
+	function joinGameServer(){
+	var game = document.querySelector('input[name="game"]:checked').value
+	document.getElementById('gameID').value = game
+	alert("Game selected has ID: " + game )
+	
+	/*$.ajax({
+            type: "POST",
+            data: {
+                player2: username,
+				color : color,
+				mode: mode
+            },
+            url: url,
+            dataType: "json",
+            success: function(msg) {
+                console.log(msg)
+                var len = 0;
+                
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            }
+        });
+		*/
+	}
+	
     function showGames() {
-        var url = "/";
+        var url = "/getGames";
+		var numGames = 0;
+		
         $.ajax({
             tpye: "GET",
             url: url,
-            dataType: "html",
+            dataType: "json",
+			
             success: function(msg) {
-                document.getElementById("").innerHTML = msg;
+                console.log(msg)
+				//how many games? Retrieve from object length
+                var len = 0;
+                for (var i = 0; i < numGames; i++) {
+                    $('#games').append(newgames(msg, i));
+                }
+                
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                document.getElementById("content").innerHTML = "Error Fetching " + URL;
             }
         });
+    }
+	
+	function newGames(myHtml, i) {
+        var host = myHtml.games[i].player1;
+        var color = myHtml.games[i].color;
+        var level = myHtml.games[i].level;
+        
+ 
+        // Generate the game
+        var game = '<li class="game">';
+        game += '<input type="radio" name="game" value="'+i+'" onClick="joiGame()"><article>';
+        game += '<header>Game Level:<h2><b><u>' + level + '</b></u><i></h2></header>';
+        game += '<b>Host: ' + host + '</b>';
+        game += '<p><b>Color' + color + '</b><br>'
+        game += '</article></input>';
+        game += '</li>';
+        return game;
     }
 
 	
@@ -103,7 +184,7 @@
 
 <body onload="">
     <h1>Checkers Game</h1>
-    <h4></h4>
+    <h4>Play remotely with your friends!</h4>
 </body>
 
 <div id=general>
@@ -114,23 +195,34 @@
 
             <div id="mainMenu"></div>
             <p>
-                <button class="button1" onClick="startGame()">Start Game</button>
+                <button class="button button5" onClick="startGame()">Start Game</button>
                 <!--should generate form on the right side of the page.-->
-                <button class="button1" onClick="showGames()">Join Game</button>
+                <button class="button button5" onClick="joinGame()">Join Game</button>
             </p>
         </p>
     </div>
 
     <div id=content>
-		<form id="newGameForm" class="form-style-9" style="visibility:collapse"> 
+		<form id="newGameForm" class="form-style-9" style="display:none"> 
 		<h1> New Game </h1>
 		Username: <input type="text" class="form-field" id="username" placeholder="username" required><br> 
 		Mode:<input type="radio" class="form-field" name="mode" value="1" required> Private<input type="radio" name="mode" class="form-field"class="form-field" name="mode" value="0" required> Public<br> 
 		
 		Color:<input type="radio" class="form-field" name="color" value="bnw" required> Black and White <input type="radio" class="form-field" name="color" value="bnr" required> Black and Red<br>
-		<button onclick="startGameServer()" value="Submit">Submit</button>
+		<button class="button button5" onclick="startGameServer()" value="Submit">Submit</button>
 		
 		</form>
+		
+		<form id="joinGameForm" class="form-style-9" style="display:none"> 
+		<h1> Join Game* </h1>
+		<h4><i> Select a public game from the list below or enter the private game ID in the textbox below. </i></h4>
+		Username: <input type="text" class="form-field" id="username" placeholder="username" value="" required><br>
+		Game ID: <input type="text" class="form-field" id="gameID" placeholder="Game-ID" required><br>
+		<button class="button button5" onclick="joinGameServer()" value="Submit">Join</button>
+		
+		</form>
+		
+		
         
 		<ul class="games-style" id="games"> </ul>
         <p id="loading">
