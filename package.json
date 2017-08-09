@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "description": "A simple checkers program for the CS 451 final project",
     "scripts": {
+        "start": "node src/server/app.js",
         "test": "nyc --reporter=html mocha --recursive; node open.js",
         "lint": "./node_modules/.bin/eslint",
         "lint-all": "./node_modules/.bin/eslint src/ test/"
@@ -12,7 +13,9 @@
         "url": "https://github.com/crb233/checkers"
     },
     "dependencies": {
+        "body-parser": "^1.17.2",
         "eslint": "^4.3.0",
+        "express": "^4.15.4",
         "mocha": "^3.5.0",
         "nyc": "^11.1.0"
     },
