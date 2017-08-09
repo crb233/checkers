@@ -4,7 +4,10 @@ h4 { text-align: center }
 body {
     width:100%;
     height:125px;
+	/*background-image: url("../imgs/background.png");*/
+	/*background:#2cb9d9;*/
 }
+
 
 #general {
     width:100%;
@@ -16,11 +19,14 @@ body {
 #navigation {
     position:absolute;
     left:0px;
-    top:125px;
-    margin:auto;
-    width:20%;
+    top:0px;
+	bottom: 0px;
+    
+    width:25%;
     height:100%;
-    background:#9DE6DC;
+    background:#2cb9d9;
+	
+	
 }
 
 #content {
@@ -42,12 +48,12 @@ body {
     list-style-type: none;
 }
 
-game h1 {
+article h1 {
     text-align: left;
     border-bottom: 1px dotted #E3E3E3;
 }
 
-game p {
+article p {
     text-align: justify;
     line-height: 1.5;
     font-size: 1.1em;
@@ -63,6 +69,50 @@ game p {
     text-align: center;
 }
 
+.games-style li {
+    width: 80%;
+    background: #FAFAFA;
+    padding: 30px;
+    margin: 10px auto;
+    box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    border: 6px solid #2cb9d9;
+}
+
+
+.button {
+	
+	background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+.button2 {background-color: #008CBA;} /* Blue */
+.button3 {background-color: #f44336;} /* Red */ 
+.button4 {background-color: #e7e7e7; color: black;} /* Gray */ 
+.button5 {background-color: #555555;} /* Black */
+
+.left {
+    width: 30%;
+    float: left;
+    text-align: right;
+}
+.right {
+    width: 65%;
+    margin-left: 10px;
+    float:left;
+}
+
+
+
+
 .form-style-9{
     max-width: 450px;
     background: #FAFAFA;
@@ -70,7 +120,7 @@ game p {
     margin: 10px auto;
     box-shadow: 1px 1px 25px rgba(0, 0, 0, 0.35);
     border-radius: 10px;
-    border: 6px solid #91D6CC;
+    border: 6px solid #2cb9d9;
 }
 .form-style-9 ul{
     padding:0;
@@ -88,7 +138,7 @@ game p {
     -moz-box-sizing: border-box;
     padding: 8px;
     outline: none;
-    border: 1px solid #91D6CC;
+    border: 1px solid #2cb9d9;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
     -ms-transition: all 0.30s ease-in-out;
@@ -97,8 +147,8 @@ game p {
 }
 
 .form-style-9 ul li  .field-style:focus{
-    box-shadow: 0 0 5px #91D6CC;
-    border:1px solid #91D6CC;
+    box-shadow: 0 0 5px #2cb9d9;
+    border:1px solid #2cb9d9;
 }
 .form-style-9 ul li .field-split{
     width: 49%;
@@ -118,11 +168,11 @@ game p {
 }
 .form-style-9 ul li input[type="button"],
 .form-style-9 ul li input[type="submit"] {
-    -moz-box-shadow: inset 0px 1px 0px 0px #91D6CC;
-    -webkit-box-shadow: inset 0px 1px 0px 0px #91D6CC;
-    box-shadow: inset 0px 1px 0px 0px #91D6CC;
-    background-color: #9DE6DC;
-    border: 1px solid #9DE6DC;
+    -moz-box-shadow: inset 0px 1px 0px 0px #2cb9d9;
+    -webkit-box-shadow: inset 0px 1px 0px 0px #2cb9d9;
+    box-shadow: inset 0px 1px 0px 0px #2cb9d9;
+    background-color: #2cb9d9;
+    border: 1px solid #2cb9d9;
     display: inline-block;
     cursor: pointer;
     color: #FFFFFF;
@@ -132,6 +182,9 @@ game p {
 }
 .form-style-9 ul li input[type="button"]:hover,
 .form-style-9 ul li input[type="submit"]:hover {
-    background: linear-gradient(to bottom, #9DE6DC 5%, #9DE6DC 100%);
-    background-color: #9DE6DC;
+    background: linear-gradient(to bottom, #2cb9d9 5%, #2cb9d9 100%);
+    background-color: #2cb9d9;
+	
+
+
 }
