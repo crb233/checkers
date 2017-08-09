@@ -10,8 +10,10 @@ Curtis Bechtel, Hajer Karoui, Sam Nathanson, and Julie Soderstrom
 
 To clone this repository:
 
-- ``` $ git clone https://github.com/crb233/checkers ```
-- ``` $ npm install ```
+```
+$ git clone https://github.com/crb233/checkers
+$ npm install
+```
 
 To contribute:
 
@@ -21,15 +23,18 @@ To contribute:
 
 To run tests and see test coverage:
 
-``` $ npm test
+```
+$ npm test
 ```
 
 To lint a directory or a single JavaScript file:
 
-``` $ npm run lint file/path/here.js
+```
+$ npm run lint file/path/here.js
 ```
 
 To lint all source and test files:
 
-``` $ npm run lint-all
+```
+$ npm run lint-all
 ```
