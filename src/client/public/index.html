@@ -13,7 +13,7 @@
 //updtaGameReq
 //getGameStateReq
 
-	//this function should populate the page with the form to submit 
+	//this function should populate the page with the form to submit
 	//the form contains the username textbox, and a dropdown box for color options.
 	//Radio button: private or public
 	//submit button should send info over to the server in a JSON object
@@ -177,7 +177,7 @@
 
 <head>
     <title>Checkers Game</title>
-    <link rel="stylesheet" type="text/css" href="../html/myStyle.css">
+    <link rel="stylesheet" type="text/css" href="myStyle.css">
     <!--I changed the path slightly to work with express-->
 </head>
 
@@ -203,17 +203,17 @@
     </div>
 
     <div id=content>
-		<form id="newGameForm" class="form-style-9" style="display:none"> 
+		<form id="newGameForm" class="form-style-9" style="display:none">
 		<h1> New Game </h1>
-		Username: <input type="text" class="form-field" id="username" placeholder="username" required><br> 
-		Mode:<input type="radio" class="form-field" name="mode" value="1" required> Private<input type="radio" name="mode" class="form-field"class="form-field" name="mode" value="0" required> Public<br> 
+		Username: <input type="text" class="form-field" id="username" placeholder="username" required><br>
+		Mode:<input type="radio" class="form-field" name="mode" value="1" required> Private<input type="radio" name="mode" class="form-field"class="form-field" name="mode" value="0" required> Public<br>
 		
 		Color:<input type="radio" class="form-field" name="color" value="bnw" required> Black and White <input type="radio" class="form-field" name="color" value="bnr" required> Black and Red<br>
 		<button class="button button5" onclick="startGameServer()" value="Submit">Submit</button>
 		
 		</form>
 		
-		<form id="joinGameForm" class="form-style-9" style="display:none"> 
+		<form id="joinGameForm" class="form-style-9" style="display:none">
 		<h1> Join Game* </h1>
 		<h4><i> Select a public game from the list below or enter the private game ID in the textbox below. </i></h4>
 		Username: <input type="text" class="form-field" id="username" placeholder="username" value="" required><br>

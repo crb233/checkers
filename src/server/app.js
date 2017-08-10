@@ -1,17 +1,27 @@
 // required modules
-const express = require('express');
-const body_parser = require('body-parser');
+const express = require("express");
+const body_parser = require("body-parser");
 
-// get port from environment, or 8080
+// important values
 const port = process.env.PORT || 8080;
+const public_dir = "src/client/public";
 
 
 
 // create express app with body-parser
-var app = express();
-app.use(body_parser);
+const app = express();
+app.use(body_parser.urlencoded({
+	extended: true
+}));
+app.use(body_parser.json());
 
 
+
+app.use(express.static(public_dir));
+
+app.get("/", function(req, res) {
+	res.redirect(public_dir + "/index.html", {root: public_dir});
+});
 
 // new game requests
 app.post("/new-game", function(req, res) {
@@ -44,13 +54,13 @@ app.post("/send-message", function(req, res) {
 });
 
 // if there's no endpoint for request, default to the home page
-app.all('*', function(req, res) {
-	res.redirect(__dirname + '/src/client/html/index.html');
+app.all("*", function(req, res) {
+	res.redirect("/");
 });
 
 
 
 // start the server on port 8080
 app.listen(port, function() {
-	console.log('Started server on port ' + port + '.');
+	console.log("Started server on port " + port + ".");
 });
