@@ -19,7 +19,9 @@
 {
     "game_id": ID,
     "player_names": [STRING, STRING],
+    "player_colors": [STRING, STRING],
     "turn": INT,
+    "public": BOOL,
     "board": [
         // player 0 side
         [{"player": INT, "king": BOOL}, {"player": INT, "king": BOOL}, null, null, null, null, null, null],

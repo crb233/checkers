@@ -12,6 +12,11 @@ The style and format of each version of this changelog is shown below:
 ```
 
 ## Current
+- created src/server/database-manager.js
+- created app.js, a basic front-end server
+- created index.html, a basic client side GUI
+
+## 0.1.0
 - installed and configured eslint
 - added open.js to open the coverage file
 - updated the README
