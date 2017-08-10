@@ -17,11 +17,15 @@ app.use(body_parser.json());
 
 
 
+// serve public files
 app.use(express.static(public_dir));
 
+// redirect root page to to index.html
 app.get("/", function(req, res) {
-	res.redirect(public_dir + "/index.html", {root: public_dir});
+	res.redirect(public_dir + "/index.html");
 });
+
+
 
 // new game requests
 app.post("/new-game", function(req, res) {
@@ -31,6 +35,12 @@ app.post("/new-game", function(req, res) {
 
 // join game requests
 app.post("/join-game", function(req, res) {
+	console.log(req.body);
+	res.send();
+});
+
+// get a list of all games
+app.post("/get-games", function(req, res) {
 	console.log(req.body);
 	res.send();
 });
@@ -53,9 +63,11 @@ app.post("/send-message", function(req, res) {
 	res.send();
 });
 
+
+
 // if there's no endpoint for request, default to the home page
 app.all("*", function(req, res) {
-	res.redirect("/");
+	res.redirect(public_dir + "/index.html");
 });
 
 
