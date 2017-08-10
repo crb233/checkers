@@ -1,8 +1,9 @@
-const port = 80;
-
 // required modules
 const express = require('express');
 const body_parser = require('body-parser');
+
+// get port from environment, or 8080
+const port = process.env.PORT || 8080;
 
 
 
