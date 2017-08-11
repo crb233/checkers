@@ -4,18 +4,21 @@
     "description": "A simple checkers program for the CS 451 final project",
     "scripts": {
         "start": "node src/server/app.js",
-        "test": "nyc --reporter=html mocha --recursive; node open.js",
+        "test": "nyc --reporter=html mocha --recursive",
         "lint": "./node_modules/.bin/eslint",
-        "lint-all": "./node_modules/.bin/eslint src/ test/"
+        "lint-all": "./node_modules/.bin/eslint src/ test/",
+        "doc": "jsdoc -c .jsdocrc.json -r src/"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/crb233/checkers"
     },
     "dependencies": {
+        "async": "^2.5.0",
         "body-parser": "^1.17.2",
         "eslint": "^4.3.0",
         "express": "^4.15.4",
+        "jsdoc": "^3.5.4",
         "mocha": "^3.5.0",
         "mongodb": "^2.2.31",
         "nyc": "^11.1.0"

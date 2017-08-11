@@ -1,6 +1,7 @@
 
-// get mongo client
+// Get the MongoDB client
 const client = require("mongodb").MongoClient;
+const async = require("async");
 
 // Indexes for the players collection
 const playerIndexes = [
@@ -25,23 +26,38 @@ const gameIndexes = [
     }
 ];
 
+// ID character set and length of generated IDs
+// Using 12 characters from a 36 character set produces ln(36 ^ 12) / ln(2) = 62
+// bits of information, which nearly guarantees very few ID collisions.
+const id_chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+const id_length = 12;
+
+// Creates and returns a random ID
+function createRandomID() {
+    var arr = [];
+    for (var i = 0; i < id_length; i++) {
+        var index = Math.floor(Math.random() * id_chars.length);
+        arr.push(id_chars.charAt(index));
+    }
+    return arr.join("");
+}
+
+// Creates and returns the MongoDB connection URL
+function createUrl(username, password, address, database) {
+    return "mongodb://"
+        + username + ":" + password + "@"
+        + address + "/" + database;
+}
 
 
-// database manager
+
+// Initialize the database manager
 var manager = {};
 manager.db = null;
-manager.collections = null;
 
 // Returns true if this manager has connected to the database, false otherwise
 manager.isConnected = function() {
     return manager.db !== null;
-};
-
-// Creates and returns the MongoDB connection URL
-manager.createUrl = function(username, password, address, database) {
-    return "mongodb://"
-        + username + ":" + password + "@"
-        + address + "/" + database;
 };
 
 // Loads a collection from the database into the manager
@@ -64,7 +80,7 @@ manager.loadCollection = function(name, indexes, callback) {
                         return;
                     }
                     
-                    manager.db[name] = coll;
+                    manager[name] = coll;
                     callback(false);
                 });
             });
@@ -104,12 +120,58 @@ manager.connect = function(callback) {
     });
 };
 
-manager.newPlayer = function(callback) {
-    callback(true);
+manager.newPlayer = function(username, number, callback) {
+    // Queries database with newly generated player ID
+    function getID() {
+        var id = createRandomID();
+        manager.players.findOne({ "player_id": id }, {}, function(err, res) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            
+            // ID is not unique, try again
+            if (res) {
+                getID();
+                return;
+            }
+            
+            // ID is unique
+            var player = {
+                "player_id": id,
+                "player_name": username,
+                "player_number": number,
+            };
+            manager.players.insertOne(player, {}, callback());
+        });
+    }
 };
 
 manager.newGame = function(callback) {
-    callback(true);
+    // Queries database with newly generated game ID
+    function getID() {
+        var id = createRandomID();
+        manager.games.findOne({ "game_id": id }, {}, function(err, res) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            
+            // ID is not unique, try again
+            if (res) {
+                getID();
+                return;
+            }
+            
+            // ID is unique
+            var player = {
+                "player_id": id,
+                "player_name": username,
+                "player_number": number,
+            };
+            manager.players.insertOne(player, {}, callback());
+        });
+    }
 };
 
 manager.getPlayer = function(callback) {
