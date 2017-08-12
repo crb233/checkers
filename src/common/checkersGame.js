@@ -3,7 +3,7 @@
 @module checkersGame
 */
 
-/** The length and width of a game board */
+/** The length and width of a standard game board */
 const board_size = 8;
 
 /** The number of rows of pieces that each player starts the game with */
@@ -20,7 +20,7 @@ function newPiece(player, king) {
         "player": player,
         "king": king
     };
-};
+}
 
 /**
 Creates and returns a new game board object
@@ -71,24 +71,74 @@ function newGame(id, is_public) {
         "turn": 0,
         "board": game.newBoard()
     };
-};
+}
 
 /**
 Determines and returns the index of a player's home row
-@param {number} player - number describing which player (must be 0 or 1)
-@return {number} the index of the player's home row
+@param {number} player - the player's number (either 0 or 1)
+@return the index of the player's home row
 */
 function getHomeRow(player) {
-    if (player == 0) {
-        return 0;
-    } else {
-        return board_size - 1;
-    }
+    return player * (board_size - 1);
+}
+
+/**
+Creates and returns a move object which contains only the starting position
+@param {number} row - the row number of the initial position
+@param {number} col - the column number of the initial position
+@return the new move object
+*/
+function newMove(row, col) {
+    var move = [];
+    addMovePosition(move, row, col);
+    return move;
+}
+
+/**
+Updates a move object to represent the next position for a piece to take
+@param {} move - the move object to be updated
+@param {number} row - the row number of the initial position
+@param {number} col - the column number of the initial position
+*/
+function addMovePosition(move, row, col) {
+    move.push([row, col]);
+}
+
+/**
+Returns true if the move is valid on the given game board, otherwise false.
+@param {} board - the chckers game board object
+@param {} move - the move to validate
+*/
+function validateMove(board, move) {
+    // TODO
+}
+
+/**
+Updates a board to reflect the changes caused by a move
+@param {} board - the chckers game board object
+@param {} move - the move to be made
+*/
+function makeMove(board, move) {
+    // TODO
+}
+
+/**
+Updates a board to reverse the changes caused by a move
+@param {} board - the chckers game board object
+@param {} move - the move to undo
+*/
+function undoMove(board, move) {
+    // TODO
 }
 
 module.exports = {
     newPiece: newPiece,
     newBoard: newBoard,
     newGame: newGame,
-    getHomeRow: getHomeRow
+    getHomeRow: getHomeRow,
+    newMove: newMove,
+    addMovePosition: addMovePosition,
+    validateMove: validateMove,
+    makeMove, makeMove,
+    undoMove, undoMove
 };

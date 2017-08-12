@@ -1,7 +1,7 @@
 // required modules and controllers
 const express = require("express");
 const body_parser = require("body-parser");
-const db_manager = require("database-manager.js");
+const requests = require("./request-manager");
 
 // important values
 const port = process.env.PORT || 8080;
@@ -19,18 +19,6 @@ app.use(express.static(public_dir));
 
 
 
-// Initialize db_manager by connecting to the database
-db_manager.connect(function(err) {
-    if (err) {
-        console.err("Failed to connect to database.\nExiting...");
-        process.exit(1);
-    } else {
-        console.log("Connected to databse.");
-    }
-});
-
-
-
 // redirect root page to to index.html
 app.get("/", function(req, res) {
     res.redirect(public_dir + "/index.html");
@@ -38,40 +26,64 @@ app.get("/", function(req, res) {
 
 
 
+function returnResult(res) {
+    return function(err, result) {
+        res.send({
+            "error": err,
+            "result": result
+        });
+    };
+}
+
+// get a list of all games
+app.post("/get-games", function(req, res) {
+    requests.getGames(
+        returnResult(res)
+    );
+});
+
 // new game requests
 app.post("/new-game", function(req, res) {
-    console.log(req.body);
-    res.send();
+    requests.newGame(
+        req.body.player_name,
+        req.body.public,
+        returnResult(res)
+    );
 });
 
 // join game requests
 app.post("/join-game", function(req, res) {
-    console.log(req.body);
-    res.send();
-});
-
-// get a list of all games
-app.post("/get-games", function(req, res) {
-    console.log(req.body);
-    res.send();
+    requests.joinGame(
+        req.body.player_name,
+        req.body.game_id,
+        returnResult(res)
+    );
 });
 
 // make move requests
 app.post("/make-move", function(req, res) {
-    console.log(req.body);
-    res.send();
+    requests.makeMove(
+        res.body.player_id,
+        res.body.move,
+        returnResult(res)
+    );
 });
 
 // get updates requests
 app.post("/get-updates", function(req, res) {
-    console.log(req.body);
-    res.send();
+    requests.getUpdates(
+        res.body.player_id,
+        returnResult(res)
+    );
 });
 
 // send message requests
 app.post("/send-message", function(req, res) {
-    console.log(req.body);
-    res.send();
+    requests.sendMesssage(
+        res.body.player_id,
+        res.body.message,
+        returnResult(res)
+    );
 });
 
 
