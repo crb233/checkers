@@ -7,7 +7,7 @@
         "test": "nyc --reporter=html mocha --recursive",
         "lint": "./node_modules/.bin/eslint",
         "lint-all": "./node_modules/.bin/eslint src/ test/",
-        "doc": "jsdoc -c .jsdocrc.json -r src/"
+        "doc": "jsdoc -d doc/api/ -t node_modules/minami -r src/"
     },
     "repository": {
         "type": "git",
@@ -19,6 +19,7 @@
         "eslint": "^4.3.0",
         "express": "^4.15.4",
         "jsdoc": "^3.5.4",
+        "minami": "^1.2.3",
         "mocha": "^3.5.0",
         "mongodb": "^2.2.31",
         "nyc": "^11.1.0"
