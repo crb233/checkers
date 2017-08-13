@@ -53,9 +53,9 @@ app.get("/", function(req, res) {
 @param {} req - request data
 @param {} res - response object
 */
-app.all("*", function(req, res) {
-    res.redirect(public_dir + "/public/index.html");
-});
+// app.all("*", function(req, res) {
+//     res.redirect(public_dir + "/public/index.html");
+// });
 
 
 
