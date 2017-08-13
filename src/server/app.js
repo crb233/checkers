@@ -46,19 +46,8 @@ app.use(body_parser.urlencoded({
 @param {} res - response object
 */
 app.get("/", function(req, res) {
-    res.redirect(path(public_dir, "/public/index.html"));
+    res.redirect(path(public_dir, "index.html"));
 });
-
-/**
-@function
-@name get/*
-@description Redirects requests for unknown pages to index.html
-@param {} req - request data
-@param {} res - response object
-*/
-// app.all("*", function(req, res) {
-//     res.redirect(public_dir + "/public/index.html");
-// });
 
 
 
@@ -164,8 +153,6 @@ app.post("/send-message", function(req, res) {
         returnResponse(res)
     );
 });
-
-
 
 
 
