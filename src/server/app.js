@@ -1,32 +1,70 @@
-// required modules and controllers
-const express = require("express");
-const body_parser = require("body-parser");
-const requests = require("./request-manager");
 
-// important values
+/**
+@module app
+*/
+
+/** an instance of the Express module for routing requests to endpoints
+asynchrnonously */
+const express = require("express");
+
+/** an instance of the BodyParser module for parsing the POST requests into
+JSON */
+const body_parser = require("body-parser");
+
+/** an instance of the RequestManager local module for managing different
+kinds of requests */
+const requests = require("./requestManager");
+
+/** the port number for this server to use. It is set to the value of the
+environment variable PORT, or 8080 if PORT isn't set. */
 const port = process.env.PORT || 8080;
+
+/** the directory for files with public access such as static HTML and CSS
+files. These will be served statically from the server to the client. */
 const public_dir = "src/client/public";
 
-
-
-// Initialize express app with body-parser and static file serving
+/** an instance of the Express server application for automatic HTTP routing.
+It is initialized with BodyParser and static serving of public files */
 const app = express();
+
+app.use(express.static(public_dir));
+app.use(body_parser.json());
 app.use(body_parser.urlencoded({
     extended: true
 }));
-app.use(body_parser.json());
-app.use(express.static(public_dir));
 
 
 
-// redirect root page to to index.html
+/**
+@function
+@name get/
+@description Redirects requests for the root page to index.html
+@param {} req - request data
+@param {} res - response object
+*/
 app.get("/", function(req, res) {
+    res.redirect(public_dir + "/index.html");
+});
+
+/**
+@function
+@name get/*
+@description Redirects requests for unknown pages to index.html
+@param {} req - request data
+@param {} res - response object
+*/
+app.all("*", function(req, res) {
     res.redirect(public_dir + "/index.html");
 });
 
 
 
-function returnResult(res) {
+/**
+Creates and returns a callback function for automatically sending a HTTP
+response containing an error code and an object
+@param {} res - the HTTP response object
+*/
+function returnResponse(res) {
     return function(err, result) {
         res.send({
             "error": err,
@@ -35,63 +73,96 @@ function returnResult(res) {
     };
 }
 
-// get a list of all games
+/**
+@function
+@name post/get-games
+@description Route for the client to get a list of public and active games
+@param {} req - request data
+@param {} res - response object
+*/
 app.post("/get-games", function(req, res) {
     requests.getGames(
-        returnResult(res)
+        returnResponse(res)
     );
 });
 
-// new game requests
+/**
+@function
+@name post/new-game
+@description Route for the client to request the creation of a new game
+@param {} req - request data
+@param {} res - response object
+*/
 app.post("/new-game", function(req, res) {
     requests.newGame(
         req.body.player_name,
         req.body.public,
-        returnResult(res)
+        returnResponse(res)
     );
 });
 
-// join game requests
+
+/**
+@function
+@name post/new-game
+@description Route for the client to request to join an active and public game
+@param {} req - request data
+@param {} res - response object
+*/
 app.post("/join-game", function(req, res) {
     requests.joinGame(
         req.body.player_name,
         req.body.game_id,
-        returnResult(res)
+        returnResponse(res)
     );
 });
 
-// make move requests
+
+/**
+@function
+@name post/new-game
+@description Route for the client to make a move and update the game state
+@param {} req - request data
+@param {} res - response object
+*/
 app.post("/make-move", function(req, res) {
     requests.makeMove(
         res.body.player_id,
         res.body.move,
-        returnResult(res)
+        returnResponse(res)
     );
 });
 
-// get updates requests
+/**
+@function
+@name post/get-updates
+@description Route for the client to request updates on the state of the game
+@param {} req - request data
+@param {} res - response object
+*/
 app.post("/get-updates", function(req, res) {
     requests.getUpdates(
         res.body.player_id,
-        returnResult(res)
+        returnResponse(res)
     );
 });
 
-// send message requests
+/**
+@function
+@name post/send-message
+@description Route for the client to send messages to an opponent
+@param {} req - request data
+@param {} res - response object
+*/
 app.post("/send-message", function(req, res) {
     requests.sendMesssage(
         res.body.player_id,
         res.body.message,
-        returnResult(res)
+        returnResponse(res)
     );
 });
 
 
-
-// if there's no endpoint for request, default to the home page
-app.all("*", function(req, res) {
-    res.redirect(public_dir + "/index.html");
-});
 
 
 

@@ -10,23 +10,23 @@ const client = require("mongodb").MongoClient;
 /** Indexes for the players collection */
 const playerIndexes = [
     {
-        name: "player_id",
-        key: {"player_id": 1},
-        unique: true
+        "name": "player_id",
+        "key": {"player_id": 1},
+        "unique": true
     },
     {
-        name: "game_id",
-        key: {"game_id": 1},
-        unique: false
+        "name": "game_id",
+        "key": {"game_id": 1},
+        "unique": false
     }
 ];
 
 /** Indexes for the games collection */
 const gameIndexes = [
     {
-        name: "game_id",
-        key: {"game_id": 1},
-        unique: true
+        "name": "game_id",
+        "key": {"game_id": 1},
+        "unique": true
     }
 ];
 
@@ -87,7 +87,7 @@ Loads a collection from the database into the manager. If the collection doesn't
 exist, create it with the given indexes.
 @param {string} name - the name of the database
 @param {} indexed - an object containing the indexing options for the collection
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function loadCollection(name, indexes, callback) {
     db.collection(name, function(err, coll) {
@@ -122,7 +122,7 @@ function loadCollection(name, indexes, callback) {
 /**
 Connects to the database specified by the environment variables DB_USER,
 DB_PASS, DB_ADDR, and DB_NAME. This also loads the database's collections.
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function connect(callback) {
     
@@ -156,7 +156,7 @@ Creates a new player with the given username and player number by querying the
 database until it generates a unique player ID.
 @param {string} username -
 @param {number} number -
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function newPlayer(username, number, callback) {
     // Queries database with newly generated player ID
@@ -187,7 +187,7 @@ function newPlayer(username, number, callback) {
 
 /**
 
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function newGame(is_public, callback) {
     // Queries database with newly generated game ID
@@ -216,7 +216,7 @@ function newGame(is_public, callback) {
 Retrieves the player with the given ID from the database and passes it as the
 second parameter to the callback function.
 @param {string} player_id - the unique ID of the player
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function getPlayer(player_id, callback) {
     // TODO
@@ -225,7 +225,7 @@ function getPlayer(player_id, callback) {
 /**
 Updates a player object in the database
 @param {} player - the player object to be updated in the database
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function updatePlayer(player, callback) {
     // TODO
@@ -235,7 +235,7 @@ function updatePlayer(player, callback) {
 Retreives the game with the given ID from the database and passes it as the
 second parameter to the callback function.
 @param {string} game_id - the unique ID of the game
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function getGame(game_id, callback) {
     // TODO
@@ -244,7 +244,7 @@ function getGame(game_id, callback) {
 /**
 Updates a game object in the database
 @param {} game - the game object to be updated in the database
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function updateGame(game, callback) {
     // TODO
@@ -253,7 +253,7 @@ function updateGame(game, callback) {
 /**
 Retreives a list of all active public games from the database and passes it as
 the second parameter to the callback function
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function getGamesList(callback) {
     // TODO
@@ -262,22 +262,22 @@ function getGamesList(callback) {
 /**
 Sends a message to a player's opponent by storing it in their opponent's list
 of messages
-@param {} callback - the function to be called when this function has completed
+@param {} callback - the function to be called when this operation has completed
 */
 function sendMessage(player_id, message, callback) {
     // TODO
 }
 
 module.exports = {
-    isConnected: isConnected,
-    loadCollection: loadCollection,
-    connect: connect,
-    newPlayer: newPlayer,
-    getPlayer: getPlayer,
-    updatePlayer: updatePlayer,
-    newGame: newGame,
-    getGame: getGame,
-    updateGame: updateGame,
-    getGamesList: getGamesList,
-    sendMessage: sendMessage
+    "isConnected": isConnected,
+    "loadCollection": loadCollection,
+    "connect": connect,
+    "newPlayer": newPlayer,
+    "getPlayer": getPlayer,
+    "updatePlayer": updatePlayer,
+    "newGame": newGame,
+    "getGame": getGame,
+    "updateGame": updateGame,
+    "getGamesList": getGamesList,
+    "sendMessage": sendMessage
 };

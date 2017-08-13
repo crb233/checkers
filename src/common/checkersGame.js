@@ -3,10 +3,10 @@
 @module checkersGame
 */
 
-/** The length and width of a standard game board */
+/** the length and width of a standard game board */
 const board_size = 8;
 
-/** The number of rows of pieces that each player starts the game with */
+/** the number of rows of pieces that each player starts the game with */
 const board_player_rows = 3;
 
 /**
@@ -23,7 +23,8 @@ function newPiece(player, king) {
 }
 
 /**
-Creates and returns a new game board object
+Creates and returns a new game board object with the default initial
+configuration of pieces.
 @return a board object representing a new game
 */
 function newBoard() {
@@ -41,10 +42,10 @@ function newBoard() {
                 
                 if (c < board_player_rows) {
                     // player one's side
-                    piece = game.newPiece(0, false);
+                    piece = newPiece(0, false);
                 } else if (c >= board_size - board_player_rows) {
                     // player two's side
-                    piece = game.newPiece(1, false);
+                    piece = newPiece(1, false);
                 }
             }
             row.push(piece);
@@ -69,7 +70,7 @@ function newGame(id, is_public) {
         "player_names": [],
         "player_colors": [],
         "turn": 0,
-        "board": game.newBoard()
+        "board": newBoard()
     };
 }
 
@@ -132,13 +133,13 @@ function undoMove(board, move) {
 }
 
 module.exports = {
-    newPiece: newPiece,
-    newBoard: newBoard,
-    newGame: newGame,
-    getHomeRow: getHomeRow,
-    newMove: newMove,
-    addMovePosition: addMovePosition,
-    validateMove: validateMove,
-    makeMove, makeMove,
-    undoMove, undoMove
+    "newPiece": newPiece,
+    "newBoard": newBoard,
+    "newGame": newGame,
+    "getHomeRow": getHomeRow,
+    "newMove": newMove,
+    "addMovePosition": addMovePosition,
+    "validateMove": validateMove,
+    "makeMove": makeMove,
+    "undoMove": undoMove
 };

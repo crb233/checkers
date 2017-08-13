@@ -1,0 +1,9 @@
+{
+    "opts": {
+        "template": "node_modules/docdash",
+        "destination": "doc/api/"
+    },
+    "docdash": {
+        "sort": false
+    }
+}
