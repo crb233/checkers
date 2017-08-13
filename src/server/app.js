@@ -21,7 +21,7 @@ const port = process.env.PORT || 8080;
 
 /** the directory for files with public access such as static HTML and CSS
 files. These will be served statically from the server to the client. */
-const public_dir = "src/client/public";
+const public_dir = "src/client";
 
 /** an instance of the Express server application for automatic HTTP routing.
 It is initialized with BodyParser and static serving of public files */
