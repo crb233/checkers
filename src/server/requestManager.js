@@ -5,13 +5,19 @@
 processing each request.
 */
 
+/** an instance of the Path module for file paths */
+const path = require("path").join;
+
 /** an instance of the databaseManager module for connecting to the database */
-const db = require("./databaseManager");
+const db = require(path(__dirname, "databaseManager"));
+
+/** an instance of the checkersGame module */
+const checkers = require(path(__dirname, "../public/javascript/checkers"));
 
 // Initialize the database-manager object
 db.connect(function(err) {
     if (err) {
-        console.err("Failed to connect to database.\nExiting...");
+        console.error("Failed to connect to database.\nExiting...");
         process.exit(1);
     } else {
         console.log("Connected to databse.");

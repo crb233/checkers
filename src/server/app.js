@@ -3,6 +3,9 @@
 @module app
 */
 
+/** an instance of the Path module for file paths */
+const path = require("path").join;
+
 /** an instance of the Express module for routing requests to endpoints
 asynchrnonously */
 const express = require("express");
@@ -21,7 +24,7 @@ const port = process.env.PORT || 8080;
 
 /** the directory for files with public access such as static HTML and CSS
 files. These will be served statically from the server to the client. */
-const public_dir = "src/client";
+const public_dir = path(__dirname, "../public");
 
 /** an instance of the Express server application for automatic HTTP routing.
 It is initialized with BodyParser and static serving of public files */
@@ -43,7 +46,7 @@ app.use(body_parser.urlencoded({
 @param {} res - response object
 */
 app.get("/", function(req, res) {
-    res.redirect(public_dir + "/public/index.html");
+    res.redirect(path(public_dir, "/public/index.html"));
 });
 
 /**

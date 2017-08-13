@@ -132,6 +132,7 @@ function undoMove(board, move) {
     // TODO
 }
 
+var module = {};
 module.exports = {
     "newPiece": newPiece,
     "newBoard": newBoard,
