@@ -43,7 +43,7 @@ app.use(body_parser.urlencoded({
 @param {} res - response object
 */
 app.get("/", function(req, res) {
-    res.redirect(public_dir + "/index.html");
+    res.redirect(public_dir + "/public/index.html");
 });
 
 /**
@@ -54,7 +54,7 @@ app.get("/", function(req, res) {
 @param {} res - response object
 */
 app.all("*", function(req, res) {
-    res.redirect(public_dir + "/index.html");
+    res.redirect(public_dir + "/public/index.html");
 });
 
 
