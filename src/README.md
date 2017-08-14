@@ -1,16 +1,11 @@
 
 # Source Directory
 
-## client/
+## public/
 
-This directory holds all files and code used only by the client side of the
-Checkers application. This includes HTML, CSS, and JavaScript controllers.
-
-## common/
-
-This directory holds all files and code used by both client and server sides
-of the Checkers application. This includes JavaScript controllers and object
-data models.
+This directory holds all files which are publicly available to the client side
+of the Checkers application. This includes client-side HTML, CSS, and JavaScript
+as well as JavaScript modules used by both (such as checkers.js).
 
 ## server/
 

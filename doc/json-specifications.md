@@ -43,7 +43,7 @@
 ## MESSAGE_OBJECT
 ```javascript
 {
-    "type": "player_join/forfeit/request_draw/accept_draw/reject_draw",
+    "type": "join/forfeit/request_draw/accept_draw/reject_draw/chat",
     "text": STRING,
 }
 ```

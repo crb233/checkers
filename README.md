@@ -25,5 +25,9 @@ To lint a directory or a single JavaScript file:
 To lint all source and test files:
 - `$ npm run -s lint-all`
 
+To generate JavaScript documentation:
+- `$ npm run make-doc`
+- Nagivate to `doc/api/index.html`
+
 To deploy the project (only after tests and linter have succeeded):
 - `$ git push heroku master`
