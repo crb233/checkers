@@ -41,13 +41,13 @@
 		//Construct JSON object to send  to the  server
 		//@Curtis: JSON OBJECT?
 			
-		/*var data;
+		var data;
 		var url= "/new-game"
 		$.ajax({
             type: "POST",
             data: {
                 player1: username,
-				color : color
+				color : color,
 				mode: mode
             },
             url: url,
@@ -60,7 +60,7 @@
             error: function(xhr, ajaxOptions, thrownError) {
                 document.getElementById("content").innerHTML = "Error Fetching " + URL;
             }
-        });*/
+        });
 	}
 	
 	
@@ -89,9 +89,9 @@
         game += '</input></article>';
         game += '</li>';
 		
-		var games = document.getElementById("games")
 		
-		games.append(game);
+		
+		$('#games').append(game);
 		
 		var game = '<li class="game">';
         game += '<article><input type="radio" name="game" value="8ACC6999-BEF1" onClick="joiGame()">';
@@ -229,7 +229,7 @@
 		
 		
         
-		<ul class="games-style" id="games"> </ul>
+		<ul class="games-style" id="games"></ul>
         <p id="loading">
             <img src="images/loading.gif" alt="Loading…" />
             <!--I changed the path slightly to work with express-->
