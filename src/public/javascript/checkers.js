@@ -106,26 +106,26 @@ function addMovePosition(move, row, col) {
 }
 
 /**
-Returns true if the move is valid on the given game board, otherwise false.
-@param {} board - the chckers game board object
+Returns true if the move is valid for the given game, otherwise false.
+@param {} game - the chckers game object
 @param {} move - the move to validate
 */
-function validateMove(board, move) {
+function validateMove(game, move) {
     // TODO
 }
 
 /**
-Updates a board to reflect the changes caused by a move
-@param {} board - the chckers game board object
+Updates the game state to reflect the changes caused by a move
+@param {} game - the chckers game object
 @param {} move - the move to be made
 */
-function makeMove(board, move) {
+function makeMove(game, move) {
     // TODO
 }
 
 /**
-Updates a board to reverse the changes caused by a move
-@param {} board - the chckers game board object
+Updates the game state to reverse the changes caused by a move
+@param {} game - the chckers game object
 @param {} move - the move to undo
 */
 function undoMove(board, move) {

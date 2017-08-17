@@ -56,12 +56,23 @@ Creates and returns a callback function for automatically sending a HTTP
 response containing an error code and an object
 @param {} res - the HTTP response object
 */
-function returnResponse(res) {
+function createErrorCheckCallback(res) {
     return function(err, result) {
-        res.send({
-            "error": err,
-            "result": result
-        });
+        if (typeof err === "string") {
+            res.status(500);
+            res.send({
+                "error": err
+            });
+            
+        } else if (err || typeof result === "undefined" || result === null) {
+            res.status(500);
+            res.send({
+                "error": "Unknown server error"
+            });
+            
+        } else {
+            res.send(result);
+        }
     };
 }
 
@@ -74,7 +85,7 @@ function returnResponse(res) {
 */
 app.post("/get-games", function(req, res) {
     requests.getGames(
-        returnResponse(res)
+        createErrorCheckCallback(res)
     );
 });
 
@@ -89,7 +100,7 @@ app.post("/new-game", function(req, res) {
     requests.newGame(
         req.body.player_name,
         req.body.public,
-        returnResponse(res)
+        createErrorCheckCallback(res)
     );
 });
 
@@ -105,7 +116,7 @@ app.post("/join-game", function(req, res) {
     requests.joinGame(
         req.body.player_name,
         req.body.game_id,
-        returnResponse(res)
+        createErrorCheckCallback(res)
     );
 });
 
@@ -121,7 +132,7 @@ app.post("/make-move", function(req, res) {
     requests.makeMove(
         res.body.player_id,
         res.body.move,
-        returnResponse(res)
+        createErrorCheckCallback(res)
     );
 });
 
@@ -135,7 +146,7 @@ app.post("/make-move", function(req, res) {
 app.post("/get-updates", function(req, res) {
     requests.getUpdates(
         res.body.player_id,
-        returnResponse(res)
+        createErrorCheckCallback(res)
     );
 });
 
@@ -150,7 +161,7 @@ app.post("/send-message", function(req, res) {
     requests.sendMesssage(
         res.body.player_id,
         res.body.message,
-        returnResponse(res)
+        createErrorCheckCallback(res)
     );
 });
 
