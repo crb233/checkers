@@ -1,0 +1,49 @@
+
+div#board {
+    margin: 16px;
+    display: inline-block;
+    outline-color: #000000;
+    outline-style: solid;
+    outline-width: 4px;
+}
+
+div.row {
+    margin: 0px;
+    display: block;
+    
+    /* fixes spacing between rows */
+    font-size: 0px;
+}
+
+div.square {
+    margin: 0px;
+    width: 64px;
+    height: 64px;
+    display: inline-block;
+}
+
+/* style for an even square (one which can have a piece) */
+div.square.even {
+    background-color: #ffffff;
+}
+
+/* style for an odd square (one which can't have a piece) */
+div.square.odd {
+    background-color: #333333;
+}
+
+/* style for the mouse hovering over a square */
+div.square:hover {
+    outline-color: #7777ee;
+    outline-style: dashed;
+    outline-width: 4px;
+    outline-offset: -4px;
+}
+
+/* style for a selected square */
+div.square.selected {
+    outline-color: #9999ff;
+    outline-style: solid;
+    outline-width: 6px;
+    outline-offset: -6px;
+}
