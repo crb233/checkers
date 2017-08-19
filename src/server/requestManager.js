@@ -14,6 +14,21 @@ const db = require(path(__dirname, "databaseManager"));
 /** an instance of the checkersGame module */
 const checkers = require(path(__dirname, "../public/javascript/checkers"));
 
+/**
+TODO
+*/
+function newPlayer(player_name, player_number, game_id) {
+    return {
+        "player_id": "",
+        "player_name": player_name,
+        "player_number": player_number,
+        "game_id": game_id,
+        "opponent_id": "",
+        "last_request": 0,
+        "new_messages": []
+    };
+}
+
 // Initialize the database-manager object
 db.connect(function(err) {
     if (err) {
@@ -29,77 +44,7 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function getGames(callback) {
-    //db.getGamesList(callback);
-	
-    // sample response
-	callback(false, 
-		[ {
-            "game_id": "0gid0",
-            "player_names": ["hajerkr"],
-            "player_colors": ["black"],
-            "turn": 0,
-            "public": true,
-            "active": true,
-            "board": [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-            ]
-        },
-		{
-            "game_id": "2gid2",
-            "player_names": ["CurtisB"],
-            "player_colors": ["black"],
-            "turn": 0,
-            "public": true,
-            "active": true,
-            "board": [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-            ]
-        },
-		{
-            "game_id": "3gid3",
-            "player_names": ["Bwayne"],
-            "player_colors": ["black"],
-            "turn": 0,
-            "public": true,
-            "active": true,
-            "board": [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-            ]
-        }
-		]);
-}
-
-function newPlayer(player_name, player_number, game_id) {
-    return {
-        "player_id": "",
-        "player_name": player_name,
-        "player_number": player_number,
-        "game_id": game_id,
-        "opponent_id": "",
-        "last_request": 0,
-        "new_messages": []
-    };
+    db.getGamesList(callback);
 }
 
 /**
