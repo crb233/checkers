@@ -188,7 +188,7 @@
         var game = '<li class="game">';
         game += '<input type="radio" name="game" value="'+gui+'" onClick="joinGame()"><article>';
         game += '<b>Game Level:</b><u>Intermediate</u>';
-		game += '<p><b>Game ID: </b>' + gui '</p>';
+		game += '<p><b>Game ID: </b>' + gui + '</p>';
         game += '<p><b>Host: </b>' + host + '</p>';
         game += '</article></input>';
         game += '</li>';
