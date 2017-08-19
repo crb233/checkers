@@ -154,17 +154,16 @@ function connect(callback) {
 /**
 Creates a new player with the given username and player number by querying the
 database until it generates a unique player ID.
-@param {string} username -
-@param {number} number -
+TODO
 @param {} callback - the function to be called when this operation has completed
 */
-function newPlayer(username, number, callback) {
+function addPlayer(player, callback) {
     // Queries database with newly generated player ID
     (function getID() {
         var id = createRandomID();
         colls.players.findOne({ "player_id": id }, {}, function(err, res) {
             if (err) {
-                callback(true);
+                callback(err);
                 return;
             }
             
@@ -175,27 +174,23 @@ function newPlayer(username, number, callback) {
             }
             
             // ID is unique
-            var player = {
-                "player_id": id,
-                "player_name": username,
-                "player_number": number,
-            };
+            player.player_id = id;
             colls.players.insertOne(player, {}, callback);
         });
     })();
 }
 
 /**
-
+TODO
 @param {} callback - the function to be called when this operation has completed
 */
-function newGame(is_public, callback) {
+function addGame(game, callback) {
     // Queries database with newly generated game ID
     (function getID() {
         var id = createRandomID();
         colls.games.findOne({ "game_id": id }, {}, function(err, res) {
             if (err) {
-                callback(true);
+                callback(err);
                 return;
             }
             
@@ -206,8 +201,8 @@ function newGame(is_public, callback) {
             }
             
             // ID is unique
-            var game = newGame(id, is_public);
-            colls.players.insertOne(game, {}, callback());
+            game.game_id = id;
+            colls.players.insertOne(game, {}, callback);
         });
     })();
 }
@@ -219,16 +214,7 @@ second parameter to the callback function.
 @param {} callback - the function to be called when this operation has completed
 */
 function getPlayer(player_id, callback) {
-    // TODO
-}
-
-/**
-Updates a player object in the database
-@param {} player - the player object to be updated in the database
-@param {} callback - the function to be called when this operation has completed
-*/
-function updatePlayer(player, callback) {
-    // TODO
+    colls.players.findOne({ "player_id": player_id }, {}, callback);
 }
 
 /**
@@ -238,7 +224,16 @@ second parameter to the callback function.
 @param {} callback - the function to be called when this operation has completed
 */
 function getGame(game_id, callback) {
-    // TODO
+    colls.games.findOne({ "game_id": game_id }, {}, callback);
+}
+
+/**
+Updates a player object in the database
+@param {} player - the player object to be updated in the database
+@param {} callback - the function to be called when this operation has completed
+*/
+function updatePlayer(player, callback) {
+    colls.players.replaceOne({ "player_id": player.player_id }, player, {}, callback);
 }
 
 /**
@@ -247,7 +242,7 @@ Updates a game object in the database
 @param {} callback - the function to be called when this operation has completed
 */
 function updateGame(game, callback) {
-    // TODO
+    colls.games.replaceOne({ "game_id": game.game_id }, game, {}, callback);
 }
 
 /**
@@ -256,7 +251,7 @@ the second parameter to the callback function
 @param {} callback - the function to be called when this operation has completed
 */
 function getGamesList(callback) {
-    // TODO
+    colls.games.find({"public": true, "active": true}).toArray(callback);
 }
 
 /**
@@ -272,11 +267,11 @@ module.exports = {
     "isConnected": isConnected,
     "loadCollection": loadCollection,
     "connect": connect,
-    "newPlayer": newPlayer,
+    "addPlayer": addPlayer,
+    "addGame": addGame,
     "getPlayer": getPlayer,
-    "updatePlayer": updatePlayer,
-    "newGame": newGame,
     "getGame": getGame,
+    "updatePlayer": updatePlayer,
     "updateGame": updateGame,
     "getGamesList": getGamesList,
     "sendMessage": sendMessage

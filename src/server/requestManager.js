@@ -32,41 +32,45 @@ function getGames(callback) {
     db.getGamesList(callback);
 }
 
+function newPlayer(player_name, player_number, game_id) {
+    return {
+        "player_id": "",
+        "player_name": player_name,
+        "player_number": player_number,
+        "game_id": game_id,
+        "opponent_id": "",
+        "last_request": 0,
+        "new_messages": []
+    };
+}
+
 /**
 TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function newGame(player_name, is_public, callback) {
-    // TODO
-    // sample response
-    callback(false, {
-        "player": {
-            "player_id": "0pid0",
-            "player_name": player_name,
-            "player_number": 0,
-            "game_id": "0gid0",
-            "opponent_id": "0oid0",
-            "last_request": 0,
-            "new_messages": []
-        },
-        "game": {
-            "game_id": "0gid0",
-            "player_names": [player_name],
-            "player_colors": ["black"],
-            "turn": 0,
-            "public": is_public,
-            "active": true,
-            "board": [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-            ]
+    var game = checkers.newGame("", is_public);
+    
+    db.addGame(game, function(err, res) {
+        if (err) {
+            callback(err);
+            return;
         }
+        
+        game = res;
+        var player = newPlayer(player_name, 0, game.game_id);
+        
+        db.addPlayer(player, function(err, res) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            
+            callback(false, {
+                "player": res,
+                "game": game
+            });
+        });
     });
 }
 
