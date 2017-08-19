@@ -46,10 +46,10 @@
             url: url,
             dataType: "json",
             success: function(msg) {
-				var obj =  JSON.stringify(msg);
+				//var obj =  JSON.stringify(msg);
                 //console.log(msg)
                 //var len = 0;
-				alert ("successfully created the game, player_id: " + obj["player"]["player_id"] );
+				alert ("successfully created the game, player_id: " + msg["player"]["player_id"] );
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
