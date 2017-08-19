@@ -147,3 +147,37 @@ buildBoard();
 
 // create a new board and draw the pieces
 drawPieces(newBoard());
+
+
+//Add Timer to the menu
+(function() {
+// Set the date we're counting down to
+var countDownDate = new Date();
+
+countDownDate = countDownDate.setMinutes(countDownDate.getMinutes() + 2);
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+    // Get todays date and time
+    var now = new Date().getTime();
+    
+    // Find the distance between now an the count down date
+    var distance = countDownDate - now;
+    
+    // Time calculations for days, hours, minutes and seconds
+
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    // Output the result in an element with id="timer"
+    document.getElementById("timer").innerHTML = "<font color='green'>"+minutes + "m " + seconds + "s </font>";
+    
+    // If the count down is over, write some text 
+    if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
+    }
+}, 1000);
+
+})();

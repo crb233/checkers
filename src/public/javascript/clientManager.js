@@ -8,6 +8,7 @@
         //var url = "/gameStartReq";
 
 		document.getElementById("joinGameForm").style.display = "none";
+		document.getElementById("games").style.display = "none";
 		document.getElementById("newGameForm").style.display = "block";
 		
          }
@@ -23,9 +24,12 @@
 		
 		//value is 1 for private, and 0 for a public game
 		var mode = document.querySelector('input[name="mode"]:checked').value
-		
-		var color = document.querySelector('input[name="color"]:checked').value
-		
+		if (mode=="0"){
+			mode = true;
+		}
+		else 
+			mode = false;
+			
 		//alert("Username: " +  username);
 		
 		//Construct JSON object to send  to the  server
@@ -36,15 +40,17 @@
 		$.ajax({
             type: "POST",
             data: {
-                player1: username,
-				//color : color,
-				mode: mode
+                player_name: username,
+				public: mode
             },
             url: url,
             dataType: "json",
             success: function(msg) {
-                console.log(msg)
-                var len = 0;
+				//var obj =  JSON.parse(msg);
+                //console.log(msg)
+                //var len = 0;
+				objplayer = msg['player']['player_name'] ;
+				alert ("successfully created the game, game_id: " + msg['game']['game_id'] );
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -73,37 +79,25 @@
 
 	function joinGame(){
 		document.getElementById("newGameForm").style.display = "none";
+		document.getElementById("games").style.display = "block";
 		document.getElementById("joinGameForm").style.display = "block";
 		
 		
 		//prototype for a game
 		//this section is dummy hardcoded data
-		var game = '<li class="game">';
-        game += '<article><input type="radio" name="game" value="F8B9C317-8695">';
-        game += '<header><h2>Game Level:<b><u> Intermediate </b></u><i></h2></header>';
-        game += '<b>Host: CBechtel</b>';
-        game += '<p><b>Color: Black and Red</b><br>'
-		game += '<p><b>GameID: F8B9C317-8695</b><br>'
-        game += '</input></article>';
-        game += '</li>';
-		
-		
-		
-		$('#games').append(game);
-		
-		var game = '<li class="game">';
+				
+		/*var game = '<li class="game">';
         game += '<article><input type="radio" name="game" value="8ACC6999-BEF1">';
         game += '<header><h2>Game Level:<b><u> Beginner </b></u><i></h2></header>';
         game += '<b>Host: HKaroui</b>';
-        game += '<p><b>Color: Black and White</b><br>'
 		game += '<p><b>GameID: 8ACC6999-BEF1</b><br>'
         game += '</input></article>';
         game += '</li>';
 		
-		$('#games').append(game);
+		$('#games').append(game);*/
 		
 		//showGames is called in order to display the list of public games available
-		//showGames();
+		showGames();
 	}
 	
 	/**
@@ -122,9 +116,9 @@
 		//game = document.getElementById('gameID').value
 		document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
 	}
-	
-	
+		
 	game = document.getElementById('gameID').value
+	var username = document.getElementById('username').value
 	
 	//for debugging purposes
 	//alert("Game selected has ID: " + game )
@@ -132,15 +126,13 @@
 	var url = "/join-game"
 	$.ajax({
             type: "POST",
-            data: {
-                player2: username,
-				gameid: game
+            data: {player_name: username,
+			game_id: game                
             },
             url: url,
             dataType: "json",
             success: function(msg) {
-                console.log(msg)
-                var len = 0;
+                alert("You have joined the game successfully. Show me what you got!")
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -158,21 +150,26 @@
 */
 
     function showGames() {
-        var url = "/get-games";
+        var url = "/get-games"
 		var numGames = 0;
 		
         $.ajax({
-            tpye: "POST",
+            type: "POST",
             url: url,
             dataType: "json",
-			
-            success: function(msg) {
+			success: function(msg) {
                 console.log(msg)
+				
+
+			for (var i = 0; i < msg.length; i++) {
+			var game = msg[i];
+			$('#games').append(newGames(game, i));
+			
+    // If property names are known beforehand, you can also just do e.g.
+    // alert(object.id + ',' + object.Title);
+}
 				//how many games? Retrieve from object length
-                var len = 0;
-                for (var i = 0; i < numGames; i++) {
-                    $('#games').append(newgames(msg, i));
-                }
+               
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -182,17 +179,17 @@
     }
 	
 	function newGames(myHtml, i) {
-        var host = myHtml.games[i].player1;
-        var color = myHtml.games[i].color;
-        var level = myHtml.games[i].level;
+        var gui = myHtml['game_id'];
+		var host = myHtml['player_names'][0];
+        //var level = myHtml[i].level;
         
  
         // Generate the game
         var game = '<li class="game">';
-        game += '<input type="radio" name="game" value="'+i+'" onClick="joinGame()"><article>';
-        game += '<header>Game Level:<h2><b><u>' + level + '</b></u><i></h2></header>';
-        game += '<b>Host: ' + host + '</b>';
-        game += '<p><b>Color' + color + '</b><br>'
+        game += '<input type="radio" name="game" value="'+gui+'" onClick="joinGame()"><article>';
+        game += '<b>Game Level: </b><u>Intermediate</u>';
+		game += '<p><b>Game ID: </b>' + gui + '</p>';
+        game += '<p><b>Host: </b>' + host + '</p>';
         game += '</article></input>';
         game += '</li>';
         return game;

@@ -29,7 +29,65 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function getGames(callback) {
-    db.getGamesList(callback);
+    //db.getGamesList(callback);
+	
+    // sample response
+	callback(false, 
+		[ {
+            "game_id": "0gid0",
+            "player_names": ["hajerkr"],
+            "player_colors": ["black"],
+            "turn": 0,
+            "public": true,
+            "active": true,
+            "board": [
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
+            ]
+        },
+		{
+            "game_id": "2gid2",
+            "player_names": ["CurtisB"],
+            "player_colors": ["black"],
+            "turn": 0,
+            "public": true,
+            "active": true,
+            "board": [
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
+            ]
+        },
+		{
+            "game_id": "3gid3",
+            "player_names": ["Bwayne"],
+            "player_colors": ["black"],
+            "turn": 0,
+            "public": true,
+            "active": true,
+            "board": [
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
+                [null, null, null, null, null, null, null, null],
+                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
+            ]
+        }
+		]);
 }
 
 function newPlayer(player_name, player_number, game_id) {
