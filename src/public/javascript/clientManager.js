@@ -159,13 +159,17 @@
             dataType: "json",
 			success: function(msg) {
                 console.log(msg)
+				
+
+			for (var i = 0; i < msg.length; i++) {
+			var game = arrayOfObjects[i];
+			$('#games').append(newgames(game, i));
+			
+    // If property names are known beforehand, you can also just do e.g.
+    // alert(object.id + ',' + object.Title);
+}
 				//how many games? Retrieve from object length
-                var len = msg.legnth();
-                for (var i = 0; i < len; i++) {
-					alert ("There are " + len + " games" );
-                    //$('#games').append(newgames(msg, i));
-					
-                }
+               
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -175,15 +179,16 @@
     }
 	
 	function newGames(myHtml, i) {
-        var host = myHtml.games[i].player1;
-   
-        var level = myHtml.games[i].level;
+        var gui = myHtml[i]['game_id'];
+		var host = myHtml[i]['player_names'][0];
+        var level = myHtml[i].level;
         
  
         // Generate the game
         var game = '<li class="game">';
         game += '<input type="radio" name="game" value="'+i+'" onClick="joinGame()"><article>';
-        game += '<header>Game Level:<h2><b><u>' + level + '</b></u><i></h2></header>';
+        game += '<header>Game Level:<h2><b><u>Intermediate</b></u><i></h2></header>';
+		game += '<b>Game ID </b>' + gui ;
         game += '<b>Host: ' + host + '</b>';
         game += '</article></input>';
         game += '</li>';
