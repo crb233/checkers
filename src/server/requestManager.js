@@ -48,7 +48,7 @@ function getGames(callback) {
                 [null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, {"player": 1, "king": true}],
             ]
-        }
+        },
 		"game2": {
             "game_id": "2gid2",
             "player_names": ["CurtisB"],
@@ -66,7 +66,7 @@ function getGames(callback) {
                 [null, null, null, null, null, null, null, null],
                 [null, null, null, null, null, null, null, {"player": 1, "king": true}],
             ]
-        }
+        },
 		"game3": {
             "game_id": "3gid3",
             "player_names": ["Bwayne"],
