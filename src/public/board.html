@@ -3,9 +3,33 @@
 <html>
     <!-- game board style -->
     <link rel="stylesheet" type="text/css" href="css/boardStyle.css"> </link>
-    
+	<link rel="stylesheet" type="text/css" href="css/myStyle.css"> </link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
+	
     <body>
+	<div  id="parent" style="margin-left: 100px;">
         <div id="board"> </div>
+		
+		<div id="content1" style="display: inline-block;">
+		<form id="options" class="form-style-9" style="position: absolute; right: 60px;">
+			<h1> Menu </h1>
+			<p>
+			<button class="button button5 btn-block" onClick="">Pause</button>
+                <!--should generate form on the right side of the page.-->
+            <button class="button button5 btn-block" onClick="">Request Draw</button></p>
+			<p><button class="button button5 btn-block" onClick="">Forfeit</button>
+			<button class="button button5 btn-block">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
+			</p>
+			
+			<p><b>Turn:</b> Player 1 </p>
+			
+			<p><b>Number of pieces collected: </b> 0</p>
+			<b  style="font-size: 50px;">Timer:<div id=timer></div></b>
+		</form>
+		</div>
+	</div>
+		
+		
     </body>
     
     <!-- game board functionality -->
