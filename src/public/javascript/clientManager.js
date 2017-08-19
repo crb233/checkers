@@ -163,7 +163,7 @@
 
 			for (var i = 0; i < msg.length; i++) {
 			var game = msg[i];
-			$('#games').append(newgames(game, i));
+			$('#games').append(newGames(game, i));
 			
     // If property names are known beforehand, you can also just do e.g.
     // alert(object.id + ',' + object.Title);
