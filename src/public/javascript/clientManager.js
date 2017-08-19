@@ -8,6 +8,7 @@
         //var url = "/gameStartReq";
 
 		document.getElementById("joinGameForm").style.display = "none";
+		document.getElementById("games").style.display = "none";
 		document.getElementById("newGameForm").style.display = "block";
 		
          }
@@ -23,9 +24,12 @@
 		
 		//value is 1 for private, and 0 for a public game
 		var mode = document.querySelector('input[name="mode"]:checked').value
-		
-		var color = document.querySelector('input[name="color"]:checked').value
-		
+		if (mode==0){
+			mode = true;
+		}
+		else 
+			mode = false;
+			
 		//alert("Username: " +  username);
 		
 		//Construct JSON object to send  to the  server
@@ -36,15 +40,15 @@
 		$.ajax({
             type: "POST",
             data: {
-                player1: username,
-				//color : color,
-				mode: mode
+                player_name: username,
+				public: mode
             },
             url: url,
             dataType: "json",
             success: function(msg) {
-                console.log(msg)
-                var len = 0;
+                //console.log(msg)
+                //var len = 0;
+				alert ("successfully created the game: " + msg );
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -73,29 +77,17 @@
 
 	function joinGame(){
 		document.getElementById("newGameForm").style.display = "none";
+		document.getElementById("games").style.display = "block";
 		document.getElementById("joinGameForm").style.display = "block";
 		
 		
 		//prototype for a game
 		//this section is dummy hardcoded data
-		var game = '<li class="game">';
-        game += '<article><input type="radio" name="game" value="F8B9C317-8695">';
-        game += '<header><h2>Game Level:<b><u> Intermediate </b></u><i></h2></header>';
-        game += '<b>Host: CBechtel</b>';
-        game += '<p><b>Color: Black and Red</b><br>'
-		game += '<p><b>GameID: F8B9C317-8695</b><br>'
-        game += '</input></article>';
-        game += '</li>';
-		
-		
-		
-		$('#games').append(game);
-		
+				
 		var game = '<li class="game">';
         game += '<article><input type="radio" name="game" value="8ACC6999-BEF1">';
         game += '<header><h2>Game Level:<b><u> Beginner </b></u><i></h2></header>';
         game += '<b>Host: HKaroui</b>';
-        game += '<p><b>Color: Black and White</b><br>'
 		game += '<p><b>GameID: 8ACC6999-BEF1</b><br>'
         game += '</input></article>';
         game += '</li>';
@@ -122,8 +114,7 @@
 		//game = document.getElementById('gameID').value
 		document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
 	}
-	
-	
+		
 	game = document.getElementById('gameID').value
 	
 	//for debugging purposes
@@ -183,7 +174,7 @@
 	
 	function newGames(myHtml, i) {
         var host = myHtml.games[i].player1;
-        var color = myHtml.games[i].color;
+   
         var level = myHtml.games[i].level;
         
  
@@ -192,7 +183,6 @@
         game += '<input type="radio" name="game" value="'+i+'" onClick="joinGame()"><article>';
         game += '<header>Game Level:<h2><b><u>' + level + '</b></u><i></h2></header>';
         game += '<b>Host: ' + host + '</b>';
-        game += '<p><b>Color' + color + '</b><br>'
         game += '</article></input>';
         game += '</li>';
         return game;
