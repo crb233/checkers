@@ -80,6 +80,7 @@
 	function joinGame(){
 		document.getElementById("newGameForm").style.display = "none";
 		document.getElementById("games").style.display = "block";
+		document.getElementById("games").innerHTML = "";
 		document.getElementById("joinGameForm").style.display = "block";
 		
 		
