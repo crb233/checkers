@@ -30,6 +30,8 @@ TODO
 */
 function getGames(callback) {
     //db.getGamesList(callback);
+	
+    // sample response
 	callback(false, {
 		"game1": {
             "game_id": "0gid0",
