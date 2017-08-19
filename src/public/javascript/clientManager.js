@@ -187,9 +187,9 @@
         // Generate the game
         var game = '<li class="game">';
         game += '<input type="radio" name="game" value="'+gui+'" onClick="joinGame()"><article>';
-        game += '<header>Game Level:<h2><b><u>Intermediate</b></u><i></h2></header>';
-		game += '<b>Game ID </b>' + gui ;
-        game += '<b>Host: ' + host + '</b>';
+        game += '<b>Game Level:</b><u>Intermediate</u>';
+		game += '<p><b>Game ID: </b>' + gui '</p>';
+        game += '<p><b>Host: </b>' + host + '</p>';
         game += '</article></input>';
         game += '</li>';
         return game;
