@@ -40,7 +40,7 @@ function newGame(player_name, is_public, callback) {
     // TODO
     // sample response
     callback(false, {
-        {
+        "player": {
             "player_id": "0pid0",
             "player_name": player_name,
             "player_number": 0,
@@ -49,7 +49,7 @@ function newGame(player_name, is_public, callback) {
             "last_request": 0,
             "new_messages": []
         },
-        {
+        "game": {
             "game_id": "0gid0",
             "player_names": [player_name],
             "player_colors": ["black"],
@@ -78,7 +78,7 @@ function joinGame(player_name, game_id, callback) {
     // TODO
     // sample response
     callback(false, {
-        {
+        "player": {
             "player_id": "0pid0",
             "player_name": player_name,
             "player_number": 1,
@@ -87,7 +87,7 @@ function joinGame(player_name, game_id, callback) {
             "last_request": 0,
             "new_messages": []
         },
-        {
+        "game": {
             "game_id": game_id,
             "player_names": [player_name],
             "player_colors": ["red"],

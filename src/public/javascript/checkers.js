@@ -128,7 +128,7 @@ Updates the game state to reverse the changes caused by a move
 @param {} game - the chckers game object
 @param {} move - the move to undo
 */
-function undoMove(board, move) {
+function undoMove(game, move) {
     // TODO
 }
 
