@@ -150,11 +150,11 @@
 */
 
     function showGames() {
-        var url = "/get-games";
+        var url = "/get-games"
 		var numGames = 0;
 		
         $.ajax({
-            tpye: "POST",
+            type: "POST",
             url: url,
             dataType: "json",
 			success: function(msg) {
