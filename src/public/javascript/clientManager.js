@@ -118,6 +118,7 @@
 	}
 		
 	game = document.getElementById('gameID').value
+	var username = document.getElementById('username').value
 	
 	//for debugging purposes
 	//alert("Game selected has ID: " + game )
@@ -125,14 +126,13 @@
 	var url = "/join-game"
 	$.ajax({
             type: "POST",
-            data: {
-                
+            data: {player_name: username,
+			game_id: game                
             },
             url: url,
             dataType: "json",
             success: function(msg) {
-                console.log(msg)
-                var len = 0;
+                alert("You have joined the game successfully. Show me what you got!")
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -187,7 +187,7 @@
         // Generate the game
         var game = '<li class="game">';
         game += '<input type="radio" name="game" value="'+gui+'" onClick="joinGame()"><article>';
-        game += '<b>Game Level:</b><u>Intermediate</u>';
+        game += '<b>Game Level: </b><u>Intermediate</u>';
 		game += '<p><b>Game ID: </b>' + gui + '</p>';
         game += '<p><b>Host: </b>' + host + '</p>';
         game += '</article></input>';
