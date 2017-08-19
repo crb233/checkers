@@ -32,8 +32,8 @@ function getGames(callback) {
     //db.getGamesList(callback);
 	
     // sample response
-	callback(false, {
-		"game1": {
+	callback(false, 
+		[ {
             "game_id": "0gid0",
             "player_names": ["hajerkr"],
             "player_colors": ["black"],
@@ -51,7 +51,7 @@ function getGames(callback) {
                 [null, null, null, null, null, null, null, {"player": 1, "king": true}],
             ]
         },
-		"game2": {
+		{
             "game_id": "2gid2",
             "player_names": ["CurtisB"],
             "player_colors": ["black"],
@@ -69,7 +69,7 @@ function getGames(callback) {
                 [null, null, null, null, null, null, null, {"player": 1, "king": true}],
             ]
         },
-		"game3": {
+		{
             "game_id": "3gid3",
             "player_names": ["Bwayne"],
             "player_colors": ["black"],
@@ -87,10 +87,7 @@ function getGames(callback) {
                 [null, null, null, null, null, null, null, {"player": 1, "king": true}],
             ]
         }
-		
-		
-		
-	});
+		]);
 }
 
 /**
