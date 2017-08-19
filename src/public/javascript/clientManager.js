@@ -24,7 +24,7 @@
 		
 		//value is 1 for private, and 0 for a public game
 		var mode = document.querySelector('input[name="mode"]:checked').value
-		if (mode==0){
+		if (mode=="0"){
 			mode = true;
 		}
 		else 
@@ -46,6 +46,7 @@
             url: url,
             dataType: "json",
             success: function(msg) {
+				var obj =  JSON.stringify(msg);
                 //console.log(msg)
                 //var len = 0;
 				alert ("successfully created the game: " + msg );
