@@ -126,8 +126,7 @@
 	$.ajax({
             type: "POST",
             data: {
-                player2: username,
-				gameid: game
+                
             },
             url: url,
             dataType: "json",
@@ -158,8 +157,7 @@
             tpye: "POST",
             url: url,
             dataType: "json",
-			
-            success: function(msg) {
+			success: function(msg) {
                 console.log(msg)
 				//how many games? Retrieve from object length
                 var len = msg.legnth();
