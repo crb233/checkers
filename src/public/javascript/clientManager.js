@@ -49,7 +49,7 @@
 				var obj =  JSON.stringify(msg);
                 //console.log(msg)
                 //var len = 0;
-				alert ("successfully created the game: " + obj.game[game_id] );
+				alert ("successfully created the game: " + obj["game"]["game_id"] );
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
