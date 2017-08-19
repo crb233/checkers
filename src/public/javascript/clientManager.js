@@ -179,14 +179,14 @@
     }
 	
 	function newGames(myHtml, i) {
-        var gui = myHtml[i]['game_id'];
-		var host = myHtml[i]['player_names'][0];
-        var level = myHtml[i].level;
+        var gui = myHtml['game_id'];
+		var host = myHtml['player_names'][0];
+        //var level = myHtml[i].level;
         
  
         // Generate the game
         var game = '<li class="game">';
-        game += '<input type="radio" name="game" value="'+i+'" onClick="joinGame()"><article>';
+        game += '<input type="radio" name="game" value="'+gui+'" onClick="joinGame()"><article>';
         game += '<header>Game Level:<h2><b><u>Intermediate</b></u><i></h2></header>';
 		game += '<b>Game ID </b>' + gui ;
         game += '<b>Host: ' + host + '</b>';
