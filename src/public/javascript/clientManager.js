@@ -49,8 +49,8 @@
 				//var obj =  JSON.parse(msg);
                 //console.log(msg)
                 //var len = 0;
-				objplayer = msg['player'] ;
-				alert ("successfully created the game, player_id: " + msg['player'] );
+				objplayer = msg['player']['player_name'] ;
+				alert ("successfully created the game, game_id: " + msg['game']['game_id'] );
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
@@ -86,7 +86,7 @@
 		//prototype for a game
 		//this section is dummy hardcoded data
 				
-		var game = '<li class="game">';
+		/*var game = '<li class="game">';
         game += '<article><input type="radio" name="game" value="8ACC6999-BEF1">';
         game += '<header><h2>Game Level:<b><u> Beginner </b></u><i></h2></header>';
         game += '<b>Host: HKaroui</b>';
@@ -94,10 +94,10 @@
         game += '</input></article>';
         game += '</li>';
 		
-		$('#games').append(game);
+		$('#games').append(game);*/
 		
 		//showGames is called in order to display the list of public games available
-		//showGames();
+		showGames();
 	}
 	
 	/**
@@ -162,9 +162,11 @@
             success: function(msg) {
                 console.log(msg)
 				//how many games? Retrieve from object length
-                var len = 0;
-                for (var i = 0; i < numGames; i++) {
-                    $('#games').append(newgames(msg, i));
+                var len = msg.legnth();
+                for (var i = 0; i < len; i++) {
+					alert ("There are " + len + " games" );
+                    //$('#games').append(newgames(msg, i));
+					
                 }
                 
             },
