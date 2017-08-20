@@ -141,30 +141,29 @@ function undoMove(game, move) {
 Request a draw: Opponent will get a message and be prompted to accept or decline the draw
 */
 function requestDraw() {
-    
-	var url ="/send-message"
+	var url = "/send-message"
 	var data;
 	
 	$.ajax({
-            type: "POST",
-            data: {
-                player_id: player_id,
-				message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
-            },
-            url: url,
-            dataType: "json",
-            success: function(msg) {
-				//TO DO
-				
-				//message should be the opponent's final decision: Accepted or declined
-				//based on message: continure or end game
-				//alert (msg);
-                
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                document.getElementById("content").innerHTML = "Error Fetching " + URL;
-            }
-        });
+        type: "POST",
+        data: {
+            player_id: player_id,
+			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
+        },
+        url: url,
+        dataType: "json",
+        success: function(msg) {
+			//TO DO
+			
+			//message should be the opponent's final decision: Accepted or declined
+			//based on message: continure or end game
+			//alert (msg);
+            
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
 }
 
 /**
@@ -172,30 +171,28 @@ Forfeit the game by sending a message to the server with text for the opponent
 */
 
 function forfeitGame() {
-    
-	var url ="/send-message"
+	var url = "/send-message"
 	var data;
 	
 	$.ajax({
-            type: "POST",
-            data: {
-                player_id: player_id,
-				message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-            },
-            url: url,
-            dataType: "json",
-            success: function(msg) {
-				
-				//Game ends....
-				
-				//TO DO
-				//alert (msg);
-                
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                document.getElementById("content").innerHTML = "Error Fetching " + URL;
-            }
-        });
+        type: "POST",
+        data: {
+            player_id: player_id,
+			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
+        },
+        url: url,
+        dataType: "json",
+        success: function(msg) {
+			
+			//Game ends....
+			
+			//TO DO
+			//alert (msg);
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
 }
 
 
@@ -212,8 +209,6 @@ module.exports = {
     "validateMove": validateMove,
     "makeMove": makeMove,
     "undoMove": undoMove,
-	"foreitGame": foreitGame,
+	"forfeitGame": forfeitGame,
 	"requestDraw": requestDraw,
-	
-		
 };
