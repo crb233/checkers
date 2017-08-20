@@ -60,13 +60,15 @@ function newBoard() {
 /**
 Creates and returns a new game object with the given specifications
 @param {string} id - the unique identifier for this game
-@param {boolean} is_public - whether this game is public (true) or privae (false)
+@param {boolean} is_public - whether this game is public
+@param {boolean} is_active - whether this game is active
 @return a game object representing a new game
 */
-function newGame(id, is_public) {
+function newGame(id, is_public, is_active) {
     return {
         "game_id": id,
         "public": is_public,
+        "active": is_active,
         "player_names": [],
         "player_colors": [],
         "turn": 0,

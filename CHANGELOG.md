@@ -12,9 +12,18 @@ The style and format of each version of this changelog is shown below:
 ```
 
 ## Current
-- created src/server/database-manager.js
-- created app.js, a basic front-end server
-- created index.html, a basic client side GUI
+- linked the new-game endpoint to the database
+- linked the get-games endpoint to the database
+
+## 0.2.0
+- added checkers.js
+- added clientManager.js for managing client-side functionality
+- added board.html, a basic checkers board page
+- added index.html, a basic client side GUI
+- added requestManager.js for managing request endpoints
+- added databaseManager.js for managing the connection to the database
+- added app.js, a basic front-end server
+- removed open.js due to compatibility issues
 
 ## 0.1.0
 - installed and configured eslint

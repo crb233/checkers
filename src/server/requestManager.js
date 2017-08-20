@@ -52,7 +52,9 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function newGame(player_name, is_public, callback) {
-    var game = checkers.newGame("", is_public);
+    var game = checkers.newGame("", is_public, true);
+    game.player_names.push(player_name);
+    game.player_colors.push("");
     
     db.addGame(game, function(err, res) {
         if (err) {
@@ -73,7 +75,7 @@ function newGame(player_name, is_public, callback) {
                 "player": res,
                 "game": game
             }));
-                        
+            
             callback(false, {
                 "player": res,
                 "game": game
