@@ -69,6 +69,11 @@ function newGame(player_name, is_public, callback) {
                 return;
             }
             
+            console.log(JSON.stringify({
+                "player": res,
+                "game": game
+            }));
+                        
             callback(false, {
                 "player": res,
                 "game": game

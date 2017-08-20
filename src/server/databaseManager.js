@@ -10,23 +10,17 @@ const client = require("mongodb").MongoClient;
 /** Indexes for the players collection */
 const playerIndexes = [
     {
-        "name": "player_id",
-        "key": {"player_id": 1},
-        "unique": true
+        "player_id": 1
     },
     {
-        "name": "game_id",
-        "key": {"game_id": 1},
-        "unique": false
+        "game_id": 1
     }
 ];
 
 /** Indexes for the games collection */
 const gameIndexes = [
     {
-        "name": "game_id",
-        "key": {"game_id": 1},
-        "unique": true
+        "game_id": 1
     }
 ];
 
