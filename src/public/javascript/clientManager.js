@@ -80,6 +80,7 @@
 	function joinGame(){
 		document.getElementById("newGameForm").style.display = "none";
 		document.getElementById("games").style.display = "block";
+		document.getElementById("games").innerHTML = "";
 		document.getElementById("joinGameForm").style.display = "block";
 		
 		
@@ -132,7 +133,8 @@
             url: url,
             dataType: "json",
             success: function(msg) {
-                alert("You have joined the game successfully. Show me what you got!")
+                alert("You have joined the game successfully. Show me what you got!");
+				document.location.href = "../html/board.html"
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {

@@ -2,8 +2,14 @@
 const board_size = 8;
 const board_player_rows = 3;
 
+
 // the matrix of html squares (each of which is a div)
 var squares = [];
+
+//variables used for the timer
+var id;
+var value = "00:00";
+const player_id = "";
 
 // Creates the piece initially found at the given position on the board
 function newDefaultPiece(r, c) {
@@ -95,6 +101,12 @@ function swapPieces(r0, c0, r1, c1) {
     var temp = s0.innerHTML;
     s0.innerHTML = s1.innerHTML;
     s1.innerHTML = temp;
+	
+	
+	//After making the move, enable the "Undo Move" button
+	document.getElementById("undo").disabled = false;
+	//change color
+	document.getElementById("undo").className = "button btn-block";
 }
 
 function drawPieces(board) {
@@ -148,36 +160,129 @@ buildBoard();
 // create a new board and draw the pieces
 drawPieces(newBoard());
 
+/**
+Start timer for the player when page first loads
+@param {} minutes - how many minutes for countdown
+@param {} seconds - how minutes seconds for countdown
+*/
 
-//Add Timer to the menu
-(function() {
-// Set the date we're counting down to
-var countDownDate = new Date();
+function startTimer(m, s) {
+		document.getElementById("timer").innerHTML = m + ":" + s;
+		if (s == 0) {
+			if (m == 0) {
+				document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
+				//timeExpired();
+				return;
+			} else if (m != 0) {
+				m = m - 1;
+				s = 60;
+			}
+		}
+		
+		s = s - 1;
+		id = setTimeout(function () {
+			startTimer(m, s)
+		}, 1000);
+		
+		
+	}
+	/**
+Send message to the server when time expires
+*/
 
-countDownDate = countDownDate.setMinutes(countDownDate.getMinutes() + 2);
+function timeExpired() {
+	//send message to the server "Expired"? with player_id who lost
+	var url ="/send-message"
+	var data;
+	
+	$.ajax({
+            type: "POST",
+            data: {
+                player_id: player_id,
+				message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
+            },
+            url: url,
+            dataType: "json",
+            success: function(msg) {
+				
+				alert ("Your time expired. You lose! ");
+                
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            }
+        });
+	
+}
 
-// Update the count down every 1 second
-var x = setInterval(function() {
+/**
+Overlay screen after pausing the game
+@return: false - Prevent page from refreshing 
+*/
 
-    // Get todays date and time
-    var now = new Date().getTime();
-    
-    // Find the distance between now an the count down date
-    var distance = countDownDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
+		function openNav() {
+			//pauseTimer();
+			document.getElementById("myNav").style.width = "100%";
+			return false;
+		}
+		
 
-    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    
-    // Output the result in an element with id="timer"
-    document.getElementById("timer").innerHTML = "<font color='green'>"+minutes + "m " + seconds + "s </font>";
-    
-    // If the count down is over, write some text 
-    if (distance < 0) {
-        clearInterval(x);
-        document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
-    }
-}, 1000);
+/**
+Closing the overlay screen after pausing the game
+*/
+		function closeNav() {
+			
+			document.getElementById("myNav").style.width = "0%";
+			//resumeTimer();
+		}
 
-})();
+/**
+Pause the timer and open the overlay screen
+*/
+		function pauseTimer() {
+			
+			value =  document.getElementById("timer").innerHTML;
+			clearTimeout(id);
+			openNav();
+		}
+
+
+/**
+Resume the timer
+*/
+		function resumeTimer() {
+			var t = value.split(":");
+			closeNav();
+			startTimer(parseInt(t[0], 10), parseInt(t[1], 10));
+		}
+
+
+/**
+Display Help Menu	with game rules
+*/
+		function helpMenu(){
+			pauseTimer();
+			var gameRules = "<article class='games-style'><ol>"
+			gameRules += "<li><b style='font-size: 30px;'>GAME RULES</b></p>"
+			gameRules += "1. Black moves first. Players then alternate moves.</p>"
+			gameRules += "2. Moves are allowed only on the dark squares, so pieces always move diagonally. Single pieces are always limited to forward moves (toward the opponent).</p>"
+			gameRules += "3. A piece making a non-capturing move (not involving a jump) may move only one square</p>."
+			gameRules += "4. A piece making a capturing move (a jump) leaps over one of the opponent's pieces, landing in a straight diagonal line on the other side. Only one piece may be captured in a single jump; however, multiple jumps are allowed during a single turn.</p>"
+			gameRules += "5. When a piece is captured, it is removed from the board.</p>"
+			gameRules += "6. If a player is able to make a capture, there is no option -- the jump must be made. If more than one capture is available, the player is free to choose whichever he or she prefers.</p>"
+			gameRules += "7. When a piece reaches the furthest row from the player who controls that piece, it is crowned and becomes a king. One of the pieces which had been captured is placed on top of the king so that it is twice as high as a single piece.</p>"
+			gameRules += "8. Kings are limited to moving diagonally, but may move both forward and backward. (Remember that single pieces, i.e. non-kings, are always limited to forward moves.)</p>"
+			gameRules += "9. Kings may combine jumps in several directions -- forward and backward -- on the same turn. Single pieces may shift direction diagonally during a multiple capture turn, but must always jump forward (toward the opponent).</p>"
+			gameRules += "10. A player wins the game when the opponent cannot make a move. In most cases, this is because all of the opponent's pieces have been captured, but it could also be because all of his pieces are blocked in.</p>"
+			gameRules += '<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>'
+			gameRules += "</ol></article>"
+			document.getElementById("overlay-cnt").innerHTML =  gameRules;
+			
+		}
+
+
+
+
+
+
+
