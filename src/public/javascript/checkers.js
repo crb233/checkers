@@ -135,6 +135,7 @@ Updates the game state to reverse the changes caused by a move
 */
 function undoMove(game, move) {
     // TODO
+	return false;
 }
 
 /**

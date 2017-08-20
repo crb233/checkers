@@ -6,10 +6,12 @@
 */
 function hostGameForm() {
     //var url = "/gameStartReq";
-
-	document.getElementById("joinGameForm").style.display = "none";
-	document.getElementById("games").style.display = "none";
+	
+	document.getElementById("mainMenu").style.display = "none";
+	document.getElementById("joinGameDiv").style.display = "none";
+	//document.getElementById("games").style.display = "none";
 	document.getElementById("newGameForm").style.display = "block";
+	
 }
 
 /**
@@ -70,11 +72,13 @@ function hidegames() {
 @description Populate the page with the form to submit in order to join a game
 and calls showgames() to display the list of games available to join
 */
-function joinGame(){
+function joinGameForm(){
+	
+	document.getElementById("mainMenu").style.display = "none";
 	document.getElementById("newGameForm").style.display = "none";
-	document.getElementById("games").style.display = "block";
 	document.getElementById("games").innerHTML = "";
-	document.getElementById("joinGameForm").style.display = "block";
+	document.getElementById("games").style.display = "block";	
+	document.getElementById("joinGameDiv").style.display = "block";
 	
 	
 	//prototype for a game
@@ -186,4 +190,12 @@ function newGames(myHtml, i) {
     game += '</article></input>';
     game += '</li>';
     return game;
+}
+
+
+function backMain (){
+    document.getElementById("newGameForm").style.display = "none";
+	document.getElementById("joinGameDiv").style.display = "none";
+	document.getElementById("mainMenu").style.display = "block";
+	
 }
