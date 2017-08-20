@@ -9,7 +9,7 @@ var squares = [];
 //variables used for the timer
 var id;
 var value = "00:00";
-
+const player_id = "";
 
 // Creates the piece initially found at the given position on the board
 function newDefaultPiece(r, c) {
@@ -101,6 +101,12 @@ function swapPieces(r0, c0, r1, c1) {
     var temp = s0.innerHTML;
     s0.innerHTML = s1.innerHTML;
     s1.innerHTML = temp;
+	
+	
+	//After making the move, enable the "Undo Move" button
+	document.getElementById("undo").disabled = false;
+	//change color
+	document.getElementById("undo").className = "button btn-block";
 }
 
 function drawPieces(board) {
@@ -154,12 +160,18 @@ buildBoard();
 // create a new board and draw the pieces
 drawPieces(newBoard());
 
+/**
+Start timer for the player when page first loads
+@param {} minutes - how many minutes for countdown
+@param {} seconds - how minutes seconds for countdown
+*/
 
-	function startTimer(m, s) {
+function startTimer(m, s) {
 		document.getElementById("timer").innerHTML = m + ":" + s;
 		if (s == 0) {
 			if (m == 0) {
 				document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
+				//timeExpired();
 				return;
 			} else if (m != 0) {
 				m = m - 1;
@@ -174,36 +186,80 @@ drawPieces(newBoard());
 		
 		
 	}
+	/**
+Send message to the server when time expires
+*/
 
-//Overlay after pausing the game
+function timeExpired() {
+	//send message to the server "Expired"? with player_id who lost
+	var url ="/send-message"
+	var data;
+	
+	$.ajax({
+            type: "POST",
+            data: {
+                player_id: player_id,
+				message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
+            },
+            url: url,
+            dataType: "json",
+            success: function(msg) {
+				
+				alert ("Your time expired. You lose! ");
+                
+            },
+            error: function(xhr, ajaxOptions, thrownError) {
+                document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            }
+        });
+	
+}
+
+/**
+Overlay screen after pausing the game
+@return: false - Prevent page from refreshing 
+*/
+
 		function openNav() {
 			//pauseTimer();
 			document.getElementById("myNav").style.width = "100%";
 			return false;
 		}
-//Closing the overlay
+		
+
+/**
+Closing the overlay screen after pausing the game
+*/
 		function closeNav() {
 			
 			document.getElementById("myNav").style.width = "0%";
 			//resumeTimer();
 		}
-//Pause the timer
+
+/**
+Pause the timer and open the overlay screen
+*/
 		function pauseTimer() {
 			
 			value =  document.getElementById("timer").innerHTML;
 			clearTimeout(id);
 			openNav();
-			
 		}
 
-//Resume the timer
+
+/**
+Resume the timer
+*/
 		function resumeTimer() {
 			var t = value.split(":");
 			closeNav();
 			startTimer(parseInt(t[0], 10), parseInt(t[1], 10));
 		}
 
-//Display Help Menu	with game rules	
+
+/**
+Display Help Menu	with game rules
+*/
 		function helpMenu(){
 			pauseTimer();
 			var gameRules = "<article class='games-style'><ol>"
