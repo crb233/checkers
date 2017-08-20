@@ -133,7 +133,8 @@
             url: url,
             dataType: "json",
             success: function(msg) {
-                alert("You have joined the game successfully. Show me what you got!")
+                alert("You have joined the game successfully. Show me what you got!");
+				document.location.href = "../html/board.html"
                 
             },
             error: function(xhr, ajaxOptions, thrownError) {
