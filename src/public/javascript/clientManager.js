@@ -185,7 +185,7 @@ function newGames(myHtml, i) {
     
     // Generate the game
     var game = '<li class="game">';
-    game += '<input type="radio" name="game" value="' + gui + '" onClick="joinGame()"><article>';
+    game += '<input type="radio" name="game" value="' + gui + '" onClick="function() { document.getElementById("gameID").value='+gui+'" }"><article>';
     game += '<b>Game Level: </b><u>Intermediate</u>';
 	game += '<p><b>Game ID: </b>' + gui + '</p>';
     game += '<p><b>Host: </b>' + host + '</p>';
