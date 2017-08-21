@@ -7,6 +7,8 @@ var id;
 var value = "00:00";
 const player_id = "";
 
+var gameBoard = [];
+
 // Creates the piece initially found at the given position on the board
 function newDefaultPiece(r, c) {
     if ((c + r) % 2 == 1) {

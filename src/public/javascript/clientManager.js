@@ -53,7 +53,10 @@ function hostGame() {
 			//var obj =  JSON.parse(msg);
             //console.log(msg)
             //var len = 0;
-			objplayer = msg.player.player_name;
+			//objplayer = msg.player.player_name;
+			player_id = msg.player.player_id;
+			gameBoard = msg.game.board;
+			document.location.href = "../html/board.html"
 			alert("successfully created the game, game_id: " + msg.game.game_id);
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -61,6 +64,7 @@ function hostGame() {
         }
     });
 }
+	
 	
 /**
 @function
@@ -123,6 +127,8 @@ function joinGameServer(){
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
             alert("You have joined the game successfully. Show me what you got!");
+			player_id = msg.player.player_id;
+			gameBoard = msg.game.board;
 			document.location.href = "../html/board.html"
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -163,7 +169,8 @@ function showGames() {
 				}
 			}
 				
-			//how many games? Retrieve from object length
+			//Initialize board object and player_id
+			
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
