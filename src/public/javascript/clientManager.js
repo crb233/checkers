@@ -27,7 +27,11 @@ function hostGame() {
 	var mode = document.querySelector('input[name="mode"]:checked').value
 	
 	// is it public?
-	var is_public = mode === "0";
+	if (mode === "0") {
+		var is_public = true;
+	} else {
+		var is_public = false;
+	}
 	
 	//alert("Username: " +  username);
 	
@@ -78,7 +82,7 @@ function joinGameForm(){
 	document.getElementById("mainMenu").style.display = "none";
 	document.getElementById("newGameForm").style.display = "none";
 	document.getElementById("games").innerHTML = "";
-	document.getElementById("games").style.display = "block";	
+	document.getElementById("games").style.display = "block";
 	document.getElementById("joinGameDiv").style.display = "block";
 	
 	
