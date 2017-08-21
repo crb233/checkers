@@ -12,15 +12,15 @@ function newDefaultPiece(r, c) {
     if ((c + r) % 2 == 1) {
         // we're on an odd board square
         return null;
-        
+
     } else if (r < board_player_rows) {
         // player 0 side
         return {"player": 0, "king": false};
-        
+
     } else if (r >= board_size - board_player_rows) {
         // player 1 side
         return {"player": 1, "king": false};
-        
+
     } else {
         // in the middle
         return null;
@@ -31,16 +31,16 @@ function newDefaultPiece(r, c) {
 function newBoard() {
     var board = [];
     for (var r = 0; r < board_size; r++) {
-        
+
         // build up a row of the board
         var row = [];
         for (var c = 0; c < board_size; c++) {
             row.push(newDefaultPiece(r, c));
         }
-        
+
         board.push(row);
     }
-    
+
     return board;
 }
 
@@ -64,27 +64,27 @@ function getPieceImage(piece) {
 // Builds the HTML for the board object
 function buildBoard() {
     var board_elem = document.getElementById("board");
-    
+
     // create a row
     for (var r = 0; r < board_size; r++) {
         var row_elem = document.createElement("div");
         var row = [];
-        
+
         // create a square
         for (var c = 0; c < board_size; c++) {
             var square_elem = document.createElement("div");
             row.push(square_elem);
-            
+
             square_elem.setAttribute("onclick", "clickSquare(" + r + "," + c + ")");
             square_elem.classList.add("square");
             square_elem.classList.add(getParityString(r, c));
             row_elem.appendChild(square_elem);
         }
-        
+
         // add row element to board element
         row_elem.classList.add("row");
         board_elem.appendChild(row_elem);
-        
+
         // add squares to list
         squares.push(row);
     }
@@ -93,12 +93,12 @@ function buildBoard() {
 function swapPieces(r0, c0, r1, c1) {
     var s0 = squares[r0][c0];
     var s1 = squares[r1][c1];
-    
+
     var temp = s0.innerHTML;
     s0.innerHTML = s1.innerHTML;
     s1.innerHTML = temp;
-	
-	
+
+
 	//After making the move, enable the "Undo Move" button
 	document.getElementById("undo").disabled = false;
 	//change color
@@ -109,10 +109,10 @@ function drawPieces(board) {
     for (var r = 0; r < board_size; r++) {
         for (var c = 0; c < board_size; c++) {
             var square_elem = squares[r][c];
-            
+
             // clear all children
             square_elem.innerHTML = "";
-            
+
             // set the piece
             var piece = board[r][c];
             if (piece !== null) {
@@ -132,7 +132,7 @@ var last_c = 0;
 
 function clickSquare(r, c) {
     if ((r + c) % 2 == 0) {
-        
+
         if (selected === null) {
             // we haven't selected a square yet
             // select the one we clicked
@@ -174,13 +174,13 @@ function startTimer(m, s) {
 				s = 60;
 			}
 		}
-		
+
 		s = s - 1;
 		id = setTimeout(function () {
 			startTimer(m, s)
 		}, 1000);
-		
-		
+
+
 	}
 	/**
 Send message to the server when time expires
@@ -190,7 +190,7 @@ function timeExpired() {
 	//send message to the server "Expired"? with player_id who lost
 	var url ="/send-message"
 	var data;
-	
+
 	$.ajax({
             type: "POST",
             data: {
@@ -200,15 +200,15 @@ function timeExpired() {
             url: url,
             dataType: "json",
             success: function(msg) {
-				
+
 				alert ("Your time expired. You lose! ");
-                
+
             },
             error: function(xhr, ajaxOptions, thrownError) {
                 document.getElementById("content").innerHTML = "Error Fetching " + URL;
             }
         });
-	
+
 }
 
 /**
@@ -221,13 +221,13 @@ Overlay screen after pausing the game
 			document.getElementById("myNav").style.width = "100%";
 			return false;
 		}
-		
+
 
 /**
 Closing the overlay screen after pausing the game
 */
 		function closeNav() {
-			
+
 			document.getElementById("myNav").style.width = "0%";
 			//resumeTimer();
 		}
@@ -236,7 +236,7 @@ Closing the overlay screen after pausing the game
 Pause the timer and open the overlay screen
 */
 		function pauseTimer() {
-			
+
 			value =  document.getElementById("timer").innerHTML;
 			clearTimeout(id);
 			openNav();
@@ -273,7 +273,7 @@ Display Help Menu	with game rules
 			gameRules += '<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>'
 			gameRules += "</ol></article>"
 			document.getElementById("overlay-cnt").innerHTML =  gameRules;
-			
+
 		}
 
 
