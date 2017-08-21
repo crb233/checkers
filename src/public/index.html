@@ -17,28 +17,37 @@
 
 
 <body onload="">
-    <h1>Checkers Game</h1>
-    <h4>Play remotely with your friends!</h4>
+    <center><h1>Checkers Game</h1>
+    <h4>Play remotely with your friends!</h4></center>
 
 </body>
 
 <div id=general>
 
-    <div id=navigation>
+    <div id=navigation >
 
         <p>
-
-            <div id="mainMenu"></div>
-            <p>
-                <button class="button button5 btn-block" onClick="hostGameForm()">Start Game</button>
-                <!--should generate form on the right side of the page.-->
-                <button class="button button5 btn-block" onClick="joinGame()">Join Game</button>
-            </p>
+			
+            
         </p>
     </div>
 
     <div id=content>
+	
+		<div id="mainMenu">
+		<form id="options" class="form-style-9">
+			<h1> Main Menu </h1>
+            <p>
+                <button id="hostGame" class="button button5 btn-block" onClick="hostGameForm();return false;">Start Game</button>
+                <!--should generate form on the right side of the page.-->
+                <button id="joinGame" class="button button5 btn-block" onClick="joinGameForm();return false;">Join Game</button>
+            </p>
+			</form>
+		</div>
+
+		
 		<form id="newGameForm" class="form-style-9" style="display:none">
+		<span id="back" style="cursor:pointer" onClick="backMain()"><h5>&#8592; Main Menu</h5></span>
 		<h1> New Game </h1>
 		<label>Username: </label><input type="text" class="form-field" id="username" placeholder="username" required><br>
 		<label>Mode:</label><input type="radio" class="form-field" name="mode" value="1" required> Private <input type="radio" name="mode" class="form-field"class="form-field" name="mode" value="0" required> Public<br>
@@ -47,23 +56,26 @@
 		
 		</form>
 		
-		<form id="joinGameForm" class="form-style-9" style="display:none">
-		<h1> Join Game* </h1>
-		<h4><i> Select a public game from the list below or enter the private game ID in the textbox. </i></h4>
-		<label> Username: </label><input type="text" class="form-field" id="username" placeholder="username" value="" required><br>
-		<label> Game ID: </label><input type="text" class="form-field" id="gameID" placeholder="Game-ID" required><br>
-		
-		<button class="button button5" onclick="joinGameServer()" value="Submit">Join</button>
-		
-		</form>
-		
-		
-        
-		<ul class="games-style" id="games"></ul>
-        <p id="loading">
-            <img src="images/loading.gif" alt="Loading…" />
-            <!--I changed the path slightly to work with express-->
-        </p>
+		<div id="joinGameDiv" style="display:none">
+			<form id="joinGameForm" class="form-style-9">
+			<span id="back" style="cursor:pointer" onClick="backMain()">&#8592; Main Menu</span>
+			<h1> Join Game* </h1>
+			<h4><i> Select a public game from the list below or enter the private game ID in the textbox. </i></h4>
+			<label> Username: </label><input type="text" class="form-field" id="username" placeholder="username" value="" required><br>
+			<label> Game ID: </label><input type="text" class="form-field" id="gameID" placeholder="Game-ID" required><br>
+			
+			<button class="button button5" onclick="joinGameServer()" value="Submit">Join</button>
+			
+			</form>
+			
+			
+			
+			<ul class="games-style" id="games"></ul>
+			<p id="loading">
+				<img src="images/loading.gif" alt="Loading…" />
+				
+			</p>
+		</div>
     </div>
 
 </div>
