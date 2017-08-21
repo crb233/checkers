@@ -72,25 +72,16 @@ margin:0px auto;
     width:80%;
     height:100%;
     font:16px/26px Georgia, Garamond, Serif;
-	overflow:hidden;
-    list-style-type: none;
-	
-	
+    list-style-type: none;	
 }
 
 
-#gamesList {
-	overflow:scroll;
-	overflow-y: auto;
-	
-}
-
-#games {
+#joinGameDiv {
     margin: 0 auto;
     padding: 0;
     width: 700px;
-    list-style-type: none;
 	overflow:scroll;
+	list-style-type: none;
 }
 
 article h1 {
