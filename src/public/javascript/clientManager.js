@@ -141,7 +141,7 @@ function showGames() {
         dataType: "json",
 		success: function(msg) {
             console.log(msg)
-			if !(msg.length){
+			if  (msg.length == 0){
 				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
 				
 			}
