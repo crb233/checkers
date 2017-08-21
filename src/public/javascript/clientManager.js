@@ -45,13 +45,14 @@ function hostGame() {
         url: url,
         dataType: "json",
         success: function(msg) {
+			console.log(msg)
 			//var obj =  JSON.parse(msg);
-            //console.log(msg)
             //var len = 0;
 			objplayer = msg.player.player_name;
 			alert("successfully created the game, game_id: " + msg.game.game_id);
         },
         error: function(xhr, ajaxOptions, thrownError) {
+			console.log("error");
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });

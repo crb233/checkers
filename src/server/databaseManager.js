@@ -196,7 +196,7 @@ function addGame(game, callback) {
             
             // ID is unique
             game.game_id = id;
-            colls.players.insertOne(game, {}, callback);
+            colls.games.insertOne(game, {}, callback);
         });
     })();
 }
@@ -240,12 +240,12 @@ function updateGame(game, callback) {
 }
 
 /**
-Retreives a list of all active public games from the database and passes it as
+Retreives a list of all new public games from the database and passes it as
 the second parameter to the callback function
 @param {} callback - the function to be called when this operation has completed
 */
 function getGamesList(callback) {
-    colls.games.find({"public": true, "active": true}).toArray(callback);
+    colls.games.find({"public": true, "active": false}).toArray(callback);
 }
 
 /**

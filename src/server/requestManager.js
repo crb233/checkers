@@ -14,6 +14,16 @@ const db = require(path(__dirname, "databaseManager"));
 /** an instance of the checkersGame module */
 const checkers = require(path(__dirname, "../public/javascript/checkers"));
 
+// Initialize the database-manager object
+db.connect(function(err) {
+    if (err) {
+        console.error("Failed to connect to database.\nExiting...");
+        process.exit(1);
+    } else {
+        console.log("Connected to database.");
+    }
+});
+
 /**
 TODO
 */
@@ -28,16 +38,6 @@ function newPlayer(player_name, player_number, game_id) {
         "new_messages": []
     };
 }
-
-// Initialize the database-manager object
-db.connect(function(err) {
-    if (err) {
-        console.error("Failed to connect to database.\nExiting...");
-        process.exit(1);
-    } else {
-        console.log("Connected to databse.");
-    }
-});
 
 /**
 TODO
@@ -55,16 +55,13 @@ function newGame(player_name, is_public, callback) {
     var game = checkers.newGame("", is_public, true);
     game.player_names.push(player_name);
     game.player_colors.push("");
-    
     db.addGame(game, function(err, res) {
         if (err) {
             callback(err);
             return;
         }
         
-        game = res;
         var player = newPlayer(player_name, 0, game.game_id);
-        
         db.addPlayer(player, function(err, res) {
             if (err) {
                 callback(err);
@@ -72,12 +69,12 @@ function newGame(player_name, is_public, callback) {
             }
             
             console.log(JSON.stringify({
-                "player": res,
+                "player": player,
                 "game": game
             }));
             
             callback(false, {
-                "player": res,
+                "player": player,
                 "game": game
             });
         });
@@ -89,36 +86,41 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function joinGame(player_name, game_id, callback) {
-    // TODO
-    // sample response
-    callback(false, {
-        "player": {
-            "player_id": "0pid0",
-            "player_name": player_name,
-            "player_number": 1,
-            "game_id": game_id,
-            "opponent_id": "0oid0",
-            "last_request": 0,
-            "new_messages": []
-        },
-        "game": {
-            "game_id": game_id,
-            "player_names": [player_name],
-            "player_colors": ["red"],
-            "turn": 0,
-            "public": true,
-            "active": false,
-            "board": [
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 0, "king": false}],
-                [null, null, null, null, null, null, null, null],
-                [null, null, null, null, null, null, null, {"player": 1, "king": true}],
-            ]
+    db.getGame(game_id, function(err, game) {
+        if (err) {
+            callback(err);
+            return;
         }
+        
+        if (game.active || player_names.length != 1) {
+            callback("This game is no longer available");
+            return;
+        }
+        
+        game.active = true;
+        game.player_names.push(player_name);
+        game.player_colors.push("");
+        db.updateGame(game, function(err, res) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            
+            // TODO set opponent_id
+            
+            var player = newPlayer(player_name, 1, game.game_id);
+            db.addPlayer(player, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, {
+                    "player": player,
+                    "game": game
+                });
+            });
+        });
     });
 }
 

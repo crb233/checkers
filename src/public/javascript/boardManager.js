@@ -1,8 +1,4 @@
 
-const board_size = 8;
-const board_player_rows = 3;
-
-
 // the matrix of html squares (each of which is a div)
 var squares = [];
 
@@ -217,7 +213,7 @@ function timeExpired() {
 
 /**
 Overlay screen after pausing the game
-@return: false - Prevent page from refreshing 
+@return: false - Prevent page from refreshing
 */
 
 		function openNav() {
