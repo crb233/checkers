@@ -16,7 +16,7 @@ const body_parser = require("body-parser");
 
 /** an instance of the RequestManager local module for managing different
 kinds of requests */
-const requests = require("./requestManager");
+const requests = require(path(__dirname, "requestManager"));
 
 /** the port number for this server to use. It is set to the value of the
 environment variable PORT, or 8080 if PORT isn't set. */
@@ -79,7 +79,7 @@ function createErrorCheckCallback(res) {
 /**
 @function
 @name post/get-games
-@description Route for the client to get a list of public and active games
+@description Route for the client to get a list of new public games
 @param {} req - request data
 @param {} res - response object
 */
@@ -108,7 +108,7 @@ app.post("/new-game", function(req, res) {
 /**
 @function
 @name post/new-game
-@description Route for the client to request to join an active and public game
+@description Route for the client to request to join a new public game
 @param {} req - request data
 @param {} res - response object
 */

@@ -1,6 +1,6 @@
 
 /**
-@module checkersGame
+@module checkers
 */
 
 /** the length and width of a standard game board */
@@ -10,22 +10,29 @@ const board_size = 8;
 const board_player_rows = 3;
 
 /**
-Ceates and returns a piece object with the given specifications
-@param {number} player - number describing which player (must be 0 or 1)
-@param {boolean} king - is the piece a king (true) or a normal piece (false)
-@return a piece object
+Creates the piece initially found at the given position on the board
 */
-function newPiece(player, king) {
-    return {
-        "player": player,
-        "king": king
-    };
+function newDefaultPiece(r, c) {
+    if ((c + r) % 2 == 1) {
+        // we're on an odd board square
+        return null;
+        
+    } else if (r < board_player_rows) {
+        // player 0 side
+        return {"player": 0, "king": false};
+        
+    } else if (r >= board_size - board_player_rows) {
+        // player 1 side
+        return {"player": 1, "king": false};
+        
+    } else {
+        // in the middle
+        return null;
+    }
 }
 
 /**
-Creates and returns a new game board object with the default initial
-configuration of pieces.
-@return a board object representing a new game
+Creates a bard object with the default initial configuration
 */
 function newBoard() {
     var board = [];
@@ -34,23 +41,9 @@ function newBoard() {
         // build up a row of the board
         var row = [];
         for (var c = 0; c < board_size; c++) {
-            
-            // place a single piece (null means no piece)
-            var piece = null;
-            if ((c + r) % 2 == 0) {
-                // we're on an alternating board square
-                
-                if (c < board_player_rows) {
-                    // player one's side
-                    piece = newPiece(0, false);
-                } else if (c >= board_size - board_player_rows) {
-                    // player two's side
-                    piece = newPiece(1, false);
-                }
-            }
-            row.push(piece);
-            
+            row.push(newDefaultPiece(r, c));
         }
+        
         board.push(row);
     }
     
@@ -77,12 +70,14 @@ function newGame(id, is_public, is_active) {
 }
 
 /**
-Determines and returns the index of a player's home row
+@function
+@description Determines and returns the index of a player's king row (the last
+row on their opponent's side)
 @param {number} player - the player's number (either 0 or 1)
-@return the index of the player's home row
+@return the index of the player's king row
 */
-function getHomeRow(player) {
-    return player * (board_size - 1);
+function getKingRow(player) {
+    return (1 - player) * (board_size - 1);
 }
 
 /**
@@ -105,7 +100,6 @@ Updates a move object to represent the next position for a piece to take
 */
 function addMovePosition(move, row, col) {
     move.push([row, col]);
-	
 }
 
 /**
@@ -169,7 +163,6 @@ function requestDraw() {
 /**
 Forfeit the game by sending a message to the server with text for the opponent
 */
-
 function forfeitGame() {
 	var url = "/send-message"
 	var data;
@@ -197,13 +190,15 @@ function forfeitGame() {
 
 
 
+if (typeof module === "undefined") {
+    var module = {};
+}
 
-var module = {};
 module.exports = {
-    "newPiece": newPiece,
+    "newDefaultPiece": newDefaultPiece,
     "newBoard": newBoard,
     "newGame": newGame,
-    "getHomeRow": getHomeRow,
+    "getKingRow": getKingRow,
     "newMove": newMove,
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
