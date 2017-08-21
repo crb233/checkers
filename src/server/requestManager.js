@@ -52,6 +52,14 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function newGame(player_name, is_public, callback) {
+    if (typeof player_name !== "string") {
+        callback("Parameter player_name must be a string");
+    }
+    
+    if (typeof is_public !== "boolean") {
+        callback("Parameter is_public must be a boolean");
+    }
+    
     var game = checkers.newGame("", is_public, true);
     game.player_names.push(player_name);
     game.player_colors.push("");
@@ -68,11 +76,6 @@ function newGame(player_name, is_public, callback) {
                 return;
             }
             
-            console.log(JSON.stringify({
-                "player": player,
-                "game": game
-            }));
-            
             callback(false, {
                 "player": player,
                 "game": game
@@ -86,6 +89,14 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function joinGame(player_name, game_id, callback) {
+    if (typeof player_name !== "string") {
+        callback("Parameter player_name must be a string");
+    }
+    
+    if (typeof game_id !== "string") {
+        callback("Parameter game_id must be a string");
+    }
+    
     db.getGame(game_id, function(err, game) {
         if (err) {
             callback(err);

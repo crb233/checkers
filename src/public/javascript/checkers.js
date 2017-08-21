@@ -104,12 +104,86 @@ function addMovePosition(move, row, col) {
 
 /**
 Returns true if the move is valid for the given game, otherwise false.
-@param {} game - the chckers game object
+@param {} game - the checkers game object
 @param {} move - the move to validate
 */
 function validateMove(game, move) {
-    // TODO
+	//split move into coordinate1 & coordinate2
+    if(is_Empty() && is_Diagonal()){
+		if(game.board[coordinate1][coordinate2].king){
+			//further testing
+			if(validJump){
+				return true;
+			}else if(validStep){
+				return true;
+			}else{
+				return false;
+			}
+			
+		}else if(moveForward(game, move)){
+			//further testing
+			if(validJump){
+				return true;
+			}else if(validStep){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
 }
+
+/*
+
+//is move the move object or just the move in the makemove request
+function is_Empty(board, move){
+		//checks all coordinates given
+		for(int i = 0; i < 8; i++){
+			for(int j = 0; j < 8; j++){
+				if(move[i][j]== null){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+}
+
+function is_Diagonal(coordinate1, coordinate2){ 
+	//is the space on a diagonal
+	//explore further into, is it an attainable diagonal
+	game.board[row][column]
+}
+
+//if moveForward is true, then you can validate a piece, if not you have to check if its a king but if its not a king its invalid
+
+function moveForward(game, move){
+	//checks if the move is moving forward as opposed to backwards
+	//if the previous move is bigger than the current room, then it's going backwards.
+	//if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller 
+	if(move[i-1] > move[i]){
+		return true;
+	}else{
+		return false;
+	}
+}
+
+function validStep(game, move){
+	//if the diagonal is right next to the piece
+	
+}
+
+//this can include multiple jumps
+function validJump(game, move){
+	//if the diagonal selected has an occupied space between them
+	//loop through depending on how many entries in the moves (how long will the move list be?)
+	
+}
+*/
 
 /**
 Updates the game state to reflect the changes caused by a move
@@ -118,7 +192,6 @@ Updates the game state to reflect the changes caused by a move
 */
 function makeMove(game, move) {
     // TODO
-	
 	
 }
 
