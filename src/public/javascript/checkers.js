@@ -112,9 +112,9 @@ function validateMove(game, move) {
     if(is_Empty() && is_Diagonal()){
 		if(game.board[coordinate1][coordinate2].king){
 			//further testing
-			if(validJump){
+			if(validJump(game, move)){
 				return true;
-			}else if(validStep){
+			}else if(findDistance(coordinate1, coordinate2) == 1){
 				return true;
 			}else{
 				return false;
@@ -122,9 +122,9 @@ function validateMove(game, move) {
 			
 		}else if(moveForward(game, move)){
 			//further testing
-			if(validJump){
+			if(validJump(game, move)){
 				return true;
-			}else if(validStep){
+			}else if(findDistance(coordinate1, coordinate2) == 1){
 				return true;
 			}else{
 				return false;
@@ -137,22 +137,16 @@ function validateMove(game, move) {
 	}
 }
 
-/*
-
 //is move the move object or just the move in the makemove request
 function is_Empty(board, move){
-		//checks all coordinates given
-		for(int i = 0; i < 8; i++){
-			for(int j = 0; j < 8; j++){
-				if(move[i][j]== null){
-					return true;
-				}else{
-					return false;
-				}
-			}
-		}
+	if(move[coordinate1][coordinate2]== null){
+		return true;
+	}else{
+		return false;
+	}
 }
 
+/*
 function is_Diagonal(coordinate1, coordinate2){ 
 	//is the space on a diagonal
 	//explore further into, is it an attainable diagonal
@@ -172,18 +166,29 @@ function moveForward(game, move){
 	}
 }
 
-function validStep(game, move){
-	//if the diagonal is right next to the piece
+//distance between two coordinates
+function findDistance(coordinate1, coordinate 2){
 	
 }
+
+*/
 
 //this can include multiple jumps
 function validJump(game, move){
 	//if the diagonal selected has an occupied space between them
 	//loop through depending on how many entries in the moves (how long will the move list be?)
+	if(findDistance(coordinate1, coordinate2) == 2){
+		if(move[coordinate1 -1][coordinate2 -1].player != game.player){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}else{
+		return false;
+	}
 	
 }
-*/
 
 /**
 Updates the game state to reflect the changes caused by a move
