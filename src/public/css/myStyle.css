@@ -73,7 +73,7 @@ margin:0px auto;
     width:80%;
     height:100%;
     font:16px/26px Georgia, Garamond, Serif;
-    overflow-y:auto;
+    
 	overflow-x:hidden;
     list-style-type: none;
 	
@@ -87,6 +87,7 @@ margin:0px auto;
     padding: 0;
     width: 700px;
     list-style-type: none;
+	overflow-y:auto;
 }
 
 article h1 {
