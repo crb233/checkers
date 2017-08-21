@@ -27,7 +27,7 @@
 			<button class="button button5 btn-block" id="pause" onClick="pauseTimer(); return false">Pause</button>
                 <!--should generate form on the right side of the page.-->
 			<button class="button button3 btn-block" id="undo" onClick="undoMove(0,0)" disabled>Undo Move</button></p>
-            <button class="button button5 btn-block" onClick="requestDraw()">Request Draw</button></p>
+            <button class="button button5 btn-block" id="reqDraw" onClick="requestDraw(); return false">Request Draw</button></p>
 			<p><button class="button button5 btn-block" onClick="forfeitGame()">Forfeit</button>
 			<button class="button button5 btn-block" onClick="helpMenu(); return false">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
 			</p>
@@ -46,6 +46,7 @@
     <!-- game board functionality -->
     <script src="javascript/checkers.js"> </script>
     <script src="javascript/boardManager.js"> </script>
+	<script src="javascript/clientManager.js"> </script>
 	<script type="text/javascript">
 	
 	

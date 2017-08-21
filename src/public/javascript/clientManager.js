@@ -49,14 +49,13 @@ function hostGame() {
         url: url,
         dataType: "json",
         success: function(msg) {
-			console.log(msg)
 			//var obj =  JSON.parse(msg);
+            //console.log(msg)
             //var len = 0;
 			objplayer = msg.player.player_name;
 			alert("successfully created the game, game_id: " + msg.game.game_id);
         },
         error: function(xhr, ajaxOptions, thrownError) {
-			console.log("error");
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
@@ -84,20 +83,6 @@ function joinGameForm(){
 	document.getElementById("games").innerHTML = "";
 	document.getElementById("games").style.display = "block";
 	document.getElementById("joinGameDiv").style.display = "block";
-	
-	
-	//prototype for a game
-	//this section is dummy hardcoded data
-			
-	/*var game = '<li class="game">';
-    game += '<article><input type="radio" name="game" value="8ACC6999-BEF1">';
-    game += '<header><h2>Game Level:<b><u> Beginner </b></u><i></h2></header>';
-    game += '<b>Host: HKaroui</b>';
-	game += '<p><b>GameID: 8ACC6999-BEF1</b><br>'
-    game += '</input></article>';
-    game += '</li>';
-	
-	$('#games').append(game);*/
 	
 	//showGames is called in order to display the list of public games available
 	showGames();
@@ -160,20 +145,29 @@ function showGames() {
         dataType: "json",
 		success: function(msg) {
             console.log(msg)
-			
-			for (var i = 0; i < msg.length; i++) {
-				var game = msg[i];
-				$('#games').append(newGames(game, i));
+			if  (msg.length == 0){
+				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
 				
-			    // If property names are known beforehand, you can also just do e.g.
-			    // alert(object.id + ',' + object.Title);
 			}
+			
+			else {
+				for (var i = 0; i < msg.length; i++) {
+					var game = msg[i];
+					$('#games').append(newGames(game, i));
+					
+					// If property names are known beforehand, you can also just do e.g.
+					// alert(object.id + ',' + object.Title);
+				}
+			}
+				
 			//how many games? Retrieve from object length
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
+	
+	
 }
 
 /**
@@ -197,10 +191,69 @@ function newGames(myHtml, i) {
     return game;
 }
 
-
+//Go back to the main menu/page
 function backMain (){
     document.getElementById("newGameForm").style.display = "none";
 	document.getElementById("joinGameDiv").style.display = "none";
 	document.getElementById("mainMenu").style.display = "block";
 	
 }
+
+
+/**
+Request a draw: Opponent will get a message and be prompted to accept or decline the draw
+*/
+function requestDraw() {
+	var url = "/send-message"
+	var data;
+	
+	$.ajax({
+        type: "POST",
+        data: {
+            player_id: player_id,
+			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
+        },
+        url: url,
+        dataType: "json",
+        success: function(msg) {
+			//TO DO
+			
+			//message should be the opponent's final decision: Accepted or declined
+			//based on message: continure or end game
+			//alert (msg);
+            
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
+/**
+Forfeit the game by sending a message to the server with text for the opponent
+*/
+function forfeitGame() {
+	var url = "/send-message"
+	var data;
+	
+	$.ajax({
+        type: "POST",
+        data: {
+            player_id: player_id,
+			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
+        },
+        url: url,
+        dataType: "json",
+        success: function(msg) {
+			
+			//Game ends....
+			
+			//TO DO
+			//alert (msg);
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
