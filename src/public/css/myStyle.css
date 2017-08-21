@@ -81,13 +81,18 @@ margin:0px auto;
 }
 
 
+#gamesList {
+	overflow:scroll;
+	overflow-y: auto;
+	
+}
 
 #games {
     margin: 0 auto;
     padding: 0;
     width: 700px;
     list-style-type: none;
-	overflow-y:auto;
+	overflow:scroll;
 }
 
 article h1 {
