@@ -6,6 +6,7 @@ body {
     height:125px;
 	/*background-image: url("../imgs/background.png");*/
 	/*background:#b72222;*/
+    overflow:hidden;
 }
 
 
@@ -72,8 +73,10 @@ margin:0px auto;
     width:80%;
     height:100%;
     font:16px/26px Georgia, Garamond, Serif;
-    overflow:scroll;
+    overflow-y:scroll;
+	overflow-x:hidden;
     list-style-type: none;
+	
 }
 
 
