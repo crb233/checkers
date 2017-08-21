@@ -71,11 +71,13 @@ margin:0px auto;
     top:125px;
     padding:0;
     width:80%;
-    height:100%;
+    min-height:100%;
     font:16px/26px Georgia, Garamond, Serif;
     overflow-y:scroll;
 	overflow-x:hidden;
     list-style-type: none;
+	display: flex;
+	flex-direction: column;
 }
 
 

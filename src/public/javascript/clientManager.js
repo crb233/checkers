@@ -141,14 +141,21 @@ function showGames() {
         dataType: "json",
 		success: function(msg) {
             console.log(msg)
-			
-			for (var i = 0; i < msg.length; i++) {
-				var game = msg[i];
-				$('#games').append(newGames(game, i));
+			if !(msg.length){
+				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
 				
-			    // If property names are known beforehand, you can also just do e.g.
-			    // alert(object.id + ',' + object.Title);
 			}
+			
+			else {
+				for (var i = 0; i < msg.length; i++) {
+					var game = msg[i];
+					$('#games').append(newGames(game, i));
+					
+					// If property names are known beforehand, you can also just do e.g.
+					// alert(object.id + ',' + object.Title);
+				}
+			}
+				
 			//how many games? Retrieve from object length
         },
         error: function(xhr, ajaxOptions, thrownError) {
