@@ -42,12 +42,13 @@ function hostGame() {
 	
 	$.ajax({
         type: "POST",
-        data: {
-            player_name: username,
-			public: is_public
-        },
+        data: JSON.stringify({
+            "player_name": username,
+			"public": is_public
+        }),
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
 			//var obj =  JSON.parse(msg);
             //console.log(msg)
@@ -113,12 +114,13 @@ function joinGameServer(){
 	var url = "/join-game"
 	$.ajax({
         type: "POST",
-        data: {
-			player_name: username,
-			game_id: game
-        },
+        data: JSON.stringify({
+			"player_name": username,
+			"game_id": game
+        }),
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
             alert("You have joined the game successfully. Show me what you got!");
 			document.location.href = "../html/board.html"
@@ -143,6 +145,7 @@ function showGames() {
         type: "POST",
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
 		success: function(msg) {
             console.log(msg)
 			if  (msg.length == 0){

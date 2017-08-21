@@ -47,17 +47,27 @@ function getGames(callback) {
     db.getGamesList(callback);
 }
 
+function isString(obj) {
+    return typeof obj === "string" || obj instanceof String;
+}
+
+function isBoolean(obj) {
+    return typeof obj === "boolean";
+}
+
 /**
 TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function newGame(player_name, is_public, callback) {
-    if (typeof player_name !== "string") {
+    if (!isString(player_name)) {
         callback("Parameter player_name must be a string");
+        return;
     }
     
-    if (typeof is_public !== "boolean") {
+    if (!isBoolean(is_public)) {
         callback("Parameter is_public must be a boolean");
+        return;
     }
     
     var game = checkers.newGame("", is_public, true);
@@ -89,12 +99,14 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function joinGame(player_name, game_id, callback) {
-    if (typeof player_name !== "string") {
+    if (!isString(player_name)) {
         callback("Parameter player_name must be a string");
+        return;
     }
     
-    if (typeof game_id !== "string") {
+    if (!isString(game_id)) {
         callback("Parameter game_id must be a string");
+        return;
     }
     
     db.getGame(game_id, function(err, game) {
