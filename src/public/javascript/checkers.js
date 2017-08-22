@@ -16,15 +16,15 @@ function newDefaultPiece(r, c) {
     if ((c + r) % 2 == 1) {
         // we're on an odd board square
         return null;
-        
+
     } else if (r < board_player_rows) {
         // player 0 side
         return {"player": 0, "king": false};
-        
+
     } else if (r >= board_size - board_player_rows) {
         // player 1 side
         return {"player": 1, "king": false};
-        
+
     } else {
         // in the middle
         return null;
@@ -37,16 +37,16 @@ Creates a bard object with the default initial configuration
 function newBoard() {
     var board = [];
     for (var r = 0; r < board_size; r++) {
-        
+
         // build up a row of the board
         var row = [];
         for (var c = 0; c < board_size; c++) {
             row.push(newDefaultPiece(r, c));
         }
-        
+
         board.push(row);
     }
-    
+
     return board;
 }
 
@@ -120,7 +120,7 @@ function validateMove(game, move) {
 			}else{
 				return false;
 			}
-			
+
 		}else if(moveForward(game, move)){
 			//further testing
 			if(validJump(game, move)){
@@ -168,11 +168,11 @@ function moveForward(game, move){
 }
 
 //distance between two coordinates
-function findDistance(coordinate1, coordinate 2){
-	
+function findDistance(coordinate1, coordinate2){
+
 }
 
-*/
+
 
 //this can include multiple jumps
 function validJump(game, move){
@@ -188,8 +188,9 @@ function validJump(game, move){
 	}else{
 		return false;
 	}
-	
+
 }
+*/
 
 /**
 Updates the game state to reflect the changes caused by a move
@@ -198,7 +199,7 @@ Updates the game state to reflect the changes caused by a move
 */
 function makeMove(game, move) {
     // TODO
-	
+
 }
 
 /**
@@ -225,6 +226,11 @@ module.exports = {
     "newMove": newMove,
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
+    "is_Empty":is_Empty,
+    "is_Diagonal":is_Diagonal,
+    "moveForward":moveForward,
+    "findDistance":findDistance,
+    "validJump":validJump,
     "makeMove": makeMove,
     "undoMove": undoMove
 };

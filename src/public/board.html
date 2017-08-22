@@ -7,7 +7,7 @@
 	<link rel="stylesheet" type="text/css" href="css/gamePageStyle.css"></link>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
-	
+
     <body onload="startTimer(2,0)">
 	<div id="myNav" class="overlay">
 	  <a href="javascript:void(0)" class="closebtn" onclick="resumeTimer()">&times;</a>
@@ -19,38 +19,40 @@
 
 	<div  id="parent" style="margin-left: 100px;">
         <div id="board"> </div>
-		
+
 		<div id="content1" style="display: inline-block;">
 		<form id="options" class="form-style-9" style="position: absolute; right: 60px;">
 			<h1> Menu </h1>
 			<p>
 			<button class="button button5 btn-block" id="pause" onClick="pauseTimer(); return false">Pause</button>
                 <!--should generate form on the right side of the page.-->
-			<button class="button button3 btn-block" id="undo" onClick="undoMove(0,0)" disabled>Undo Move</button></p>
+			<button class="button button3 btn-block" id="undo" onClick="undoMove(0,0)" disabled>Undo</button></p>
             <button class="button button5 btn-block" id="reqDraw" onClick="requestDraw(); return false">Request Draw</button></p>
 			<p><button class="button button5 btn-block" onClick="forfeitGame()">Forfeit</button>
 			<button class="button button5 btn-block" onClick="helpMenu(); return false">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
 			</p>
-			
+
 			<p><b>Turn:</b> Player 1 </p>
-			
+
 			<p><b>Number of pieces collected: </b> 0</p>
 			<b  style="font-size: 50px;">Timer: <b style="color: green"><div id=timer></div></b>
-		</form>
+		  <button class="button button5 btn-block" id="save" onClick="saveGame(); return false">Save</button>
+    </form>
 		</div>
 	</div>
-		
-		
+
+
     </body>
-    
+
     <!-- game board functionality -->
     <script src="javascript/checkers.js"> </script>
     <script src="javascript/boardManager.js"> </script>
 	<script src="javascript/clientManager.js"> </script>
 	<script type="text/javascript">
-	
-	
-		
+		window.onbeforeunload = function() {
+        return "Dude, are you sure you want to leave? Think of the kittens!";
+    }
+
 </script>
-    
+
 </html>
