@@ -147,50 +147,45 @@ function is_Empty(board, move){
 	}
 }
 
-/*
 function is_Diagonal(coordinate1, coordinate2){
-	//is the space on a diagonal
-	//explore further into, is it an attainable diagonal
-	game.board[row][column]
+	// //is the space on a diagonal
+	// //explore further into, is it an attainable diagonal
+	// game.board[row][column]
 }
 
 //if moveForward is true, then you can validate a piece, if not you have to check if its a king but if its not a king its invalid
 
 function moveForward(game, move){
-	//checks if the move is moving forward as opposed to backwards
-	//if the previous move is bigger than the current room, then it's going backwards.
-	//if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller
-	if(move[i-1] > move[i]){
-		return true;
-	}else{
-		return false;
-	}
+	// //checks if the move is moving forward as opposed to backwards
+	// //if the previous move is bigger than the current room, then it's going backwards.
+	// //if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller
+	// if(move[i-1] > move[i]){
+	// 	return true;
+	// }else{
+	// 	return false;
+	// }
 }
 
 //distance between two coordinates
 function findDistance(coordinate1, coordinate2){
-
+    // TODO
 }
-
-
 
 //this can include multiple jumps
 function validJump(game, move){
-	//if the diagonal selected has an occupied space between them
-	//loop through depending on how many entries in the moves (how long will the move list be?)
-	if(findDistance(coordinate1, coordinate2) == 2){
-		if(move[coordinate1 -1][coordinate2 -1].player != game.player){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}else{
-		return false;
-	}
-
+	// //if the diagonal selected has an occupied space between them
+	// //loop through depending on how many entries in the moves (how long will the move list be?)
+	// if(findDistance(coordinate1, coordinate2) == 2){
+	// 	if(move[coordinate1 -1][coordinate2 -1].player != game.player){
+	// 		return true;
+	// 	}
+	// 	else{
+	// 		return false;
+	// 	}
+	// }else{
+	// 	return false;
+	// }
 }
-*/
 
 /**
 Updates the game state to reflect the changes caused by a move
@@ -199,7 +194,6 @@ Updates the game state to reflect the changes caused by a move
 */
 function makeMove(game, move) {
     // TODO
-
 }
 
 /**
