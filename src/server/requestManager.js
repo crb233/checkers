@@ -5,6 +5,9 @@
 processing each request.
 */
 
+const default_player_time = 120; // seconds
+const default_player_pieces = 12;
+
 /** an instance of the Path module for file paths */
 const path = require("path").join;
 
@@ -33,8 +36,7 @@ function newPlayer(player_name, player_number, game_id) {
         "player_name": player_name,
         "player_number": player_number,
         "game_id": game_id,
-        "opponent_id": "",
-        "last_request": 0,
+        "last_request": null,
         "new_messages": []
     };
 }
@@ -47,12 +49,12 @@ function getGames(callback) {
     db.getGamesList(callback);
 }
 
-function isString(obj) {
-    return typeof obj === "string" || obj instanceof String;
-}
-
 function isBoolean(obj) {
     return typeof obj === "boolean";
+}
+
+function isString(obj) {
+    return typeof obj === "string" || obj instanceof String;
 }
 
 /**
@@ -70,9 +72,10 @@ function newGame(player_name, is_public, callback) {
         return;
     }
     
-    var game = checkers.newGame("", is_public, true);
+    var game = checkers.newGame("", is_public, false);
     game.player_names.push(player_name);
-    game.player_colors.push("");
+    game.player_time.push(default_player_time);
+    game.player_pieces.push(default_player_pieces);
     db.addGame(game, function(err, res) {
         if (err) {
             callback(err);
@@ -86,9 +89,16 @@ function newGame(player_name, is_public, callback) {
                 return;
             }
             
-            callback(false, {
-                "player": player,
-                "game": game
+            db.addOpponent(game.game_id, player.player_id, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, {
+                    "player": player,
+                    "game": game
+                });
             });
         });
     });
@@ -115,32 +125,38 @@ function joinGame(player_name, game_id, callback) {
             return;
         }
         
-        if (game.active || player_names.length != 1) {
+        if (game.active || game.player_names.length != 1) {
             callback("This game is no longer available");
             return;
         }
         
-        game.active = true;
-        game.player_names.push(player_name);
-        game.player_colors.push("");
-        db.updateGame(game, function(err, res) {
+        var player = newPlayer(player_name, 1, game.game_id);
+        db.addPlayer(player, function(err, res) {
             if (err) {
                 callback(err);
                 return;
             }
             
-            // TODO set opponent_id
-            
-            var player = newPlayer(player_name, 1, game.game_id);
-            db.addPlayer(player, function(err, res) {
+            game.active = true;
+            game.player_names.push(player_name);
+            game.player_time.push(default_player_time);
+            game.player_pieces.push(default_player_pieces);
+            db.updateGame(game, function(err, res) {
                 if (err) {
                     callback(err);
                     return;
                 }
                 
-                callback(false, {
-                    "player": player,
-                    "game": game
+                db.addOpponent(game.game_id, player.player_id, function(err, res) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+                    
+                    callback(false, {
+                        "player": player,
+                        "game": game
+                    });
                 });
             });
         });

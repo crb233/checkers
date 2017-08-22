@@ -63,7 +63,8 @@ function newGame(id, is_public, is_active) {
         "public": is_public,
         "active": is_active,
         "player_names": [],
-        "player_colors": [],
+        "player_time": [],
+        "player_pieces": [],
         "turn": 0,
         "board": newBoard()
     };
@@ -147,7 +148,7 @@ function is_Empty(board, move){
 }
 
 /*
-function is_Diagonal(coordinate1, coordinate2){ 
+function is_Diagonal(coordinate1, coordinate2){
 	//is the space on a diagonal
 	//explore further into, is it an attainable diagonal
 	game.board[row][column]
@@ -158,7 +159,7 @@ function is_Diagonal(coordinate1, coordinate2){
 function moveForward(game, move){
 	//checks if the move is moving forward as opposed to backwards
 	//if the previous move is bigger than the current room, then it's going backwards.
-	//if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller 
+	//if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller
 	if(move[i-1] > move[i]){
 		return true;
 	}else{

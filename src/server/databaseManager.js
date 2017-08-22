@@ -24,6 +24,12 @@ const gameIndexes = [
     }
 ];
 
+const opponentsIndexes = [
+    {
+        "player_id": 1
+    }
+];
+
 /** The set of valid characters from which IDs should be created. */
 const id_chars = "abcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -140,7 +146,14 @@ function connect(callback) {
                 return;
             }
             
-            loadCollection("games", gameIndexes, callback);
+            loadCollection("games", gameIndexes, function(err) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                loadCollection("opponents", opponentsIndexes, callback);
+            });
         });
     });
 }
@@ -169,7 +182,14 @@ function addPlayer(player, callback) {
             
             // ID is unique
             player.player_id = id;
-            colls.players.insertOne(player, {}, callback);
+            colls.players.insertOne(player, {}, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, player);
+            });
         });
     })();
 }
@@ -196,9 +216,51 @@ function addGame(game, callback) {
             
             // ID is unique
             game.game_id = id;
-            colls.games.insertOne(game, {}, callback);
+            colls.games.insertOne(game, {}, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, game);
+            });
         });
     })();
+}
+
+function addOpponent(game_id, player_id, callback) {
+    colls.opponents.findOne({ "game_id": game_id }, {}, function(err, opps) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        
+        if (opps) {
+            opps.player_ids.push(player_id);
+            colls.opponents.replaceOne({ "game_id": game_id }, opps, {}, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, opps);
+            });
+            
+        } else {
+            opps = {
+                "game_id": game_id,
+                "player_ids": [player_id]
+            };
+            colls.opponents.insertOne(opps, {}, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, opps);
+            })
+        }
+    });
 }
 
 /**
