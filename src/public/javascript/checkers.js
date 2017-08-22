@@ -167,11 +167,11 @@ function moveForward(game, move){
 }
 
 //distance between two coordinates
-function findDistance(coordinate1, coordinate 2){
+function findDistance(coordinate1, coordinate2){
 
 }
 
-*/
+
 
 //this can include multiple jumps
 function validJump(game, move){
@@ -189,6 +189,7 @@ function validJump(game, move){
 	}
 
 }
+*/
 
 /**
 Updates the game state to reflect the changes caused by a move
@@ -224,6 +225,11 @@ module.exports = {
     "newMove": newMove,
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
+    "is_Empty":is_Empty,
+    "is_Diagonal":is_Diagonal,
+    "moveForward":moveForward,
+    "findDistance":findDistance,
+    "validJump":validJump,
     "makeMove": makeMove,
     "undoMove": undoMove
 };
