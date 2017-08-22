@@ -24,42 +24,51 @@ function hostGame() {
 	var username = document.getElementById("username").value;
 	
 	// value is 1 for private, and 0 for a public game
-	var mode = document.querySelector('input[name="mode"]:checked').value
+	var mode = document.querySelector('input[name="mode"]:checked').value;
+	var is_public;
+
 	
 	// is it public?
 	if (mode === "0") {
-		var is_public = true;
+		is_public = true;
 	} else {
-		var is_public = false;
+		is_public = false;
 	}
 	
 	//alert("Username: " +  username);
 	
-	//Construct JSON object to send  to the  server
-	//@Curtis: JSON OBJECT?
+	console.log("test");
 	
 	var url = "/new-game"
 	
 	$.ajax({
         type: "POST",
-        data: {
-            player_name: username,
-			public: is_public
-        },
+        data: JSON.stringify({
+            "player_name": username,
+			"public": is_public
+        }),
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
 			//var obj =  JSON.parse(msg);
-            //console.log(msg)
+            console.log("success: the game was created");
             //var len = 0;
-			objplayer = msg.player.player_name;
-			alert("successfully created the game, game_id: " + msg.game.game_id);
+			//objplayer = msg.player.player_name;
+			player_id = msg.player.player_id;
+			//localStorage.setItem("player_id", msg.player.player_id );
+			//localStorage.setItem("gameBoard", msg.game.board );
+			document.location.href = "/board.html";
+			//window.open("/board.html");
+			//alert("successfully created the game, game_id: " + msg.game.game_id);
         },
         error: function(xhr, ajaxOptions, thrownError) {
+			console.log("error");
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
 }
+	
 	
 /**
 @function
@@ -113,15 +122,19 @@ function joinGameServer(){
 	var url = "/join-game"
 	$.ajax({
         type: "POST",
-        data: {
-			player_name: username,
-			game_id: game
-        },
+        data: JSON.stringify({
+			"player_name": username,
+			"game_id": game
+        }),
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
-            alert("You have joined the game successfully. Show me what you got!");
-			document.location.href = "../html/board.html"
+            //alert("You have joined the game successfully. Show me what you got!");
+			player_id = msg.player.player_id;
+			gameBoard = msg.game.board;
+			document.location.href = "/board.html";
+			//window.open("/board.html");
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -143,6 +156,7 @@ function showGames() {
         type: "POST",
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
 		success: function(msg) {
             console.log(msg)
 			if  (msg.length == 0){
@@ -160,7 +174,8 @@ function showGames() {
 				}
 			}
 				
-			//how many games? Retrieve from object length
+			//Initialize board object and player_id
+			
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -179,10 +194,9 @@ function newGames(myHtml, i) {
     var gui = myHtml['game_id'];
 	var host = myHtml['player_names'][0];
     //var level = myHtml[i].level;
-    
     // Generate the game
     var game = '<li class="game">';
-    game += '<input type="radio" name="game" value="' + gui + '" onClick="joinGame()"><article>';
+    game += '<input type="radio" name="game" value="' + gui + '" onClick="myf(\''+gui+'\')"><article>';
     game += '<b>Game Level: </b><u>Intermediate</u>';
 	game += '<p><b>Game ID: </b>' + gui + '</p>';
     game += '<p><b>Host: </b>' + host + '</p>';
@@ -257,3 +271,6 @@ function forfeitGame() {
     });
 }
 
+function myf(gui){ 
+document.getElementById('gameID').value= gui;
+}

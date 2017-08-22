@@ -24,12 +24,12 @@ div.square {
 
 /* style for an even square (one which can have a piece) */
 div.square.even {
-    background-color: #ffffff;
+    background-color: #333333;
 }
 
 /* style for an odd square (one which can't have a piece) */
 div.square.odd {
-    background-color: #333333;
+    background-color: #ffffff;
 }
 
 /* style for the mouse hovering over a square */

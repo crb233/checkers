@@ -58,11 +58,6 @@ response containing an error code and an object
 */
 function createErrorCheckCallback(res) {
     return function(err, result) {
-        console.log("Callback error:");
-        console.log(err);
-        console.log("Callback result:");
-        console.log(JSON.stringify(result));
-        
         if (typeof err === "string") {
             res.status(500);
             res.send({
@@ -76,6 +71,9 @@ function createErrorCheckCallback(res) {
             });
             
         } else {
+            console.log("Callback result:");
+            console.log(JSON.stringify(result));
+            res.status(200);
             res.send(result);
         }
     };

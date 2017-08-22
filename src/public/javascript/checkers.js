@@ -16,15 +16,15 @@ function newDefaultPiece(r, c) {
     if ((c + r) % 2 == 1) {
         // we're on an odd board square
         return null;
-        
+
     } else if (r < board_player_rows) {
         // player 0 side
         return {"player": 0, "king": false};
-        
+
     } else if (r >= board_size - board_player_rows) {
         // player 1 side
         return {"player": 1, "king": false};
-        
+
     } else {
         // in the middle
         return null;
@@ -37,16 +37,16 @@ Creates a bard object with the default initial configuration
 function newBoard() {
     var board = [];
     for (var r = 0; r < board_size; r++) {
-        
+
         // build up a row of the board
         var row = [];
         for (var c = 0; c < board_size; c++) {
             row.push(newDefaultPiece(r, c));
         }
-        
+
         board.push(row);
     }
-    
+
     return board;
 }
 
@@ -63,7 +63,8 @@ function newGame(id, is_public, is_active) {
         "public": is_public,
         "active": is_active,
         "player_names": [],
-        "player_colors": [],
+        "player_time": [],
+        "player_pieces": [],
         "turn": 0,
         "board": newBoard()
     };
@@ -119,7 +120,7 @@ function validateMove(game, move) {
 			}else{
 				return false;
 			}
-			
+
 		}else if(moveForward(game, move)){
 			//further testing
 			if(validJump(game, move)){
@@ -146,65 +147,44 @@ function is_Empty(board, move){
 	}
 }
 
-
-function is_Diagonal(coordinate1, coordinate2){ 
-	//is the space on a diagonal
-	//explore further into, is it an attainable diagonal
-	if(coordinate1[0] == (coordinate2[0] + 1)){
-		if(coordinate1[1] == (coordinate2[1] + 1)){
-			return true;
-		}else if(coordinate1[1] == (coordinate2[1] - 1)){
-			return true;
-		}else{
-			return false;
-		}
-	}else if(coordinate1[0] == (coordinate2[0] - 1)){
-		if(coordinate1[1] == (coordinate2[1] + 1)){
-			return true;
-		}else if(coordinate1[1] == (coordinate2[1] - 1)){
-			return true;
-		}else{
-			return false;
-		}
-	}
+function is_Diagonal(coordinate1, coordinate2){
+	// //is the space on a diagonal
+	// //explore further into, is it an attainable diagonal
+	// game.board[row][column]
 }
 
-/*
 //if moveForward is true, then you can validate a piece, if not you have to check if its a king but if its not a king its invalid
 
 function moveForward(game, move){
-	//checks if the move is moving forward as opposed to backwards
-	//if the previous move is bigger than the current room, then it's going backwards.
-	//if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller 
-	if(move[i-1] > move[i]){
-		return true;
-	}else{
-		return false;
-	}
+	// //checks if the move is moving forward as opposed to backwards
+	// //if the previous move is bigger than the current room, then it's going backwards.
+	// //if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller
+	// if(move[i-1] > move[i]){
+	// 	return true;
+	// }else{
+	// 	return false;
+	// }
 }
 
 //distance between two coordinates
 function findDistance(coordinate1, coordinate2){
-	
+    // TODO
 }
-
-*/
 
 //this can include multiple jumps
 function validJump(game, move){
-	//if the diagonal selected has an occupied space between them
-	//loop through depending on how many entries in the moves (how long will the move list be?)
-	if(findDistance(coordinate1, coordinate2) == 2){
-		if(move[coordinate1 -1][coordinate2 -1].player != game.player){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}else{
-		return false;
-	}
-	
+	// //if the diagonal selected has an occupied space between them
+	// //loop through depending on how many entries in the moves (how long will the move list be?)
+	// if(findDistance(coordinate1, coordinate2) == 2){
+	// 	if(move[coordinate1 -1][coordinate2 -1].player != game.player){
+	// 		return true;
+	// 	}
+	// 	else{
+	// 		return false;
+	// 	}
+	// }else{
+	// 	return false;
+	// }
 }
 
 /**
@@ -214,7 +194,6 @@ Updates the game state to reflect the changes caused by a move
 */
 function makeMove(game, move) {
     // TODO
-	
 }
 
 /**
@@ -298,6 +277,11 @@ module.exports = {
     "newMove": newMove,
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
+    "is_Empty":is_Empty,
+    "is_Diagonal":is_Diagonal,
+    "moveForward":moveForward,
+    "findDistance":findDistance,
+    "validJump":validJump,
     "makeMove": makeMove,
     "undoMove": undoMove,
 	"forfeitGame": forfeitGame,
