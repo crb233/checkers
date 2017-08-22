@@ -325,6 +325,7 @@ module.exports = {
     "connect": connect,
     "addPlayer": addPlayer,
     "addGame": addGame,
+    "addOpponent": addOpponent,
     "getPlayer": getPlayer,
     "getGame": getGame,
     "updatePlayer": updatePlayer,
