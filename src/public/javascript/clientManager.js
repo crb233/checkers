@@ -58,8 +58,8 @@ function hostGame() {
 			player_id = msg.player.player_id;
 			//localStorage.setItem("player_id", msg.player.player_id );
 			//localStorage.setItem("gameBoard", msg.game.board );
-			//document.location.href = "/board.html";
-			window.open("/board.html");
+			document.location.href = "/board.html";
+			//window.open("/board.html");
 			//alert("successfully created the game, game_id: " + msg.game.game_id);
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -133,8 +133,8 @@ function joinGameServer(){
             //alert("You have joined the game successfully. Show me what you got!");
 			player_id = msg.player.player_id;
 			gameBoard = msg.game.board;
-			//document.location.href = "/board.html";
-			window.open("/board.html");
+			document.location.href = "/board.html";
+			//window.open("/board.html");
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
