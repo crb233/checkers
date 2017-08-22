@@ -115,7 +115,7 @@ function joinGame(player_name, game_id, callback) {
             return;
         }
         
-        if (game.active || player_names.length != 1) {
+        if (game.active || game.player_names.length != 1) {
             callback("This game is no longer available");
             return;
         }
