@@ -146,13 +146,30 @@ function is_Empty(board, move){
 	}
 }
 
-/*
+
 function is_Diagonal(coordinate1, coordinate2){ 
 	//is the space on a diagonal
 	//explore further into, is it an attainable diagonal
-	game.board[row][column]
+	if(coordinate1[0] == (coordinate2[0] + 1)){
+		if(coordinate1[1] == (coordinate2[1] + 1)){
+			return true;
+		}else if(coordinate1[1] == (coordinate2[1] - 1)){
+			return true;
+		}else{
+			return false;
+		}
+	}else if(coordinate1[0] == (coordinate2[0] - 1)){
+		if(coordinate1[1] == (coordinate2[1] + 1)){
+			return true;
+		}else if(coordinate1[1] == (coordinate2[1] - 1)){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }
 
+/*
 //if moveForward is true, then you can validate a piece, if not you have to check if its a king but if its not a king its invalid
 
 function moveForward(game, move){
@@ -167,7 +184,7 @@ function moveForward(game, move){
 }
 
 //distance between two coordinates
-function findDistance(coordinate1, coordinate 2){
+function findDistance(coordinate1, coordinate2){
 	
 }
 
@@ -210,6 +227,63 @@ function undoMove(game, move) {
 	return false;
 }
 
+/**
+Request a draw: Opponent will get a message and be prompted to accept or decline the draw
+*/
+function requestDraw() {
+	var url = "/send-message"
+	var data;
+	
+	$.ajax({
+        type: "POST",
+        data: {
+            player_id: player_id,
+			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
+        },
+        url: url,
+        dataType: "json",
+        success: function(msg) {
+			//TO DO
+			
+			//message should be the opponent's final decision: Accepted or declined
+			//based on message: continure or end game
+			//alert (msg);
+            
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
+/**
+Forfeit the game by sending a message to the server with text for the opponent
+*/
+function forfeitGame() {
+	var url = "/send-message"
+	var data;
+	
+	$.ajax({
+        type: "POST",
+        data: {
+            player_id: player_id,
+			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
+        },
+        url: url,
+        dataType: "json",
+        success: function(msg) {
+			
+			//Game ends....
+			
+			//TO DO
+			//alert (msg);
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
 
 
 if (typeof module === "undefined") {
@@ -225,5 +299,7 @@ module.exports = {
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
     "makeMove": makeMove,
-    "undoMove": undoMove
+    "undoMove": undoMove,
+	"forfeitGame": forfeitGame,
+	"requestDraw": requestDraw,
 };
