@@ -58,7 +58,7 @@ function hostGame() {
 			player_id = msg.player.player_id;
 			//localStorage.setItem("player_id", msg.player.player_id );
 			//localStorage.setItem("gameBoard", msg.game.board );
-			document.location.href = "/board.html";
+			document.location.href = "../board.html";
 			//window.open("/board.html");
 			//alert("successfully created the game, game_id: " + msg.game.game_id);
         },
@@ -133,7 +133,7 @@ function joinGameServer(){
             //alert("You have joined the game successfully. Show me what you got!");
 			player_id = msg.player.player_id;
 			gameBoard = msg.game.board;
-			document.location.href = "/board.html";
+			document.location.href = "../board.html";
 			//window.open("/board.html");
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -148,42 +148,57 @@ function joinGameServer(){
 @name showGames
 @description Gets the list of public active games
 */
+
 function showGames() {
-    var url = "/get-games"
-	var numGames = 0;
-	
-    $.ajax({
-        type: "POST",
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-		success: function(msg) {
-            console.log(msg)
-			if  (msg.length == 0){
-				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
+        $(".game").each(function() {
+            $(this).show();
+        });
+    }
+
+    jQuery(function($) {
+        $('#content').on('scroll', function() {
+            if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
 				
-			}
+
+			var url = "/get-games"
+			var numGames = 0;
 			
-			else {
-				for (var i = 0; i < msg.length; i++) {
-					var game = msg[i];
-					$('#games').append(newGames(game, i));
+			$.ajax({
+				type: "POST",
+				url: url,
+				dataType: "json",
+				contentType: "application/json; charset=utf-8",
+				success: function(msg) {
+					console.log(msg)
+					if  (msg.length == 0){
+						document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
+						
+					}
 					
-					// If property names are known beforehand, you can also just do e.g.
-					// alert(object.id + ',' + object.Title);
+					else {
+						for (var i = 0; i < msg.length; i++) {
+							var game = msg[i];
+							$('#games').append(newGames(game, i));
+							
+							// If property names are known beforehand, you can also just do e.g.
+							// alert(object.id + ',' + object.Title);
+						}
+					}
+						
+					//Initialize board object and player_id
+					
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					document.getElementById("content").innerHTML = "Error Fetching " + URL;
 				}
-			}
-				
-			//Initialize board object and player_id
-			
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        }
+			});
+	     }
+        });
     });
+
 	
 	
-}
+
 
 /**
 @function
