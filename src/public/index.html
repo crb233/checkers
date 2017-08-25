@@ -16,7 +16,7 @@
 </head>
 
 
-<body onload="">
+<body>
     <center><h1>Checkers Game</h1>
     <h4>Play remotely with your friends!</h4></center>
 
@@ -56,8 +56,8 @@
 		
 		</form>
 		
-		<div id="joinGameDiv" style="display:none">
-			<form id="joinGameForm" class="form-style-9">
+		
+			<form id="joinGameForm" class="form-style-9" style="display:none">
 			<span id="back" style="cursor:pointer" onClick="backMain()">&#8592; Main Menu</span>
 			<h1> Join Game* </h1>
 			<h4><i> Select a public game from the list below or enter the private game ID in the textbox. </i></h4>
@@ -68,11 +68,9 @@
 			
 			</form>
 			
+			<ul class="games-style" id="gameList"></ul>
 			
-			
-			<ul class="games-style" id="games"></ul>
-			
-		</div>
+		
     </div>
 
 </div>
