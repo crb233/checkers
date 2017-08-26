@@ -85,7 +85,7 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
-	document.getElementById("game_info").innerHTML = localStorage.getItem("game_id");
+	document.getElementById("game_info").innerHTML = game_id;
 	
     var board_elem = document.getElementById("board");
 
@@ -283,20 +283,21 @@ loop = setInterval(function(){
 
 			//If there are no messages do nothing
 			//else
-				if (msg.length != 0)
-				{
-					//Depends ... Switch statement?
-					//message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-					var ans = confirm(msg.type + ": " + msg.text);
-					if (ans) {
-						//if the opponent accepted (forfeit or draw) game ends
-					}
-
-					else {
-						//Game goes on and and send a reject..
-					}
+			
+			/*
+			if (msg.length != 0) {
+				//Depends ... Switch statement?
+				//message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
+				var ans = confirm(msg.type + ": " + msg.text);
+				if (ans) {
+					//if the opponent accepted (forfeit or draw) game ends
 				}
 
+				else {
+					//Game goes on and and send a reject..
+				}
+			}
+			*/
         },
         error: function(xhr, ajaxOptions, thrownError) {
            // document.getElementById("content").innerHTML = "Error Fetching " + URL;
