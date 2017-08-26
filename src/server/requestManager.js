@@ -168,7 +168,38 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function makeMove(player_id, move, callback) {
-    // TODO
+    db.getPlayer(player_id, function(err, player) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        
+        db.getGame(player.game_id, function(err, game) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            
+            if (game.turn != player.player_number) {
+                callback("It is not your turn to make a move");
+                return;
+            }
+            
+            if (!checkers.validateMove(game, move)) {
+                callback("Invalid move attempt");
+            }
+            
+            makeMove(game, move);
+            db.updateGame(game, function(err, res) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, game);
+            });
+        });
+    });
 }
 
 /**

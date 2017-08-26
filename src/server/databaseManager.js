@@ -24,6 +24,7 @@ const gameIndexes = [
     }
 ];
 
+/** Indexes for the opponents collection */
 const opponentsIndexes = [
     {
         "player_id": 1
