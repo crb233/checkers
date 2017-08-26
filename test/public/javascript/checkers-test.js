@@ -14,6 +14,14 @@ const diagonalBackwards2UnitsMove = [[2,2], [0,0]] // Diagonal backward > 1 unit
 
 const backwardsMove =               [[3,3], [2,3]] // Backwards
 
+const distance0position =			[0,2] // Distance of zero, first given position
+const distance1position1 =			[1,3] // Distance of one, first position
+const distance1position2 = 			[1,4] // Distance of one, second position
+const distance2position1 =			[1,3] // Distance of two, first position
+const distance2position2 = 			[1,5] // Distance of two, second position
+const distance3position1 =			[5,0] // Distance of five, first position
+const distance3position2 = 			[5,3] // Distance of five, second position
+
 
 function newBasicGame() {
   game = checkers.newGame(1, true, true);
@@ -71,6 +79,33 @@ describe("checkers.js", function() {
     });
 
   });
+  
+  describe("findDistance()", function() {
+ 
+    var game = newBasicGame();
+
+    it("should test if findDistance function works properly", function() {
+
+      assert(checkers.findDistance(distance0position, distance0position) == 0);
+      assert(checkers.findDistance(distance1position1, distance1position2) == 1);
+	  assert(checkers.findDistance(distance2position1, distance2position2) == 2);
+	  assert(checkers.findDistance(distance3position1, distance3position2) == 5);
+
+    });
+ });
+ 
+  describe("validJump()", function() {
+ 
+    var game = newBasicGame();
+
+    it("should test if validJump function works properly", function() {
+
+	  assert(checkers.validJump(game, distance2position1,distance2position2) == true);
+      assert(checkers.validJump(game, distance3position1,distance3position2) == false);
+
+    });
+ });
+	
 
 });
 
@@ -124,18 +159,48 @@ describe("checkers.js", function() {
 
 // findDistance
 // checks diagonal distance (self is zero)
-/*
+/* 
+ * game = newGame()
  *
+ * //Distance of 0
+ * position = [0, 2]
  *
+ * //Distance of 1
+ * position1 = [1,3]
+ * position2 = [1,4]
+ * 
+ * //Distance of 2
+ * position1 = [1,3]
+ * position2 = [1,5]
  *
+ * //Distance of 3
+ * position1 = [5,3]
+ * position2 = [5,0]
  */
 
 // validJump
 // checks to make sure there is a piece between initial space and target space
 /*
+ * // Distance between positions is 2
+ * position1 = [1,3]
+ * position2 = [1,5]
+ *
+ * // Distance between position is 3
+ * position1 = [5,3]
+ * position2 = [5,0]
+ *
+ * // Piece between positions is opponent's piece
+ * 
+ *
+ *
+ * // Piece between positions is current player's piece
  *
  *
  *
+ * // No piece between positions
+ *
+ *
+ * 
  */
 
 // validateMove

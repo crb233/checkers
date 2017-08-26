@@ -32,7 +32,7 @@ function newDefaultPiece(r, c) {
 }
 
 /**
-Creates a bard object with the default initial configuration
+Creates a board object with the default initial configuration
 */
 function newBoard() {
     var board = [];
@@ -109,9 +109,7 @@ Returns true if the move is valid for the given game, otherwise false.
 @param {} move - the move to validate
 */
 function validateMove(game, move) {
-	//split move into coordinate1 & coordinate2
-
-    var board = game.board;
+	var board = game.board;
     var initialPosition = move[0];
     var targetPosition = move[1];
 
@@ -121,7 +119,7 @@ function validateMove(game, move) {
       if(board[initialPosition[0], initialPosition[1]].king == true){
 			  if(validJump(game, move)){
 				  return true;
-			  } else if(findDistance(coordinate1, coordinate2) == 1){
+			  } else if(findDistance(initialPosition, targetPosition) == 1){
 				  return true;
 			}else{
 				return false;
@@ -144,7 +142,11 @@ function validateMove(game, move) {
 	}
 }
 
-//is move the move object or just the move in the makemove request
+/**
+Checks if the selected space is empty
+@param {} board - the checkers board object 
+@param {} position - the selected position
+*/
 function is_Empty(board, position){
 
   var x0 = position[0];
@@ -157,6 +159,11 @@ function is_Empty(board, position){
 	}
 }
 
+/**
+Checks if the second position is diagonal relative to the first position
+@param {} position1 - the first given coordinate
+@param {} position2 - the second given coordinate
+*/
 function is_Diagonal(position1, position2){
 	var x0 = position1[0];
   var y0 = position1[1];
@@ -171,8 +178,11 @@ function is_Diagonal(position1, position2){
   }
 }
 
-//if moveForward is true, then you can validate a piece, if not you have to check if its a king but if its not a king its invalid
-
+/**
+Checks if the piece is moving forward relative to them
+@param {} game - the checkers game object
+@param {} move - the move to be made
+*/
 function moveForward(game, move){
 
   var position1 = move[0];
@@ -188,45 +198,50 @@ function moveForward(game, move){
   } else {
     return false;
   }
-
-  // //checks if the move is moving forward as opposed to backwards
-	// //if the previous move is bigger than the current room, then it's going backwards.
-	// //if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller
-	// if(move[i-1] > move[i]){
-	// 	return true;
-	// }else{
-	// 	return false;
-	// }
+  
 }
 
-//distance between two coordinates
-function findDistance(coordinate1, coordinate2){
-    // TODO
+/**
+Finds the distance between two given positions
+@param {} position1 - the first given coordinate
+@param {} position2 - the second given coordinate
+*/
+function findDistance(postition1, position2){
+    var y0 = position1[1];
+	var y1 = position2[1];
+	
+	return Math.abs(y0 - y1);
+	
 }
 
-//this can include multiple jumps
-function validJump(game, move){
-	// //if the diagonal selected has an occupied space between them
-	// //loop through depending on how many entries in the moves (how long will the move list be?)
-	// if(findDistance(coordinate1, coordinate2) == 2){
-	// 	if(move[coordinate1 -1][coordinate2 -1].player != game.player){
-	// 		return true;
-	// 	}
-	// 	else{
-	// 		return false;
-	// 	}
-	// }else{
-	// 	return false;
-	// }
+/**
+Checks to validate a "jump" move by making sure there's an opponent's piece between the two positions
+@param {} game - the checkers game object
+@param {} position1 - the initial position of the jump
+@param {} position2 - the target position of the jump
+*/
+function validJump(game, position1, position2){
+	
+	if(findDistance(position1, position2) == 2){
+		if(game.board[position2[0] - 1][position2[1] - 1].player != game.player){
+			return true;
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
 }
 
 /**
 Updates the game state to reflect the changes caused by a move
-@param {} game - the chckers game object
+@param {} game - the checkers game object
 @param {} move - the move to be made
 */
 function makeMove(game, move) {
-    // TODO
+    if(validateMove(game, move)){
+		//TO DO
+	}
 }
 
 /**
