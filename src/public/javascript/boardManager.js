@@ -5,9 +5,13 @@ var squares = [];
 //variables used for the timer
 var id;
 var value = "00:00";
-const player_id = "";
+const player_id = localStorage.getItem("player_id");
+var gameBoard = localStorage.getItem("gameBoard");
 
-var gameBoard = [];
+//store previous move coordinates
+
+var cur_c = 0;
+var cur_r = 0;
 
 // Creates the piece initially found at the given position on the board
 function newDefaultPiece(r, c) {
@@ -65,6 +69,8 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
+	document.getElementById("info").innerHTML = localStorage.getItem("game_id");
+	
     var board_elem = document.getElementById("board");
 
     // create a row
@@ -93,6 +99,8 @@ function buildBoard() {
 }
 
 function swapPieces(r0, c0, r1, c1) {
+	
+	
     var s0 = squares[r0][c0];
     var s1 = squares[r1][c1];
 
@@ -100,11 +108,19 @@ function swapPieces(r0, c0, r1, c1) {
     s0.innerHTML = s1.innerHTML;
     s1.innerHTML = temp;
 
-
-	//After making the move, enable the "Undo Move" button
+	
+	//After making the move, enable the "Undo Move" and Send Move button
 	document.getElementById("undo").disabled = false;
+	document.getElementById("send").disabled = false;
 	//change color
 	document.getElementById("undo").className = "button btn-block";
+	
+	//change color
+	document.getElementById("send").className = "button btn-block";
+	
+	//update variables
+	cur_r = r1;
+	cur_c = c1;
 }
 
 function drawPieces(board) {
@@ -158,6 +174,86 @@ buildBoard();
 // create a new board and draw the pieces
 drawPieces(newBoard());
 
+function undoMove (x,y) {
+	swapPieces(cur_r, cur_c,last_r,last_c);	
+}
+
+function sendMove(){
+	//If move is validated, send the new board object
+	
+	//move object??
+	$.ajax({
+        type: "POST",
+        data: {
+            player_id: player_id,
+			move: [
+				[last_r, last_c],
+				[cur_r, cur_c],
+				[0,0]
+			
+			]
+        },
+        url: "/make-move",
+        dataType: "json",
+        success: function(msg) {
+			//On success update the move board
+			if (msg.success) {
+				drawPieces(msg.game.board);
+			}
+			
+			else
+				alert("Move unsuccessful.");
+				swapPieces(cur_r,cur_c,last_r,last_c);
+			
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
+
+
+
+
+//See if there are any updates from the server (messages) every 6 seconds
+loop=setInterval(function(){
+	
+ $.ajax({
+        type: "POST",
+        data: {
+            player_id: player_id			
+        },
+        url: "/get-updates",
+        dataType: "json",
+        success: function(msg) {
+			
+			//If there are no messages do nothing
+			//else
+				if (msg.length != 0)
+				{
+					//Depends ... Switch statement?
+					//message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
+					var ans = confirm(msg.type + ": " + msg.text);
+					if (ans) {
+						//if the opponent accepted (forfeit or draw) game ends
+					}
+					
+					else {
+						//Game goes on and and send a reject..
+					}
+				}
+			
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+},6000);
+
+
+
+//SIDE MENU FUNCTIONS
 /**
 Start timer for the player when page first loads
 @param {} minutes - how many minutes for countdown
@@ -221,6 +317,7 @@ Overlay screen after pausing the game
 		function openNav() {
 			//pauseTimer();
 			document.getElementById("myNav").style.width = "100%";
+			
 			return false;
 		}
 
@@ -256,7 +353,7 @@ Resume the timer
 
 
 /**
-Display Help Menu	with game rules
+Display Help Menu	with game rules. Might not be needed since we will show the menu regardless
 */
 		function helpMenu(){
 			pauseTimer();

@@ -1,4 +1,5 @@
-	
+var gameBoard = [];
+
 /**
 @function
 @name startGame
@@ -8,8 +9,8 @@ function hostGameForm() {
     //var url = "/gameStartReq";
 	
 	document.getElementById("mainMenu").style.display = "none";
-	document.getElementById("joinGameDiv").style.display = "none";
-	//document.getElementById("games").style.display = "none";
+	document.getElementById("joinGameForm").style.display = "none";
+	document.getElementById("gameList").style.display = "none";
 	document.getElementById("newGameForm").style.display = "block";
 	
 }
@@ -58,7 +59,7 @@ function hostGame() {
 			player_id = msg.player.player_id;
 			//localStorage.setItem("player_id", msg.player.player_id );
 			//localStorage.setItem("gameBoard", msg.game.board );
-			document.location.href = "../board.html";
+			document.location.href = "/board.html";
 			//window.open("/board.html");
 			//alert("successfully created the game, game_id: " + msg.game.game_id);
         },
@@ -89,12 +90,13 @@ function joinGameForm(){
 	
 	document.getElementById("mainMenu").style.display = "none";
 	document.getElementById("newGameForm").style.display = "none";
-	document.getElementById("games").innerHTML = "";
-	document.getElementById("games").style.display = "block";
-	document.getElementById("joinGameDiv").style.display = "block";
+	
+		
+	document.getElementById("joinGameForm").style.display = "block";
+	document.getElementById("gameList").style.display = "block";
 	
 	//showGames is called in order to display the list of public games available
-	showGames();
+	getGames();
 }
 
 /**
@@ -130,10 +132,12 @@ function joinGameServer(){
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
-            //alert("You have joined the game successfully. Show me what you got!");
-			player_id = msg.player.player_id;
-			gameBoard = msg.game.board;
+            //store the player_id and gameboard in a local storage var
+			localStorage.setItem("player_id", msg.player.player_id);
+			localStorage.setItem("gameBoard", msg.game.board);
+			localStorage.setItem("game_id", msg.game.game_id);
 			document.location.href = "../board.html";
+			
 			//window.open("/board.html");
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -149,56 +153,49 @@ function joinGameServer(){
 @description Gets the list of public active games
 */
 
-function showGames() {
-        $(".game").each(function() {
-            $(this).show();
-        });
-    }
-
-    jQuery(function($) {
-        $('#content').on('scroll', function() {
-            if ($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+function getGames() {
+    var url = "/get-games"
+	var numGames = 0;
+	//empty content of games
+	document.getElementById("gameList").innerHTML = "";
+	
+    $.ajax({
+        type: "POST",
+        url: url,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+		success: function(msg) {
+            console.log(msg)
+			if  (msg.length == 0){
+				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
 				
-
-			var url = "/get-games"
-			var numGames = 0;
+			}
 			
-			$.ajax({
-				type: "POST",
-				url: url,
-				dataType: "json",
-				contentType: "application/json; charset=utf-8",
-				success: function(msg) {
-					console.log(msg)
-					if  (msg.length == 0){
-						document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
-						
-					}
+			else {
+				for (var i = 0; i < msg.length; i++) {
+					var game = msg[i];
+					$('#gameList').append(newGames(game, i));
 					
-					else {
-						for (var i = 0; i < msg.length; i++) {
-							var game = msg[i];
-							$('#games').append(newGames(game, i));
-							
-							// If property names are known beforehand, you can also just do e.g.
-							// alert(object.id + ',' + object.Title);
-						}
-					}
-						
-					//Initialize board object and player_id
-					
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-					document.getElementById("content").innerHTML = "Error Fetching " + URL;
+					// If property names are known beforehand, you can also just do e.g.
+					// alert(object.id + ',' + object.Title);
 				}
-			});
-	     }
-        });
+				
+				//quick fix because the last game doesn't show up
+				$('#gameList').append('<li class="game" style="display:block"><article>Stuff</article></li>');
+			}
+			
+			//document.getElementById("games").style.display = "block";
+				
+			//Initialize board object and player_id
+			
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
     });
-
 	
 	
-
+}
 
 /**
 @function
@@ -223,7 +220,8 @@ function newGames(myHtml, i) {
 //Go back to the main menu/page
 function backMain (){
     document.getElementById("newGameForm").style.display = "none";
-	document.getElementById("joinGameDiv").style.display = "none";
+	document.getElementById("joinGameForm").style.display = "none";
+	document.getElementById("gameList").style.display = "none";
 	document.getElementById("mainMenu").style.display = "block";
 	
 }
@@ -286,6 +284,8 @@ function forfeitGame() {
     });
 }
 
+//Fill Game ID by clicking on the game
 function myf(gui){ 
 document.getElementById('gameID').value= gui;
 }
+

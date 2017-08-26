@@ -14,31 +14,50 @@
 	  <a href="javascript:void(0)" class="closebtn" onclick="resumeTimer()">&times;</a>
 	  <div id ="overlay-cnt" class="overlay-content">
 		<header><font color='white'>GAME IS PAUSED</header></font>
+		<article class='games-style'><ol>
+			 <li><b style='font-size: 30px;'>GAME RULES</b></p>
+			 1. Black moves first. Players then alternate moves.</p>
+			 2. Moves are allowed only on the dark squares, so pieces always move diagonally. Single pieces are always limited to forward moves (toward the opponent).</p>
+			 3. A piece making a non-capturing move (not involving a jump) may move only one square</p>.
+			 4. A piece making a capturing move (a jump) leaps over one of the opponent's pieces, landing in a straight diagonal line on the other side. Only one piece may be captured in a single jump; however, multiple jumps are allowed during a single turn.</p>
+			 5. When a piece is captured, it is removed from the board.</p>
+			 6. If a player is able to make a capture, there is no option -- the jump must be made. If more than one capture is available, the player is free to choose whichever he or she prefers.</p>
+			 7. When a piece reaches the furthest row from the player who controls that piece, it is crowned and becomes a king. One of the pieces which had been captured is placed on top of the king so that it is twice as high as a single piece.</p>
+			 8. Kings are limited to moving diagonally, but may move both forward and backward. (Remember that single pieces, i.e. non-kings, are always limited to forward moves.)</p>
+			 9. Kings may combine jumps in several directions -- forward and backward -- on the same turn. Single pieces may shift direction diagonally during a multiple capture turn, but must always jump forward (toward the opponent).</p>
+			 10. A player wins the game when the opponent cannot make a move. In most cases, this is because all of the opponent's pieces have been captured, but it could also be because all of his pieces are blocked in.</p>
+			<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>
+			</ol></article>
+			
+			
 	  </div>
 	</div>
 
 
 	<div  id="parent" style="margin-left: 100px;">
         <div id="board"> </div>
-
+		
 		<div id="content1" style="display: inline-block;">
 		<form id="options" class="form-style-9" style="position: absolute; right: 60px;">
+			<h3>Game-ID:<span id="game_info"></span></h3>
 			<h1> Menu </h1>
 			<p>
-			<button class="button button5 btn-block" id="pause" onClick="pauseTimer(); return false">Pause</button>
+			<center>
+			<button class="button button3 btn-block" id="send" onClick="" disabled>Send Move</button>
                 <!--should generate form on the right side of the page.-->
-			<button class="button button3 btn-block" id="undo" onClick="undoMove(0,0)" disabled>Undo</button></p>
-            <button class="button button5 btn-block" id="reqDraw" onClick="requestDraw(); return false">Request Draw</button></p>
-			<p><button class="button button5 btn-block" onClick="forfeitGame()">Forfeit</button>
-			<button class="button button5 btn-block" onClick="helpMenu(); return false">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
-			</p>
+			<button class="button button3 btn-block" id="undo" onClick="undoMove(); return false" disabled>Undo</button></p>
+            <button class="button button5 btn-block" id="reqDraw" onClick="requestDraw(); return false">Draw</button>
+			<button class="button button5 btn-block" onClick="forfeitGame()">Forfeit</button></p>
+			<button class="button button5 btn-block" id="pause" onClick="pauseTimer(); return false">Pause</button>
+			<button class="button button5 btn-block" onClick="pauseTimer(); return false">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
+			</p></center>
 
-			<p><b>Turn:</b> Player 1 </p>
+			<p><b>Turn:</b>Player: <span id="turn">  </span></p>
 
 			<p><b>Number of pieces collected: </b> 0</p>
 			<b  style="font-size: 50px;">Timer: <b style="color: green"><div id=timer></div></b>
-		  <button class="button button5 btn-block" id="save" onClick="saveGame(); return false">Save</button>
-    </form>
+		  
+		  </form>
 		</div>
 	</div>
 

@@ -24,7 +24,7 @@ div.square {
 
 /* style for an even square (one which can have a piece) */
 div.square.even {
-    background-color: #333333;
+    background-color: #828892;
 }
 
 /* style for an odd square (one which can't have a piece) */
