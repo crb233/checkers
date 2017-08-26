@@ -69,7 +69,7 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
-	document.getElementById("info").innerHTML = localStorage.getItem("game_id");
+	document.getElementById("game_info").innerHTML = localStorage.getItem("game_id");
 	
     var board_elem = document.getElementById("board");
 
@@ -207,7 +207,7 @@ function sendMove(){
 			
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
 }
@@ -246,7 +246,7 @@ loop=setInterval(function(){
 			
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+           // document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
 },6000);
@@ -303,7 +303,7 @@ function timeExpired() {
 
             },
             error: function(xhr, ajaxOptions, thrownError) {
-                document.getElementById("content").innerHTML = "Error Fetching " + URL;
+                //document.getElementById("content").innerHTML = "Error Fetching " + URL;
             }
         });
 
