@@ -6,6 +6,7 @@ var squares = [];
 var id;
 var value = "00:00";
 const player_id = localStorage.getItem("player_id");
+const game_id = localStorage.getItem("game_id");
 var gameBoard = localStorage.getItem("gameBoard");
 
 //store previous move coordinates
@@ -69,7 +70,7 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
-	document.getElementById("game_info").innerHTML = localStorage.getItem("game_id");
+	document.getElementById("game_info").innerHTML = game_id;
 	
     var board_elem = document.getElementById("board");
 
@@ -230,6 +231,8 @@ loop=setInterval(function(){
 			
 			//If there are no messages do nothing
 			//else
+				
+			/*
 				if (msg.length != 0)
 				{
 					//Depends ... Switch statement?
@@ -243,6 +246,7 @@ loop=setInterval(function(){
 						//Game goes on and and send a reject..
 					}
 				}
+				*/
 			
         },
         error: function(xhr, ajaxOptions, thrownError) {

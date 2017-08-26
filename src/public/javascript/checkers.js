@@ -109,6 +109,9 @@ Returns true if the move is valid for the given game, otherwise false.
 @param {} move - the move to validate
 */
 function validateMove(game, move) {
+	
+	//board is inside boardManager already as a global variable
+	
 	var board = game.board;
     var initialPosition = move[0];
     var targetPosition = move[1];
