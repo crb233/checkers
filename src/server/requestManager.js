@@ -277,8 +277,8 @@ function getUpdates(player_id, callback) {
                 }
                 
                 callback(false, {
-                    "messages": messages,
-                    "game": game
+                    "game": game,
+                    "messages": messages
                 });
             });
         });
