@@ -57,8 +57,8 @@ function hostGame() {
             //var len = 0;
 			//objplayer = msg.player.player_name;
 			player_id = msg.player.player_id;
-			//localStorage.setItem("player_id", msg.player.player_id );
-			//localStorage.setItem("gameBoard", msg.game.board );
+			localStorage.setItem("player_id", msg.player.player_id );
+			localStorage.setItem("gameBoard", msg.game.board );
 			document.location.href = "/board.html";
 			//window.open("/board.html");
 			//alert("successfully created the game, game_id: " + msg.game.game_id);
