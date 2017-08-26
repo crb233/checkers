@@ -207,7 +207,7 @@ function sendMove(){
 			
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
 }
@@ -246,7 +246,7 @@ loop=setInterval(function(){
 			
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+           // document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
 },6000);
@@ -303,7 +303,7 @@ function timeExpired() {
 
             },
             error: function(xhr, ajaxOptions, thrownError) {
-                document.getElementById("content").innerHTML = "Error Fetching " + URL;
+                //document.getElementById("content").innerHTML = "Error Fetching " + URL;
             }
         });
 
