@@ -110,19 +110,25 @@ Returns true if the move is valid for the given game, otherwise false.
 */
 function validateMove(game, move) {
 	//split move into coordinate1 & coordinate2
-    if(is_Empty() && is_Diagonal()){
-		if(game.board[coordinate1][coordinate2].king){
-			//further testing
-			if(validJump(game, move)){
-				return true;
-			}else if(findDistance(coordinate1, coordinate2) == 1){
-				return true;
+
+    var board = game.board;
+    var initialPosition = move[0];
+    var targetPosition = move[1];
+
+
+    if(this.is_Empty(targetPosition) && is_Diagonal(initialPosition, targetPosition)) {
+
+      if(board[initialPosition[0], initialPosition[1]].king == true){
+			  if(validJump(game, move)){
+				  return true;
+			  } else if(findDistance(coordinate1, coordinate2) == 1){
+				  return true;
 			}else{
 				return false;
 			}
 
-		}else if(moveForward(game, move)){
-			//further testing
+		  }else if(moveForward(game, move)){
+			  //further testing
 			if(validJump(game, move)){
 				return true;
 			}else if(findDistance(coordinate1, coordinate2) == 1){
@@ -139,24 +145,51 @@ function validateMove(game, move) {
 }
 
 //is move the move object or just the move in the makemove request
-function is_Empty(board, move){
-	if(move[coordinate1][coordinate2]== null){
+function is_Empty(board, position){
+
+  var x0 = position[0];
+  var y0 = position[1];
+
+	if(board[x0][y0] == null){
 		return true;
-	}else{
+	} else {
 		return false;
 	}
 }
 
-function is_Diagonal(coordinate1, coordinate2){
-	// //is the space on a diagonal
-	// //explore further into, is it an attainable diagonal
-	// game.board[row][column]
+function is_Diagonal(position1, position2){
+	var x0 = position1[0];
+  var y0 = position1[1];
+
+  var x1 = position2[0];
+  var y1 = position2[1];
+
+  if ((x1 - x0) == (y1 - y0)) {
+   return true;
+  } else {
+    return false
+  }
 }
 
 //if moveForward is true, then you can validate a piece, if not you have to check if its a king but if its not a king its invalid
 
 function moveForward(game, move){
-	// //checks if the move is moving forward as opposed to backwards
+
+  var position1 = move[0];
+  var position2 = move[1];
+
+  var x0 = position1[0];
+  var y0 = position1[1];
+  var x1 = position2[0];
+  var y1 = position2[1];
+
+  if(y1 > y0) {
+    return true;
+  } else {
+    return false;
+  }
+
+  // //checks if the move is moving forward as opposed to backwards
 	// //if the previous move is bigger than the current room, then it's going backwards.
 	// //if a previous room is smaller, it's going forward because from the first player's perspective that would be the half section at the bottom of the screen, the coordinates up above (or going forward) are smaller
 	// if(move[i-1] > move[i]){
@@ -212,7 +245,7 @@ Request a draw: Opponent will get a message and be prompted to accept or decline
 function requestDraw() {
 	var url = "/send-message"
 	var data;
-	
+
 	$.ajax({
         type: "POST",
         data: {
@@ -223,11 +256,11 @@ function requestDraw() {
         dataType: "json",
         success: function(msg) {
 			//TO DO
-			
+
 			//message should be the opponent's final decision: Accepted or declined
 			//based on message: continure or end game
 			//alert (msg);
-            
+
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -241,7 +274,7 @@ Forfeit the game by sending a message to the server with text for the opponent
 function forfeitGame() {
 	var url = "/send-message"
 	var data;
-	
+
 	$.ajax({
         type: "POST",
         data: {
@@ -251,9 +284,9 @@ function forfeitGame() {
         url: url,
         dataType: "json",
         success: function(msg) {
-			
+
 			//Game ends....
-			
+
 			//TO DO
 			//alert (msg);
         },

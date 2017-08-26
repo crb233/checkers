@@ -1,8 +1,8 @@
 var assert = require("assert");
 var checkers = require("../../../src/public/javascript/checkers");
 
-const emptyInitialMove =            [[0,0], [0,0]] // Empty initial
-const nonEmptyInitialMove =         [[0,1], [0,0]] // Non-empty initial
+const emptyInitialMove =            [[0,1], [0,0]] // Empty initial
+const nonEmptyInitialMove =         [[0,0], [0,0]] // Non-empty initial
 
 const verticalMove =                [[0,0], [1,0]] // Vertical
 const horizontalMove =              [[0,0], [0,1]] // Horizontal
@@ -26,13 +26,13 @@ function newBasicGame() {
 describe("checkers.js", function() {
 
   describe("testIsEmpty()", function() {
-
+ 
     var game = newBasicGame();
 
     it("should test if isEmpty function works properly", function() {
 
-      assert(checkers.is_Empty(game.board, emptyInitialMove) == true);
-      assert(checkers.is_Empty(game.board, nonEmptyInitialMove) == false);
+      assert(checkers.is_Empty(game.board, emptyInitialMove[0]) == true);
+      assert(checkers.is_Empty(game.board, nonEmptyInitialMove[0]) == false);
 
     });
 
@@ -44,9 +44,9 @@ describe("checkers.js", function() {
 
     it("should test that isDiagonalFunction works properly", function() {
 
-      assert(checkers.is_Diagonal(verticalMove[0], verticalMove[1]) == false);
-      assert(checkers.is_Diagonal(horizontalMove[0], horizontalMove[1]) == false);
-      assert(checkers.is_Diagonal(disproportionateMove[0], disproportionateMove[1]) == false);
+      assert.equal(checkers.is_Diagonal(verticalMove[0], verticalMove[1]), false, "vertical fail");
+      assert.equal(checkers.is_Diagonal(horizontalMove[0], horizontalMove[1]), false, "hoirzontal fail");
+      assert.equal(checkers.is_Diagonal(disproportionateMove[0], disproportionateMove[1]), false, "disproportionate fail");
 
       assert(checkers.is_Diagonal(diagonalForwardMove[0], diagonalForwardMove[1]) == true);
       assert(checkers.is_Diagonal(diagonalForward2UnitsMove[0], diagonalForward2UnitsMove[1]) == true);
