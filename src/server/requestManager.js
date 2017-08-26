@@ -232,14 +232,16 @@ function makeMove(player_id, move, callback) {
                 callback("The attempted move was invalid");
             }
             
-            makeMove(game, move);
+            checkers.makeMove(game, move);
             db.updateGame(game, function(err, res) {
                 if (err) {
                     callback(err);
                     return;
                 }
                 
-                callback(false, game);
+                callback(false, {
+                    "game": game
+                });
             });
         });
     });

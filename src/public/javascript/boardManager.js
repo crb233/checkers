@@ -1,17 +1,33 @@
 
+const player = JSON.parse(localStorage.getItem("player"));
+
+// the current game object
+var game = JSON.parse(localStorage.getItem("game"));
+
 // the matrix of html squares (each of which is a div)
 var squares = [];
 
+// currently selected piece
+var selected = null;
+
+// current move
+var move = [];
+
 //variables used for the timer
-var id;
+var timer;
 var value = "00:00";
-const player_id = localStorage.getItem("player_id");
-var gameBoard = localStorage.getItem("gameBoard");
 
-//store previous move coordinates
 
-var cur_c = 0;
-var cur_r = 0;
+
+
+// build the board HTML
+buildBoard();
+
+// create a new board and draw the pieces
+drawPieces(game.board);
+
+
+
 
 // Creates the piece initially found at the given position on the board
 function newDefaultPiece(r, c) {
@@ -98,8 +114,11 @@ function buildBoard() {
     }
 }
 
-function swapPieces(r0, c0, r1, c1) {
-	
+function swapPieces(p0, p1) {
+	var r0 = p0[0];
+    var c0 = p0[1];
+    var r1 = p1[0];
+    var c1 = p1[1];
 	
     var s0 = squares[r0][c0];
     var s1 = squares[r1][c1];
@@ -112,15 +131,11 @@ function swapPieces(r0, c0, r1, c1) {
 	//After making the move, enable the "Undo Move" and Send Move button
 	document.getElementById("undo").disabled = false;
 	document.getElementById("send").disabled = false;
+    
 	//change color
 	document.getElementById("undo").className = "button btn-block";
-	
 	//change color
 	document.getElementById("send").className = "button btn-block";
-	
-	//update variables
-	cur_r = r1;
-	cur_c = c1;
 }
 
 function drawPieces(board) {
@@ -144,72 +159,110 @@ function drawPieces(board) {
     }
 }
 
-var selected = null;
-var last_r = 0;
-var last_c = 0;
-
 function clickSquare(r, c) {
-    if ((r + c) % 2 == 0) {
-
-        if (selected === null) {
-            // we haven't selected a square yet
-            // select the one we clicked
-            last_r = r;
-            last_c = c;
-            selected = squares[r][c];
-            selected.classList.add("selected");
-        } else {
-            // we have selected a square
-            // swap the selected one with this one
-            swapPieces(last_r, last_c, r, c);
-            selected.classList.remove("selected");
-            selected = null;
+    
+    move.push([r, c]);
+    if (move.length === 1) {
+        var piece = game.board[r][c];
+        
+        if (piece === null) {
+            alert("Please select a piece");
+            move.pop();
+            return;
         }
+        
+        if (piece.player !== player.player_number) {
+            alert("This isn't your piece, dummy");
+            move.pop();
+            return;
+        }
+        
+        if (piece.player !== game.turn) {
+            alert("It's not your turn, dummy");
+            move.pop();
+            return;
+        }
+        
+        selected = squares[r][c];
+        selected.classList.add("selected");
+        
+    } else if (validateMove(game, move)) {
+        selected.classList.remove("selected");
+        selected = squares[r][c];
+        selected.classList.add("selected");
+        
+        var len = move.length;
+        swapPieces(move[len - 2], move[len - 1]);
+        // change board to reflect move
+        // make send-move and undo-move buttons clickable
+        
+    } else {
+        move.pop();
+        // tell the user move was invalid
     }
+    
+    
+    
+    // if ((r + c) % 2 == 0) {
+    //
+    //     if (selected === null) {
+    //         // we haven't selected a square yet
+    //         // select the one we clicked
+    //         last_r = r;
+    //         last_c = c;
+    //         selected = squares[r][c];
+    //         selected.classList.add("selected");
+    //     } else {
+    //         // we have selected a square
+    //         // swap the selected one with this one
+    //         swapPieces(last_r, last_c, r, c);
+    //         selected.classList.remove("selected");
+    //         selected = null;
+    //     }
+    // }
 }
-
-// build the board HTML
-buildBoard();
-
-// create a new board and draw the pieces
-drawPieces(newBoard());
 
 function undoMove (x,y) {
-	swapPieces(cur_r, cur_c,last_r,last_c);	
+    if (selected !== null) {
+        selected.classList.remove("selected");
+    }
+    selected = null;
+    move = [];
+    drawPieces(game.board);
 }
 
-function sendMove(){
+function sendMove() {
 	//If move is validated, send the new board object
 	
-	//move object??
 	$.ajax({
         type: "POST",
-        data: {
-            player_id: player_id,
-			move: [
-				[last_r, last_c],
-				[cur_r, cur_c],
-				[0,0]
-			
-			]
-        },
+        data: JSON.stringify({
+            "player_id": player.player_id,
+			"move": move
+        }),
         url: "/make-move",
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
-			//On success update the move board
-			if (msg.success) {
-				drawPieces(msg.game.board);
-			}
-			
-			else
-				alert("Move unsuccessful.");
-				swapPieces(cur_r,cur_c,last_r,last_c);
-			
+			// On success update the move board
+            if (selected !== null) {
+                selected.classList.remove("selected");
+            }
+            
+            selected = null;
+            move = [];
+            game = msg.game;
+            drawPieces(game.board);
         },
         error: function(xhr, ajaxOptions, thrownError) {
+            console.log(JSON.stringify(thrownError));
+            alert("Move unsuccessful.");
             //document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
+    
+    // reset move
+    move = [];
 }
 
 
@@ -217,17 +270,17 @@ function sendMove(){
 
 
 //See if there are any updates from the server (messages) every 6 seconds
-loop=setInterval(function(){
-	
- $.ajax({
+loop = setInterval(function(){
+	$.ajax({
         type: "POST",
-        data: {
-            player_id: player_id			
-        },
+        data: JSON.stringify({
+            player_id: player.player_id
+        }),
         url: "/get-updates",
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
-			
+
 			//If there are no messages do nothing
 			//else
 				if (msg.length != 0)
@@ -238,18 +291,18 @@ loop=setInterval(function(){
 					if (ans) {
 						//if the opponent accepted (forfeit or draw) game ends
 					}
-					
+
 					else {
 						//Game goes on and and send a reject..
 					}
 				}
-			
+
         },
         error: function(xhr, ajaxOptions, thrownError) {
            // document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
-},6000);
+}, 6000);
 
 
 
@@ -261,52 +314,51 @@ Start timer for the player when page first loads
 */
 
 function startTimer(m, s) {
-		document.getElementById("timer").innerHTML = m + ":" + s;
-		if (s == 0) {
-			if (m == 0) {
-				document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
-				//timeExpired();
-				return;
-			} else if (m != 0) {
-				m = m - 1;
-				s = 60;
-			}
+	document.getElementById("timer").innerHTML = m + ":" + s;
+	if (s == 0) {
+		if (m == 0) {
+			document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
+			//timeExpired();
+			return;
+		} else if (m != 0) {
+			m = m - 1;
+			s = 60;
 		}
-
-		s = s - 1;
-		id = setTimeout(function () {
-			startTimer(m, s)
-		}, 1000);
-
-
 	}
-	/**
+    
+	s = s - 1;
+	timer = setTimeout(function() {
+		startTimer(m, s)
+	}, 1000);
+}
+
+/**
 Send message to the server when time expires
 */
-
 function timeExpired() {
 	//send message to the server "Expired"? with player_id who lost
 	var url ="/send-message"
 	var data;
 
 	$.ajax({
-            type: "POST",
-            data: {
-                player_id: player_id,
-				message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
-            },
-            url: url,
-            dataType: "json",
-            success: function(msg) {
+        type: "POST",
+        data: JSON.stringify({
+            player_id: player.player_id,
+			message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
+        }),
+        url: url,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(msg) {
 
-				alert ("Your time expired. You lose! ");
+			alert ("Your time expired. You lose! ");
 
-            },
-            error: function(xhr, ajaxOptions, thrownError) {
-                //document.getElementById("content").innerHTML = "Error Fetching " + URL;
-            }
-        });
-
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+    
 }
 
 /**
@@ -314,66 +366,65 @@ Overlay screen after pausing the game
 @return: false - Prevent page from refreshing
 */
 
-		function openNav() {
-			//pauseTimer();
-			document.getElementById("myNav").style.width = "100%";
-			
-			return false;
-		}
+function openNav() {
+	//pauseTimer();
+	document.getElementById("myNav").style.width = "100%";
+	
+	return false;
+}
 
 
 /**
 Closing the overlay screen after pausing the game
 */
-		function closeNav() {
+function closeNav() {
 
-			document.getElementById("myNav").style.width = "0%";
-			//resumeTimer();
-		}
+	document.getElementById("myNav").style.width = "0%";
+	//resumeTimer();
+}
 
 /**
 Pause the timer and open the overlay screen
 */
-		function pauseTimer() {
-
-			value =  document.getElementById("timer").innerHTML;
-			clearTimeout(id);
-			openNav();
-		}
+function pauseTimer() {
+	value = document.getElementById("timer").innerHTML;
+	clearTimeout(timer);
+	openNav();
+}
 
 
 /**
 Resume the timer
 */
-		function resumeTimer() {
-			var t = value.split(":");
-			closeNav();
-			startTimer(parseInt(t[0], 10), parseInt(t[1], 10));
-		}
+function resumeTimer() {
+	var t = value.split(":");
+	closeNav();
+	startTimer(parseInt(t[0], 10), parseInt(t[1], 10));
+}
 
 
 /**
 Display Help Menu	with game rules. Might not be needed since we will show the menu regardless
 */
-		function helpMenu(){
-			pauseTimer();
-			var gameRules = "<article class='games-style'><ol>"
-			gameRules += "<li><b style='font-size: 30px;'>GAME RULES</b></p>"
-			gameRules += "1. Black moves first. Players then alternate moves.</p>"
-			gameRules += "2. Moves are allowed only on the dark squares, so pieces always move diagonally. Single pieces are always limited to forward moves (toward the opponent).</p>"
-			gameRules += "3. A piece making a non-capturing move (not involving a jump) may move only one square</p>."
-			gameRules += "4. A piece making a capturing move (a jump) leaps over one of the opponent's pieces, landing in a straight diagonal line on the other side. Only one piece may be captured in a single jump; however, multiple jumps are allowed during a single turn.</p>"
-			gameRules += "5. When a piece is captured, it is removed from the board.</p>"
-			gameRules += "6. If a player is able to make a capture, there is no option -- the jump must be made. If more than one capture is available, the player is free to choose whichever he or she prefers.</p>"
-			gameRules += "7. When a piece reaches the furthest row from the player who controls that piece, it is crowned and becomes a king. One of the pieces which had been captured is placed on top of the king so that it is twice as high as a single piece.</p>"
-			gameRules += "8. Kings are limited to moving diagonally, but may move both forward and backward. (Remember that single pieces, i.e. non-kings, are always limited to forward moves.)</p>"
-			gameRules += "9. Kings may combine jumps in several directions -- forward and backward -- on the same turn. Single pieces may shift direction diagonally during a multiple capture turn, but must always jump forward (toward the opponent).</p>"
-			gameRules += "10. A player wins the game when the opponent cannot make a move. In most cases, this is because all of the opponent's pieces have been captured, but it could also be because all of his pieces are blocked in.</p>"
-			gameRules += '<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>'
-			gameRules += "</ol></article>"
-			document.getElementById("overlay-cnt").innerHTML =  gameRules;
+function helpMenu(){
+	pauseTimer();
+	var gameRules = "<article class='games-style'><ol>"
+	gameRules += "<li><b style='font-size: 30px;'>GAME RULES</b></p>"
+	gameRules += "1. Black moves first. Players then alternate moves.</p>"
+	gameRules += "2. Moves are allowed only on the dark squares, so pieces always move diagonally. Single pieces are always limited to forward moves (toward the opponent).</p>"
+	gameRules += "3. A piece making a non-capturing move (not involving a jump) may move only one square</p>."
+	gameRules += "4. A piece making a capturing move (a jump) leaps over one of the opponent's pieces, landing in a straight diagonal line on the other side. Only one piece may be captured in a single jump; however, multiple jumps are allowed during a single turn.</p>"
+	gameRules += "5. When a piece is captured, it is removed from the board.</p>"
+	gameRules += "6. If a player is able to make a capture, there is no option -- the jump must be made. If more than one capture is available, the player is free to choose whichever he or she prefers.</p>"
+	gameRules += "7. When a piece reaches the furthest row from the player who controls that piece, it is crowned and becomes a king. One of the pieces which had been captured is placed on top of the king so that it is twice as high as a single piece.</p>"
+	gameRules += "8. Kings are limited to moving diagonally, but may move both forward and backward. (Remember that single pieces, i.e. non-kings, are always limited to forward moves.)</p>"
+	gameRules += "9. Kings may combine jumps in several directions -- forward and backward -- on the same turn. Single pieces may shift direction diagonally during a multiple capture turn, but must always jump forward (toward the opponent).</p>"
+	gameRules += "10. A player wins the game when the opponent cannot make a move. In most cases, this is because all of the opponent's pieces have been captured, but it could also be because all of his pieces are blocked in.</p>"
+	gameRules += '<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>'
+	gameRules += "</ol></article>"
+	document.getElementById("overlay-cnt").innerHTML =  gameRules;
 
-		}
+}
 
 
 

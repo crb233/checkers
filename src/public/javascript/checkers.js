@@ -104,133 +104,153 @@ function addMovePosition(move, row, col) {
 }
 
 /**
+TODO
+*/
+function getPiece(board, pos) {
+    return board[pos[0]][pos[1]];
+}
+
+/**
+Checks if the selected space is empty
+@param {} board - the checkers board object
+@param {} position - the selected position
+*/
+function isEmpty(board, position){
+    return getPiece(board, position) === null;
+}
+
+/**
 Returns true if the move is valid for the given game, otherwise false.
 @param {} game - the checkers game object
 @param {} move - the move to validate
 */
 function validateMove(game, move) {
 	var board = game.board;
-    var initialPosition = move[0];
-    var targetPosition = move[1];
-
-
-    if(this.is_Empty(targetPosition) && is_Diagonal(initialPosition, targetPosition)) {
-
-      if(board[initialPosition[0], initialPosition[1]].king == true){
-			  if(validJump(game, move)){
-				  return true;
-			  } else if(findDistance(initialPosition, targetPosition) == 1){
-				  return true;
-			}else{
-				return false;
-			}
-
-		  }else if(moveForward(game, move)){
-			  //further testing
-			if(validJump(game, move)){
-				return true;
-			}else if(findDistance(coordinate1, coordinate2) == 1){
-				return true;
-			}else{
-				return false;
-			}
-		}else{
-			return false;
-		}
-	}else{
-		return false;
-	}
+    
+    var curr = move[0];
+    var next = move[1];
+    
+    if (isEmpty(board, curr)) {
+        return false;
+    }
+    
+    if (getPiece(board, curr).player !== game.turn) {
+        return false;
+    }
+    
+    var dist = findDistance(curr, next);
+    if (dist === 2) {
+        // move is a jump
+        for (var i = 0; i < move.length - 1; i++) {
+            if (!validJump(game, move[i], move[i + 1])) {
+                return false;
+            }
+        }
+        return true;
+        
+    } else if (dist === 1) {
+        // move is a step
+        return validStep(game, move[0], move[1]) && move.length == 2;
+        
+    } else {
+        return false;
+    }
 }
 
 /**
-Checks if the selected space is empty
-@param {} board - the checkers board object 
-@param {} position - the selected position
+Checks if the second position is diagonal relative to the first position
+@param {} pos1 - the first given coordinate
+@param {} pos2 - the second given coordinate
 */
-function is_Empty(board, position){
+function isDiagonal(pos1, pos2){
+	var r0 = pos1[0];
+    var c0 = pos1[1];
+    
+    var r1 = pos2[0];
+    var c1 = pos2[1];
+    
+    return Math.abs(r1 - r0) === Math.abs(c1 - c0);
+}
 
-  var x0 = position[0];
-  var y0 = position[1];
+/**
+TODO
+*/
+function correctDirection(game, pos1, pos2) {
+    var piece = getPiece(game.board, pos1);
+    
+    if (piece.king) {
+        return true;
+        
+    } else if (piece.player === 0) {
+        return pos2[0] > pos1[0];
+        
+    } else {
+        return pos2[0] < pos1[0];
+    }
+}
 
-	if(board[x0][y0] == null){
-		return true;
+/**
+Finds the distance between two given positions
+@param {} pos1 - the first given coordinate
+@param {} pos2 - the second given coordinate
+*/
+function findDistance(pos1, pos2){
+    var r0 = pos1[1];
+	var r1 = pos2[1];
+	
+	return Math.abs(r0 - r1);
+}
+
+/**
+Checks to validate a "jump" move by making sure there's an opponent's piece between the two positions
+@param {} game - the checkers game object
+@param {} pos1 - the initial position of the jump
+@param {} pos2 - the target position of the jump
+*/
+function validStep(game, pos1, pos2) {
+	if (findDistance(pos1, pos2) === 1) {
+        if (!isDiagonal(pos1, pos2)) {
+            return false;
+        }
+        
+		if (!isEmpty(game.board, pos2)) {
+            return false;
+        }
+        
+        return correctDirection(game, pos1, pos2);
 	} else {
 		return false;
 	}
 }
 
 /**
-Checks if the second position is diagonal relative to the first position
-@param {} position1 - the first given coordinate
-@param {} position2 - the second given coordinate
-*/
-function is_Diagonal(position1, position2){
-	var x0 = position1[0];
-  var y0 = position1[1];
-
-  var x1 = position2[0];
-  var y1 = position2[1];
-
-  if ((x1 - x0) == (y1 - y0)) {
-   return true;
-  } else {
-    return false
-  }
-}
-
-/**
-Checks if the piece is moving forward relative to them
-@param {} game - the checkers game object
-@param {} move - the move to be made
-*/
-function moveForward(game, move){
-
-  var position1 = move[0];
-  var position2 = move[1];
-
-  var x0 = position1[0];
-  var y0 = position1[1];
-  var x1 = position2[0];
-  var y1 = position2[1];
-
-  if(y1 > y0) {
-    return true;
-  } else {
-    return false;
-  }
-  
-}
-
-/**
-Finds the distance between two given positions
-@param {} position1 - the first given coordinate
-@param {} position2 - the second given coordinate
-*/
-function findDistance(postition1, position2){
-    var y0 = position1[1];
-	var y1 = position2[1];
-	
-	return Math.abs(y0 - y1);
-	
-}
-
-/**
 Checks to validate a "jump" move by making sure there's an opponent's piece between the two positions
 @param {} game - the checkers game object
-@param {} position1 - the initial position of the jump
-@param {} position2 - the target position of the jump
+@param {} pos1 - the initial position of the jump
+@param {} pos2 - the target position of the jump
 */
-function validJump(game, position1, position2){
-	
-	if(findDistance(position1, position2) == 2){
-		if(game.board[position2[0] - 1][position2[1] - 1].player != game.player){
-			return true;
-		}else{
-			return false;
-		}
-	}else{
-		return false;
-	}
+function validJump(game, pos1, pos2){
+    if (findDistance(pos1, pos2) === 2) {
+        var mid_row = (pos1[0] + pos2[0]) / 2;
+        var mid_col = (pos1[1] + pos2[1]) / 2;
+        var mid = game.board[mid_row][mid_col];
+        
+        if (mid === null || mid.player === game.turn) {
+            return false;
+        }
+        
+        if (!isDiagonal(pos1, pos2)) {
+            return false;
+        }
+        
+        if (!isEmpty(game.board, pos2)) {
+            return false;
+        }
+        
+        return correctDirection(game, pos1, pos2);
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -325,11 +345,6 @@ module.exports = {
     "newMove": newMove,
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
-    "is_Empty":is_Empty,
-    "is_Diagonal":is_Diagonal,
-    "moveForward":moveForward,
-    "findDistance":findDistance,
-    "validJump":validJump,
     "makeMove": makeMove,
     "undoMove": undoMove,
 	"forfeitGame": forfeitGame,

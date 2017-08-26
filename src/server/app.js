@@ -131,8 +131,8 @@ app.post("/join-game", function(req, res) {
 */
 app.post("/make-move", function(req, res) {
     requests.makeMove(
-        res.body.player_id,
-        res.body.move,
+        req.body.player_id,
+        req.body.move,
         createErrorCheckCallback(res)
     );
 });
@@ -146,7 +146,7 @@ app.post("/make-move", function(req, res) {
 */
 app.post("/get-updates", function(req, res) {
     requests.getUpdates(
-        res.body.player_id,
+        req.body.player_id,
         createErrorCheckCallback(res)
     );
 });
@@ -160,8 +160,8 @@ app.post("/get-updates", function(req, res) {
 */
 app.post("/send-message", function(req, res) {
     requests.sendMesssage(
-        res.body.player_id,
-        res.body.message,
+        req.body.player_id,
+        req.body.message,
         createErrorCheckCallback(res)
     );
 });

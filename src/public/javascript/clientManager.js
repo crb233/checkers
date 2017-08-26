@@ -26,19 +26,11 @@ function hostGame() {
 	
 	// value is 1 for private, and 0 for a public game
 	var mode = document.querySelector('input[name="mode"]:checked').value;
-	var is_public;
-
 	
 	// is it public?
-	if (mode === "0") {
-		is_public = true;
-	} else {
-		is_public = false;
-	}
+	var is_public = mode === "0";
 	
 	//alert("Username: " +  username);
-	
-	console.log("test");
 	
 	var url = "/new-game"
 	
@@ -52,20 +44,14 @@ function hostGame() {
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
-			//var obj =  JSON.parse(msg);
-            console.log("success: the game was created");
-            //var len = 0;
-			//objplayer = msg.player.player_name;
-			player_id = msg.player.player_id;
-			localStorage.setItem("player_id", msg.player.player_id );
-			localStorage.setItem("gameBoard", msg.game.board );
+            // put player and game into local storage
+			localStorage.setItem("player", JSON.stringify(msg.player));
+			localStorage.setItem("game", JSON.stringify(msg.game));
 			document.location.href = "/board.html";
-			//window.open("/board.html");
-			//alert("successfully created the game, game_id: " + msg.game.game_id);
         },
         error: function(xhr, ajaxOptions, thrownError) {
-			console.log("error");
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+			console.error("Error fetching " + url);
+			document.getElementById("content").innerHTML = "Error Fetching " + url;
         }
     });
 }
@@ -91,7 +77,6 @@ function joinGameForm(){
 	document.getElementById("mainMenu").style.display = "none";
 	document.getElementById("newGameForm").style.display = "none";
 	
-		
 	document.getElementById("joinGameForm").style.display = "block";
 	document.getElementById("gameList").style.display = "block";
 	
@@ -106,45 +91,40 @@ function joinGameForm(){
 according to their selection(Game and username)
 */
 function joinGameServer(){
-	var game;
-	
 	//Check if player selected a public game
 	if ( document.getElementById('gameID').value == '' ) {
-		
 		//game = document.getElementById('gameID').value
 		document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
 	}
-		
-	game = document.getElementById('gameID').value
+	
+	var game_id = document.getElementById('gameID').value
 	var username = document.getElementById('username').value
 
 	//for debugging purposes
 	//alert("Game selected has ID: " + game )
 
 	var url = "/join-game"
+	
 	$.ajax({
         type: "POST",
         data: JSON.stringify({
 			"player_name": username,
-			"game_id": game
+			"game_id": game_id
         }),
         url: url,
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
-            //store the player_id and gameboard in a local storage var
-			localStorage.setItem("player_id", msg.player.player_id);
-			localStorage.setItem("gameBoard", msg.game.board);
-			localStorage.setItem("game_id", msg.game.game_id);
+            // put player and game into local storage
+			localStorage.setItem("player", JSON.stringify(msg.player));
+			localStorage.setItem("game", JSON.stringify(msg.game));
 			document.location.href = "../board.html";
-			
-			//window.open("/board.html");
         },
         error: function(xhr, ajaxOptions, thrownError) {
+			console.error("Error fetching " + url);
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
-	
 }
 
 /**
@@ -285,7 +265,7 @@ function forfeitGame() {
 }
 
 //Fill Game ID by clicking on the game
-function myf(gui){ 
+function myf(gui){
 document.getElementById('gameID').value= gui;
 }
 
