@@ -69,7 +69,7 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
-	document.getElementById("info").innerHTML = localStorage.getItem("game_id");
+	document.getElementById("game_info").innerHTML = localStorage.getItem("game_id");
 	
     var board_elem = document.getElementById("board");
 
