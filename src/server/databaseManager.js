@@ -285,6 +285,13 @@ function getGame(game_id, callback) {
 }
 
 /**
+TODO
+*/
+function getOpponent(game_id, callback) {
+    colls.opponents.findOne({ "game_id": game_id }, {}, callback);
+}
+
+/**
 Updates a player object in the database
 @param {} player - the player object to be updated in the database
 @param {} callback - the function to be called when this operation has completed

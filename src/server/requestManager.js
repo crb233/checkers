@@ -27,6 +27,12 @@ db.connect(function(err) {
     }
 });
 
+
+
+// INTERNAL METHODS
+
+
+
 /**
 TODO
 */
@@ -41,20 +47,47 @@ function newPlayer(player_name, player_number, game_id) {
     };
 }
 
-/**
-TODO
-@param {} callback - the function to be called when this operation has completed
-*/
-function getGames(callback) {
-    db.getGamesList(callback);
-}
-
 function isBoolean(obj) {
     return typeof obj === "boolean";
 }
 
 function isString(obj) {
     return typeof obj === "string" || obj instanceof String;
+}
+
+function isMove(obj) {
+    if (!Array.isArray(obj)) {
+        return false;
+    }
+    
+    for (var i = 0; i < obj.length; i++) {
+        if (!Array.isArray(obj[i])) {
+            return false;
+        }
+        if (obj[i].length !== 2) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function isMessage(obj) {
+    return typeof obj === "object" && isString(obj.type) && isString(obj.text);
+}
+
+
+
+// EXTERNAL METHODS
+
+
+
+/**
+TODO
+@param {} callback - the function to be called when this operation has completed
+*/
+function getGames(callback) {
+    db.getGamesList(callback);
 }
 
 /**
@@ -168,6 +201,16 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function makeMove(player_id, move, callback) {
+    if (!isString(player_id)) {
+        callback("Parameter player_id must be a string");
+        return;
+    }
+    
+    if (!isMove(move)) {
+        callback("Parameter move is in an unexpected format");
+        return;
+    }
+    
     db.getPlayer(player_id, function(err, player) {
         if (err) {
             callback(err);
@@ -186,7 +229,7 @@ function makeMove(player_id, move, callback) {
             }
             
             if (!checkers.validateMove(game, move)) {
-                callback("Invalid move attempt");
+                callback("The attempted move was invalid");
             }
             
             makeMove(game, move);
@@ -207,7 +250,39 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function getUpdates(player_id, callback) {
-    // TODO
+    if (!isString(player_id)) {
+        callback("Parameter player_id must be a string");
+        return;
+    }
+    
+    db.getPlayer(player_id, function(err, player) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        
+        var messages = player.new_messages;
+        player.new_messages = [];
+        
+        db.updatePlayer(player, function(err, res) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            
+            db.getGame(player.game_id, function(err, game) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                callback(false, {
+                    "messages": messages,
+                    "game": game
+                });
+            });
+        });
+    });
 }
 
 /**
@@ -215,7 +290,45 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function sendMesssage(player_id, message, callback) {
-    // TODO
+    if (!isString(player_id)) {
+        callback("Parameter player_id must be a string");
+        return;
+    }
+    
+    if (!isMessage(message)) {
+        callback("Parameter message is in an unexpected format");
+        return;
+    }
+    
+    db.getPlayer(player_id, function(err, player) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        
+        db.getOpponent(player.game_id, function(err, opps) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            
+            if (opps.player_ids[player.player_number] !== player_id) {
+                callback("Player IDs do not match in database");
+                return;
+            }
+            
+            var opp_id = opps.player_ids[1 - player.player_number];
+            db.getPlayer(opp_id, function(err, opponent) {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                opponent.new_messages.push(message);
+                db.updatePlayer(opponent, callback);
+            });
+        });
+    });
 }
 
 module.exports = {

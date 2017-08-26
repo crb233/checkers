@@ -71,8 +71,6 @@ function createErrorCheckCallback(res) {
             });
             
         } else {
-            console.log("Callback result:");
-            console.log(JSON.stringify(result));
             res.status(200);
             res.send(result);
         }
