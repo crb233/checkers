@@ -30,6 +30,7 @@ div.square.even {
 /* style for an odd square (one which can't have a piece) */
 div.square.odd {
     background-color: #ffffff;
+	pointer-events:none;
 }
 
 /* style for the mouse hovering over a square */

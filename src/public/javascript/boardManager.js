@@ -30,7 +30,7 @@ buildBoard();
 drawPieces(currentBoard);
 
 
-
+//if player just joined,
 
 // Returns the parity of the given position as a string
 function getParityString(r, c) {
@@ -52,7 +52,7 @@ function getPieceImage(piece) {
 // Builds the HTML for the board object
 function buildBoard() {
 	document.getElementById("game_info").innerHTML = game.game_id;
-	
+
     var board_elem = document.getElementById("board");
 
     // create a row
@@ -78,6 +78,11 @@ function buildBoard() {
         // add squares to list
         squares.push(row);
     }
+
+	//Pause timer and open screen overlay if 2nd player has not joined yet.
+	if (game.player_names.length !== 2) {
+		pauseTimer();
+	}
 }
 
 function swapPieces(p0, p1) {
@@ -85,7 +90,7 @@ function swapPieces(p0, p1) {
     var c0 = p0[1];
     var r1 = p1[0];
     var c1 = p1[1];
-	
+
     var s0 = squares[r0][c0];
     var s1 = squares[r1][c1];
 
@@ -93,11 +98,11 @@ function swapPieces(p0, p1) {
     s0.innerHTML = s1.innerHTML;
     s1.innerHTML = temp;
 
-	
+
 	//After making the move, enable the "Undo Move" and Send Move button
 	document.getElementById("undo").disabled = false;
 	document.getElementById("send").disabled = false;
-    
+
 	//change color
 	document.getElementById("undo").className = "button btn-block";
 	//change color
@@ -123,42 +128,53 @@ function drawPieces(board) {
             }
         }
     }
+
+    if (player.player_number === 0) {
+      var boardGUI = document.getElementById('board');
+      var deg = 180;
+      boardGUI.style.webkitTransform = 'rotate('+deg+'deg)';
+      boardGUI.style.mozTransform    = 'rotate('+deg+'deg)';
+      boardGUI.style.msTransform     = 'rotate('+deg+'deg)';
+      boardGUI.style.oTransform      = 'rotate('+deg+'deg)';
+      boardGUI.style.transform       = 'rotate('+deg+'deg)';
+
+    }
 }
 
 function clickSquare(r, c) {
-    
+
     move.push([r, c]);
     if (move.length === 1) {
         var piece = game.board[r][c];
-        
+
         if (piece === null) {
             alert("Please select a piece");
             move.pop();
-            
+
         } else if (piece.player !== player.player_number) {
             alert("This isn't your piece, dummy");
             move.pop();
-            
+
         } else if (piece.player !== game.turn) {
             alert("It's not your turn, dummy");
             move.pop();
-            
+
         } else {
             selected = squares[r][c];
             selected.classList.add("selected");
         }
-        
+
     } else if (validateMove(game, move)) {
         selected.classList.remove("selected");
         selected = squares[r][c];
         selected.classList.add("selected");
-        
+
         var tempGame = copyGame(game);
         makeMove(tempGame, move);
         drawPieces(tempGame.board);
-        
+
         // make send-move and undo-move buttons clickable
-        
+
     } else {
         move.pop();
         // tell the user move was invalid
@@ -171,7 +187,7 @@ function undoMove() {
 
 function sendMove() {
 	//If move is validated, send the new board object
-	
+
 	$.ajax({
         type: "POST",
         data: JSON.stringify({
@@ -192,7 +208,7 @@ function sendMove() {
             //document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
-    
+
     // reset move
     move = [];
 }
@@ -201,35 +217,159 @@ function resetBoard() {
     if (selected !== null) {
         selected.classList.remove("selected");
     }
-    
+
     selected = null;
     move = [];
     drawPieces(game.board);
 }
 
 
-
-
-
 /**
-TODO
+Message received from the server/opponent
 */
 function receiveMessage(msg) {
-    // TODO
+
     switch (msg.type) {
         case "join":
+            alert(msg.text);
+            resumeTimer();
             break;
         case "forfeit":
+            alert("Your opponent forfeited the game. You win!");
+            document.location.href = "/index.html";
             break;
         case "request_draw":
+            var r = confirm(msg.text+". Click OK to accept or CANCEL to keep playing.");
+            if (r == true) {
+                txt = "Cool";
+            } else {
+                txt = "You win. Thanks for playing!";
+                accept_draw();
+            }
             break;
         case "accept_draw":
+            alert(msg.text);
+            document.location.href = "/index.html";
             break;
         case "reject_draw":
+          reject_draw();
             break;
+        case "pause":
+          pauseTimer();
+        case "unpause":
+          resumeTimer();
         default:
             console.error("Unknown message type");
     }
+}
+
+//Send message to the opponent when joining their game.
+
+function joinGame() {
+	var url = "/send-message";
+		var data;
+
+	$.ajax({
+				type: "POST",
+				data: {
+						player_id: player.player_id,
+			message: {"type":"join" , "text": player.player_name + " just joined your game!"}
+				},
+				url: url,
+				dataType: "json",
+				success: function(msg) {
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+						document.getElementById("content").innerHTML = "Error Fetching " + URL;
+				}
+		});
+
+}
+
+function accept_draw(){
+  var url ="/send-message";
+
+  $.ajax({
+        type: "POST",
+        data: JSON.stringify({
+            player_id: player.player_id,
+			      message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
+        }),
+        url: url,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(msg) {
+          document.location.href = "/index.html";
+
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+
+}
+
+function reject_draw() {
+  var url ="/send-message";
+  $.ajax({
+        type: "POST",
+        data: JSON.stringify({
+            player_id: player.player_id,
+			message: {"type":"accept_draw" , "text":"Draw rejected: keep playing."}
+        }),
+        url: url,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(msg) {
+          //do nothing?
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
+function pauseGame() {
+  var url ="/send-message";
+
+  $.ajax({
+        type: "POST",
+        data: JSON.stringify({
+            player_id: player.player_id,
+      message: {"type":"pause" , "text":"Your opponent paused the game."}
+        }),
+        url: url,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(msg) {
+          //do nothing?
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
+}
+
+//Resume Game
+function resumeGame() {
+  var url ="/send-message";
+
+  $.ajax({
+        type: "POST",
+        data: JSON.stringify({
+            player_id: player.player_id,
+      message: {"type":"resume" , "text":""}
+        }),
+        url: url,
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function(msg) {
+          //do nothing?
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        }
+    });
 }
 
 //See if there are any updates from the server (messages) every 6 seconds
@@ -278,7 +418,7 @@ function startTimer(m, s) {
 			s = 60;
 		}
 	}
-    
+
 	s = s - 1;
 	timer = setTimeout(function() {
 		startTimer(m, s)
@@ -311,7 +451,7 @@ function timeExpired() {
             //document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
-    
+
 }
 
 /**
@@ -322,7 +462,7 @@ Overlay screen after pausing the game
 function openNav() {
 	//pauseTimer();
 	document.getElementById("myNav").style.width = "100%";
-	
+
 	return false;
 }
 
@@ -378,10 +518,3 @@ function helpMenu(){
 	document.getElementById("overlay-cnt").innerHTML =  gameRules;
 
 }
-
-
-
-
-
-
-

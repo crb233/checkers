@@ -7,13 +7,14 @@ var gameBoard = [];
 */
 function hostGameForm() {
     //var url = "/gameStartReq";
-	
+
 	document.getElementById("mainMenu").style.display = "none";
 	document.getElementById("joinGameForm").style.display = "none";
 	document.getElementById("gameList").style.display = "none";
 	document.getElementById("newGameForm").style.display = "block";
-	
+
 }
+
 
 /**
 @function
@@ -23,17 +24,17 @@ new game to the database
 */
 function hostGame() {
 	var username = document.getElementById("username").value;
-	
+
 	// value is 1 for private, and 0 for a public game
 	var mode = document.querySelector('input[name="mode"]:checked').value;
-	
+
 	// is it public?
 	var is_public = mode === "0";
-	
+
 	//alert("Username: " +  username);
-	
+
 	var url = "/new-game"
-	
+
 	$.ajax({
         type: "POST",
         data: JSON.stringify({
@@ -55,8 +56,8 @@ function hostGame() {
         }
     });
 }
-	
-	
+
+
 /**
 @function
 @name hidegames
@@ -73,13 +74,13 @@ function hidegames() {
 and calls showgames() to display the list of games available to join
 */
 function joinGameForm(){
-	
+
 	document.getElementById("mainMenu").style.display = "none";
 	document.getElementById("newGameForm").style.display = "none";
-	
+
 	document.getElementById("joinGameForm").style.display = "block";
 	document.getElementById("gameList").style.display = "block";
-	
+
 	//showGames is called in order to display the list of public games available
 	getGames();
 }
@@ -96,7 +97,7 @@ function joinGameServer(){
 		//game = document.getElementById('gameID').value
 		document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
 	}
-	
+
 	var game_id = document.getElementById('gameID').value
 	var username = document.getElementById('username').value
 
@@ -104,7 +105,7 @@ function joinGameServer(){
 	//alert("Game selected has ID: " + game )
 
 	var url = "/join-game"
-	
+
 	$.ajax({
         type: "POST",
         data: JSON.stringify({
@@ -118,7 +119,8 @@ function joinGameServer(){
             // put player and game into local storage
 			localStorage.setItem("player", JSON.stringify(msg.player));
 			localStorage.setItem("game", JSON.stringify(msg.game));
-			document.location.href = "../board.html";
+			document.location.href = "/board.html";
+			//joinGame();
         },
         error: function(xhr, ajaxOptions, thrownError) {
 			console.error("Error fetching " + url);
@@ -126,6 +128,7 @@ function joinGameServer(){
         }
     });
 }
+
 
 /**
 @function
@@ -138,7 +141,7 @@ function getGames() {
 	var numGames = 0;
 	//empty content of games
 	document.getElementById("gameList").innerHTML = "";
-	
+
     $.ajax({
         type: "POST",
         url: url,
@@ -148,33 +151,33 @@ function getGames() {
             console.log(msg)
 			if  (msg.length == 0){
 				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
-				
+
 			}
-			
+
 			else {
 				for (var i = 0; i < msg.length; i++) {
 					var game = msg[i];
 					$('#gameList').append(newGames(game, i));
-					
+
 					// If property names are known beforehand, you can also just do e.g.
 					// alert(object.id + ',' + object.Title);
 				}
-				
+
 				//quick fix because the last game doesn't show up
 				$('#gameList').append('<li class="game" style="display:block"><article>Stuff</article></li>');
 			}
-			
+
 			//document.getElementById("games").style.display = "block";
-				
+
 			//Initialize board object and player_id
-			
+
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
-	
-	
+
+
 }
 
 /**
@@ -190,7 +193,7 @@ function newGames(myHtml, i) {
     var game = '<li class="game">';
     game += '<input type="radio" name="game" value="' + gui + '" onClick="myf(\''+gui+'\')"><article>';
     game += '<b>Game Level: </b><u>Intermediate</u>';
-	game += '<p><b>Game ID: </b>' + gui + '</p>';
+	  game += '<p><b>Game ID: </b>' + gui + '</p>';
     game += '<p><b>Host: </b>' + host + '</p>';
     game += '</article></input>';
     game += '</li>';
@@ -199,11 +202,11 @@ function newGames(myHtml, i) {
 
 //Go back to the main menu/page
 function backMain (){
-    document.getElementById("newGameForm").style.display = "none";
+  document.getElementById("newGameForm").style.display = "none";
 	document.getElementById("joinGameForm").style.display = "none";
 	document.getElementById("gameList").style.display = "none";
 	document.getElementById("mainMenu").style.display = "block";
-	
+
 }
 
 
@@ -213,22 +216,22 @@ Request a draw: Opponent will get a message and be prompted to accept or decline
 function requestDraw() {
 	var url = "/send-message"
 	var data;
-	
+
 	$.ajax({
         type: "POST",
         data: {
-            player_id: player_id,
+            player_id: player.opponent_id,
 			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
         },
         url: url,
         dataType: "json",
         success: function(msg) {
 			//TO DO
-			
+
 			//message should be the opponent's final decision: Accepted or declined
 			//based on message: continure or end game
 			//alert (msg);
-            
+
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -242,21 +245,18 @@ Forfeit the game by sending a message to the server with text for the opponent
 function forfeitGame() {
 	var url = "/send-message"
 	var data;
-	
+
 	$.ajax({
         type: "POST",
         data: {
-            player_id: player_id,
+            player_id: player.opponent_id,
 			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
         },
         url: url,
         dataType: "json",
         success: function(msg) {
-			
-			//Game ends....
-			
-			//TO DO
-			//alert (msg);
+
+			 alert ("Thanks for using our checkers app! K bye")
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -268,4 +268,3 @@ function forfeitGame() {
 function myf(gui){
 document.getElementById('gameID').value= gui;
 }
-
