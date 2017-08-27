@@ -187,8 +187,8 @@ function joinGame(player_name, game_id, callback) {
                     }
                     
                     var message = {
-                        "type": "join-game",
-                        "text": "Player " + player.player_name + " has joined your game!"
+                        "type": "join",
+                        "text": "Player " + player_name + " has joined your game!"
                     };
                     sendMesssage(player.player_id, message, function(err, res) {
                         if (err) {

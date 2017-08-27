@@ -333,7 +333,7 @@ function makeMove(game, move) {
             
             setPiece(game.board, pn, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
-            for (var i = 0; i < moves.length - 1; i++) {
+            for (var i = 0; i < move.length - 1; i++) {
                 var r = (move[i][0] + move[i + 1][0]) / 2;
                 var c = (move[i][1] + move[i + 1][1]) / 2;
                 setPiece(game.board, [r, c], null);
