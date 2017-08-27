@@ -180,7 +180,7 @@ function validateMove(game, move) {
         return false;
     }
     
-	var board = game.board;
+    var board = game.board;
     
     var curr = move[0];
     var next = move[1];
@@ -218,7 +218,7 @@ Checks if the second position is diagonal relative to the first position
 @param {} pos2 - the second given coordinate
 */
 function isDiagonal(pos1, pos2){
-	var r0 = pos1[0];
+    var r0 = pos1[0];
     var c0 = pos1[1];
     
     var r1 = pos2[0];
@@ -233,7 +233,10 @@ TODO
 function correctDirection(game, pos1, pos2) {
     var piece = getPiece(game.board, pos1);
     
-    if (piece.king) {
+    if (piece === null) {
+        return false;
+        
+    } else if (piece.king) {
         return true;
         
     } else if (piece.player === 0) {
@@ -251,9 +254,9 @@ Finds the distance between two given positions
 */
 function findDistance(pos1, pos2){
     var r0 = pos1[1];
-	var r1 = pos2[1];
-	
-	return Math.abs(r0 - r1);
+    var r1 = pos2[1];
+    
+    return Math.abs(r0 - r1);
 }
 
 /**
@@ -263,19 +266,19 @@ Checks to validate a "jump" move by making sure there's an opponent's piece betw
 @param {} pos2 - the target position of the jump
 */
 function validStep(game, pos1, pos2) {
-	if (findDistance(pos1, pos2) === 1) {
+    if (findDistance(pos1, pos2) === 1) {
         if (!isDiagonal(pos1, pos2)) {
             return false;
         }
         
-		if (!isEmpty(game.board, pos2)) {
+        if (!isEmpty(game.board, pos2)) {
             return false;
         }
         
         return correctDirection(game, pos1, pos2);
-	} else {
-		return false;
-	}
+    } else {
+        return false;
+    }
 }
 
 /**
@@ -315,7 +318,7 @@ Updates the game state to reflect the changes caused by a move
 */
 function makeMove(game, move) {
     if (validateMove(game, move)) {
-		if (findDistance(move[0], move[1]) === 1) {
+        if (findDistance(move[0], move[1]) === 1) {
             var p0 = move[0];
             var p1 = move[1];
             
@@ -338,7 +341,7 @@ function makeMove(game, move) {
         }
         
         game.turn = 1 - game.turn;
-	}
+    }
 }
 
 /**
@@ -348,30 +351,30 @@ Updates the game state to reverse the changes caused by a move
 */
 function undoMove(game, move) {
     // TODO
-	return false;
+    return false;
 }
 
 /**
 Request a draw: Opponent will get a message and be prompted to accept or decline the draw
 */
 function requestDraw() {
-	var url = "/send-message"
-	var data;
+    var url = "/send-message"
+    var data;
 
-	$.ajax({
+    $.ajax({
         type: "POST",
         data: {
             player_id: player_id,
-			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
+            message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
         },
         url: url,
         dataType: "json",
         success: function(msg) {
-			//TO DO
+            //TO DO
 
-			//message should be the opponent's final decision: Accepted or declined
-			//based on message: continure or end game
-			//alert (msg);
+            //message should be the opponent's final decision: Accepted or declined
+            //based on message: continure or end game
+            //alert (msg);
 
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -384,23 +387,23 @@ function requestDraw() {
 Forfeit the game by sending a message to the server with text for the opponent
 */
 function forfeitGame() {
-	var url = "/send-message"
-	var data;
+    var url = "/send-message"
+    var data;
 
-	$.ajax({
+    $.ajax({
         type: "POST",
         data: {
             player_id: player_id,
-			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
+            message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
         },
         url: url,
         dataType: "json",
         success: function(msg) {
 
-			//Game ends....
+            //Game ends....
 
-			//TO DO
-			//alert (msg);
+            //TO DO
+            //alert (msg);
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -422,8 +425,16 @@ module.exports = {
     "newMove": newMove,
     "addMovePosition": addMovePosition,
     "validateMove": validateMove,
+    "getPiece": getPiece,
+    "setPiece": setPiece,
+    "isEmpty": isEmpty,
+    "isDiagonal": isDiagonal,
+    "correctDirection": correctDirection,
+    "findDistance": findDistance,
+    "validJump": validJump,
+    "validStep": validStep,
     "makeMove": makeMove,
     "undoMove": undoMove,
-	"forfeitGame": forfeitGame,
-	"requestDraw": requestDraw,
+    "forfeitGame": forfeitGame,
+    "requestDraw": requestDraw,
 };
