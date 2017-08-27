@@ -63,7 +63,7 @@ function copyBoard(oldBoard) {
             var oldPiece = oldBoard[r][c];
             if (oldPiece === null) {
                 row.push(null);
-                
+
             } else {
                 row.push({
                     "player": oldPiece.player,
@@ -71,7 +71,7 @@ function copyBoard(oldBoard) {
                 });
             }
         }
-        
+
         board.push(row);
     }
 
@@ -179,20 +179,20 @@ function validateMove(game, move) {
     if (move.length <= 1) {
         return false;
     }
-    
+
     var board = game.board;
-    
+
     var curr = move[0];
     var next = move[1];
-    
+
     if (isEmpty(board, curr)) {
         return false;
     }
-    
+
     if (getPiece(board, curr).player !== game.turn) {
         return false;
     }
-    
+
     var dist = findDistance(curr, next);
     if (dist === 2) {
         // move is a jump
@@ -202,11 +202,11 @@ function validateMove(game, move) {
             }
         }
         return true;
-        
+
     } else if (dist === 1) {
         // move is a step
         return validStep(game, move[0], move[1]) && move.length == 2;
-        
+
     } else {
         return false;
     }
@@ -220,10 +220,10 @@ Checks if the second position is diagonal relative to the first position
 function isDiagonal(pos1, pos2){
     var r0 = pos1[0];
     var c0 = pos1[1];
-    
+
     var r1 = pos2[0];
     var c1 = pos2[1];
-    
+
     return Math.abs(r1 - r0) === Math.abs(c1 - c0);
 }
 
@@ -232,16 +232,16 @@ TODO
 */
 function correctDirection(game, pos1, pos2) {
     var piece = getPiece(game.board, pos1);
-    
+
     if (piece === null) {
         return false;
-        
+
     } else if (piece.king) {
         return true;
-        
+
     } else if (piece.player === 0) {
         return pos2[0] > pos1[0];
-        
+
     } else {
         return pos2[0] < pos1[0];
     }
@@ -255,7 +255,7 @@ Finds the distance between two given positions
 function findDistance(pos1, pos2){
     var r0 = pos1[1];
     var r1 = pos2[1];
-    
+
     return Math.abs(r0 - r1);
 }
 
@@ -270,11 +270,11 @@ function validStep(game, pos1, pos2) {
         if (!isDiagonal(pos1, pos2)) {
             return false;
         }
-        
+
         if (!isEmpty(game.board, pos2)) {
             return false;
         }
-        
+
         return correctDirection(game, pos1, pos2);
     } else {
         return false;
@@ -292,19 +292,19 @@ function validJump(game, pos1, pos2){
         var mid_row = (pos1[0] + pos2[0]) / 2;
         var mid_col = (pos1[1] + pos2[1]) / 2;
         var mid = game.board[mid_row][mid_col];
-        
+
         if (mid === null || mid.player === game.turn) {
             return false;
         }
-        
+
         if (!isDiagonal(pos1, pos2)) {
             return false;
         }
-        
+
         if (!isEmpty(game.board, pos2)) {
             return false;
         }
-        
+
         return correctDirection(game, pos1, pos2);
     } else {
         return false;
@@ -321,7 +321,7 @@ function makeMove(game, move) {
         if (findDistance(move[0], move[1]) === 1) {
             var p0 = move[0];
             var p1 = move[1];
-            
+
             setPiece(game.board, p1, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
             
@@ -332,9 +332,9 @@ function makeMove(game, move) {
         } else {
             var p0 = move[0];
             var pn = move[move.length - 1];
-            
+
             game.player_pieces[game.turn] += move.length - 1;
-            
+
             setPiece(game.board, pn, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
             for (var i = 0; i < move.length - 1; i++) {
@@ -347,7 +347,7 @@ function makeMove(game, move) {
                 getPiece(game.board, pn).king = true;
             }
         }
-        
+
         game.turn = 1 - game.turn;
     }
 }
@@ -371,12 +371,13 @@ function requestDraw() {
 
     $.ajax({
         type: "POST",
-        data: {
+        data: JSON.stringify({
             player_id: player_id,
             message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
-        },
+        }),
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
             //TO DO
 
@@ -395,17 +396,18 @@ function requestDraw() {
 Forfeit the game by sending a message to the server with text for the opponent
 */
 function forfeitGame() {
-    var url = "/send-message"
+    var url = "/send-message";
     var data;
 
     $.ajax({
         type: "POST",
-        data: {
+        data: JSON.stringify({
             player_id: player_id,
             message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-        },
+        }),
         url: url,
         dataType: "json",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
 
             //Game ends....
