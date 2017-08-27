@@ -134,23 +134,19 @@ function clickSquare(r, c) {
         if (piece === null) {
             alert("Please select a piece");
             move.pop();
-            return;
-        }
-        
-        if (piece.player !== player.player_number) {
+            
+        } else if (piece.player !== player.player_number) {
             alert("This isn't your piece, dummy");
             move.pop();
-            return;
-        }
-        
-        if (piece.player !== game.turn) {
+            
+        } else if (piece.player !== game.turn) {
             alert("It's not your turn, dummy");
             move.pop();
-            return;
+            
+        } else {
+            selected = squares[r][c];
+            selected.classList.add("selected");
         }
-        
-        selected = squares[r][c];
-        selected.classList.add("selected");
         
     } else if (validateMove(game, move)) {
         selected.classList.remove("selected");
@@ -167,26 +163,6 @@ function clickSquare(r, c) {
         move.pop();
         // tell the user move was invalid
     }
-    
-    
-    
-    // if ((r + c) % 2 == 0) {
-    //
-    //     if (selected === null) {
-    //         // we haven't selected a square yet
-    //         // select the one we clicked
-    //         last_r = r;
-    //         last_c = c;
-    //         selected = squares[r][c];
-    //         selected.classList.add("selected");
-    //     } else {
-    //         // we have selected a square
-    //         // swap the selected one with this one
-    //         swapPieces(last_r, last_c, r, c);
-    //         selected.classList.remove("selected");
-    //         selected = null;
-    //     }
-    // }
 }
 
 function undoMove() {

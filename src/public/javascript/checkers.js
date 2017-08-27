@@ -176,6 +176,10 @@ Returns true if the move is valid for the given game, otherwise false.
 @param {} move - the move to validate
 */
 function validateMove(game, move) {
+    if (move.length <= 1) {
+        return false;
+    }
+    
 	var board = game.board;
     
     var curr = move[0];
