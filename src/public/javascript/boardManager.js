@@ -232,7 +232,8 @@ function receiveMessage(msg) {
     switch (msg.type) {
         case "join":
             alert(msg.text);
-            resumeTimer();
+            closeNav();
+            startTimer(2,0);
             break;
         case "forfeit":
             alert("Your opponent forfeited the game. You win!");
@@ -256,35 +257,17 @@ function receiveMessage(msg) {
             break;
         case "pause":
           pauseTimer();
-        case "unpause":
+          break;
+        case "resume":
           resumeTimer();
+          break;
         default:
             console.error("Unknown message type");
+            alert("Unknown message type");
+            break;
     }
 }
 
-//Send message to the opponent when joining their game.
-
-function joinGame() {
-	var url = "/send-message";
-		var data;
-
-	$.ajax({
-				type: "POST",
-				data: {
-						player_id: player.player_id,
-			message: {"type":"join" , "text": player.player_name + " just joined your game!"}
-				},
-				url: url,
-				dataType: "json",
-				success: function(msg) {
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-						document.getElementById("content").innerHTML = "Error Fetching " + URL;
-				}
-		});
-
-}
 
 function accept_draw(){
   var url ="/send-message";
@@ -324,7 +307,7 @@ function reject_draw() {
           //do nothing?
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            alert ("Error sending message");
         }
     });
 }
@@ -345,7 +328,7 @@ function pauseGame() {
           //do nothing?
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            alert ("Error sending message");
         }
     });
 }
@@ -367,7 +350,7 @@ function resumeGame() {
           //do nothing?
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
+          alert ("Error sending message");
         }
     });
 }
@@ -462,7 +445,6 @@ Overlay screen after pausing the game
 function openNav() {
 	//pauseTimer();
 	document.getElementById("myNav").style.width = "100%";
-
 	return false;
 }
 

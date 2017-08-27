@@ -120,7 +120,7 @@ function joinGameServer(){
 			localStorage.setItem("player", JSON.stringify(msg.player));
 			localStorage.setItem("game", JSON.stringify(msg.game));
 			document.location.href = "/board.html";
-			//joinGame();
+		
         },
         error: function(xhr, ajaxOptions, thrownError) {
 			console.error("Error fetching " + url);
@@ -153,24 +153,15 @@ function getGames() {
 				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
 
 			}
-
 			else {
 				for (var i = 0; i < msg.length; i++) {
 					var game = msg[i];
 					$('#gameList').append(newGames(game, i));
 
-					// If property names are known beforehand, you can also just do e.g.
-					// alert(object.id + ',' + object.Title);
 				}
 
-				//quick fix because the last game doesn't show up
 				$('#gameList').append('<li class="game" style="display:block"><article>Stuff</article></li>');
 			}
-
-			//document.getElementById("games").style.display = "block";
-
-			//Initialize board object and player_id
-
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -219,22 +210,18 @@ function requestDraw() {
 
 	$.ajax({
         type: "POST",
-        data: {
+        data: JSON.stringify({
             player_id: player.opponent_id,
 			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
-        },
+		}),
         url: url,
         dataType: "json",
         success: function(msg) {
-			//TO DO
-
-			//message should be the opponent's final decision: Accepted or declined
-			//based on message: continure or end game
-			//alert (msg);
+					alert ("Your request has been sent.. Waiting on opponent's answer.");
 
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            alert ("Error sending message");
         }
     });
 }
@@ -248,18 +235,19 @@ function forfeitGame() {
 
 	$.ajax({
         type: "POST",
-        data: {
+        data: JSON.stringify({
             player_id: player.opponent_id,
 			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-        },
+		}),
         url: url,
         dataType: "json",
         success: function(msg) {
+					alert ("Thanks for using our checkers app! K bye");
+					document.location.href = "/index.html";
 
-			 alert ("Thanks for using our checkers app! K bye")
         },
         error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            alert ("Error sending message");
         }
     });
 }
