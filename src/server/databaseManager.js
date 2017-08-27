@@ -100,21 +100,21 @@ function loadCollection(name, indexes, callback) {
                     callback(err);
                     return;
                 }
-                
+
                 // create collection indexed
                 coll.createIndexes(indexes, function(err) {
                     if (err) {
                         callback(err);
                         return;
                     }
-                    
+
                     colls[name] = coll;
                     callback(false);
                 });
             });
             return;
         }
-        
+
         colls[name] = coll;
         callback(false);
     });
@@ -126,33 +126,33 @@ DB_PASS, DB_ADDR, and DB_NAME. This also loads the database's collections.
 @param {} callback - the function to be called when this operation has completed
 */
 function connect(callback) {
-    
+
     // get database url from environment variables
     const url = createUrl(
         process.env.DB_USER, process.env.DB_PASS,
         process.env.DB_ADDR, process.env.DB_NAME
     );
-    
+
     client.connect(url, function(err, db_object) {
         // failed to connect
         if (err) {
             callback(err);
             return;
         }
-        
+
         db = db_object;
         loadCollection("players", playerIndexes, function(err) {
             if (err) {
                 callback(err);
                 return;
             }
-            
+
             loadCollection("games", gameIndexes, function(err) {
                 if (err) {
                     callback(err);
                     return;
                 }
-                
+
                 loadCollection("opponents", opponentsIndexes, callback);
             });
         });
@@ -174,13 +174,13 @@ function addPlayer(player, callback) {
                 callback(err);
                 return;
             }
-            
+
             // ID is not unique, try again
             if (res) {
                 getID();
                 return;
             }
-            
+
             // ID is unique
             player.player_id = id;
             colls.players.insertOne(player, {}, function(err, res) {
@@ -188,7 +188,7 @@ function addPlayer(player, callback) {
                     callback(err);
                     return;
                 }
-                
+
                 callback(false, player);
             });
         });
@@ -208,13 +208,13 @@ function addGame(game, callback) {
                 callback(err);
                 return;
             }
-            
+
             // ID is not unique, try again
             if (res) {
                 getID();
                 return;
             }
-            
+
             // ID is unique
             game.game_id = id;
             colls.games.insertOne(game, {}, function(err, res) {
@@ -222,7 +222,7 @@ function addGame(game, callback) {
                     callback(err);
                     return;
                 }
-                
+
                 callback(false, game);
             });
         });
@@ -235,7 +235,7 @@ function addOpponent(game_id, player_id, callback) {
             callback(err);
             return;
         }
-        
+
         if (opps) {
             opps.player_ids.push(player_id);
             colls.opponents.replaceOne({ "game_id": game_id }, opps, {}, function(err, res) {
@@ -243,10 +243,10 @@ function addOpponent(game_id, player_id, callback) {
                     callback(err);
                     return;
                 }
-                
+
                 callback(false, opps);
             });
-            
+
         } else {
             opps = {
                 "game_id": game_id,
@@ -257,7 +257,7 @@ function addOpponent(game_id, player_id, callback) {
                     callback(err);
                     return;
                 }
-                
+
                 callback(false, opps);
             })
         }
@@ -276,12 +276,12 @@ function getPlayer(player_id, callback) {
             callback(err);
             return;
         }
-        
+
         if (res === null || typeof res === undefined) {
             callback(true);
             return;
         }
-        
+
         callback(false, res);
     });
 }

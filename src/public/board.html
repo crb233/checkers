@@ -6,14 +6,15 @@
     <link rel="stylesheet" type="text/css" href="css/boardStyle.css"> </link>
 	<link rel="stylesheet" type="text/css" href="css/myStyle.css"> </link>
 	<link rel="stylesheet" type="text/css" href="css/gamePageStyle.css"></link>
-	
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
 
     <body onload="startTimer(2,0)">
 	<div id="myNav" class="overlay">
-	  <a href="javascript:void(0)" class="closebtn" onclick="resumeTimer()">&times;</a>
+	  <a href="javascript:void(0)" class="closebtn" onclick="resumeGame(); resumeTimer()">&times;</a>
 	  <div id ="overlay-cnt" class="overlay-content">
-		<header><font color='white'>GAME IS PAUSED</header></font>
+		<header><font color='white'>GAME IS PAUSED</header>
+		Game ID:<span id="game_info"></span></font>
 		<article class='games-style'><ol>
 			 <li><b style='font-size: 30px;'>GAME RULES</b></p>
 			 1. Black moves first. Players then alternate moves.</p>
@@ -28,27 +29,27 @@
 			 10. A player wins the game when the opponent cannot make a move. In most cases, this is because all of the opponent's pieces have been captured, but it could also be because all of his pieces are blocked in.</p>
 			<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>
 			</ol></article>
-			
-			
+
+
 	  </div>
 	</div>
 
 
 	<div  id="parent" style="margin-left: 100px;">
         <div id="board"> </div>
-		
+
 		<div id="content1" style="display: inline-block;">
 		<form id="options" class="form-style-9" style="position: absolute; right: 60px;">
 			<h3>Game-ID:<span id="game_info"></span></h3>
 			<h1> Menu </h1>
 			<p>
 			<center>
-			<button class="button button5 btn-block" id="send" onClick="sendMove(); return false;">Send Move</button>
+			<button class="button button3 btn-block" id="send" onClick="sendMove(); return false;">Send Move</button>
                 <!--should generate form on the right side of the page.-->
-			<button class="button button5 btn-block" id="undo" onClick="undoMove(); return false;">Undo</button></p>
+			<button class="button button3 btn-block" id="undo" onClick="undoMove(); return false;">Undo</button></p>
             <button class="button button5 btn-block" id="reqDraw" onClick="requestDraw(); return false;">Draw</button>
 			<button class="button button5 btn-block" onClick="forfeitGame(); return false;">Forfeit</button></p>
-			<button class="button button5 btn-block" id="pause" onClick="pauseTimer(); return false;">Pause</button>
+			<button class="button button5 btn-block" id="pause" onClick="pauseGame();pauseTimer(); return false;">Pause</button>
 			<button class="button button5 btn-block" onClick="pauseTimer(); return false;">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
 			</p></center>
 
@@ -56,7 +57,7 @@
 
 			<p><b>Number of pieces collected: </b> 0</p>
 			<b  style="font-size: 50px;">Timer: <b style="color: green"><div id=timer></div></b>
-		  
+
 		  </form>
 		</div>
 	</div>
@@ -69,10 +70,6 @@
     <script src="javascript/boardManager.js"> </script>
 	<script src="javascript/clientManager.js"> </script>
 	<script type="text/javascript">
-		window.onbeforeunload = function() {
-        return "Dude, are you sure you want to leave? Think of the kittens!";
-    }
-
-</script>
+		</script>
 
 </html>
