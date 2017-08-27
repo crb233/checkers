@@ -8,3 +8,6 @@ coverage/
 
 # JSDoc documentation output
 doc/api/
+
+# environment variables setup script
+setup-env-vars.sh

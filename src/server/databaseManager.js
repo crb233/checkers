@@ -348,6 +348,7 @@ module.exports = {
     "addOpponent": addOpponent,
     "getPlayer": getPlayer,
     "getGame": getGame,
+    "getOpponent": getOpponent,
     "updatePlayer": updatePlayer,
     "updateGame": updateGame,
     "getGamesList": getGamesList,

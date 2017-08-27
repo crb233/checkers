@@ -31,6 +31,23 @@ drawPieces(currentBoard);
 
 
 
+// post("/new-game", {}, function(msg) {
+//     // success
+// }, function(xhr, ajaxOptions, thrownError) {
+//     // error
+// });
+
+function post(endpoint, data, success, error) {
+    $.ajax({
+        "type": "POST",
+        "url": endpoint,
+        "data": JSON.stringify(data),
+        "dataType": "json",
+        "contentType": "application/json; charset=utf-8",
+        "success": success,
+        "error": error
+    });
+}
 
 // Returns the parity of the given position as a string
 function getParityString(r, c) {
