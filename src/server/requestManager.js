@@ -5,8 +5,8 @@
 processing each request.
 */
 
-const default_player_time = 120; // seconds
-const default_player_pieces = 12;
+const default_player_time = 120;
+const default_player_pieces = 0;
 
 /** an instance of the Path module for file paths */
 const path = require("path").join;
@@ -107,7 +107,6 @@ function newGame(player_name, is_public, callback) {
 
     var game = checkers.newGame("", is_public, false);
     game.player_names.push(player_name);
-    game.player_time.push(default_player_time);
     game.player_pieces.push(default_player_pieces);
     db.addGame(game, function(err, res) {
         if (err) {
@@ -172,7 +171,6 @@ function joinGame(player_name, game_id, callback) {
 
             game.active = true;
             game.player_names.push(player_name);
-            game.player_time.push(default_player_time);
             game.player_pieces.push(default_player_pieces);
             db.updateGame(game, function(err, res) {
                 if (err) {

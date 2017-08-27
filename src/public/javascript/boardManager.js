@@ -20,6 +20,10 @@ var selected = null;
 var timer;
 var value = "00:00";
 
+// button html elements
+var sendButton = document.getElementById("send");
+var undoButton = document.getElementById("undo");
+enableButtons(false);
 
 
 
@@ -104,30 +108,10 @@ function buildBoard() {
 	}
 }
 
-function swapPieces(p0, p1) {
-	var r0 = p0[0];
-    var c0 = p0[1];
-    var r1 = p1[0];
-    var c1 = p1[1];
-
-    var s0 = squares[r0][c0];
-    var s1 = squares[r1][c1];
-
-    var temp = s0.innerHTML;
-    s0.innerHTML = s1.innerHTML;
-    s1.innerHTML = temp;
-
-
-	//After making the move, enable the "Undo Move" and Send Move button
-	document.getElementById("undo").disabled = false;
-	document.getElementById("send").disabled = false;
-
-	//change color
-	document.getElementById("undo").className = "button btn-block";
-	//change color
-	document.getElementById("send").className = "button btn-block";
-}
-
+/**
+Draws the pieces contained in the given board object to the client screen.
+@param {} board - the board object to be drawn
+*/
 function drawPieces(board) {
     for (var r = 0; r < board_size; r++) {
         for (var c = 0; c < board_size; c++) {
@@ -160,43 +144,153 @@ function drawPieces(board) {
     }
 }
 
-function clickSquare(r, c) {
-
-    move.push([r, c]);
-    if (move.length === 1) {
-        var piece = game.board[r][c];
-
-        if (piece === null) {
-            alert("Please select a piece");
-            move.pop();
-
-        } else if (piece.player !== player.player_number) {
-            alert("This isn't your piece, dummy");
-            move.pop();
-
-        } else if (piece.player !== game.turn) {
-            alert("It's not your turn, dummy");
-            move.pop();
-
-        } else {
-            selected = squares[r][c];
-            selected.classList.add("selected");
-        }
-
-    } else if (validateMove(game, move)) {
-        selected.classList.remove("selected");
-        selected = squares[r][c];
-        selected.classList.add("selected");
-
-        var tempGame = copyGame(game);
-        makeMove(tempGame, move);
-        drawPieces(tempGame.board);
-
-        // make send-move and undo-move buttons clickable
-
+/**
+Enables (or disables) the send and undo buttons.
+@param {boolean} enabled - whether the buttons should be enabled or disabled
+*/
+function enableButtons(enabled) {
+    if (typeof enabled === "undefined") {
+        enabled = true;
+    }
+    
+    sendButton.disabled = !enabled;
+    undoButton.disabled = !enabled;
+    
+    if (enabled) {
+        sendButton.classList.remove("button3");
+        undoButton.classList.remove("button3");
+        sendButton.classList.add("button5");
+        undoButton.classList.add("button5");
     } else {
-        move.pop();
-        // tell the user move was invalid
+        sendButton.classList.remove("button5");
+        undoButton.classList.remove("button5");
+        sendButton.classList.add("button3");
+        undoButton.classList.add("button3");
+    }
+}
+
+/**
+Returns true if two arrays are equal and false otherwise
+@param {} a - the first array object
+@param {} b - the second array object
+@return whether the arrays are equal
+*/
+function arraysEqual(a, b) {
+    if (a === b) {
+        return true;
+    }
+    
+    if (a == null || b == null || a.length !== b.length) {
+        return false;
+    }
+    
+    for (var i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+Returns true if the first array contains the seocond array as one of its
+elements. Otherwise, returns false.
+@param {} list - the first array object
+@param {} obj - the second array object
+@return whether the first array contains the second
+*/
+function containsArray(list, obj) {
+    for (var i = 0; i < list.length; i++) {
+        if (arraysEqual(list[i], obj)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+Sets the selected board on the client's screen.
+@param {integer} r - the row number of the square to be selected
+@param {integer} c - the column number of the square to be selected
+*/
+function setSelected(r, c) {
+    unsetSelected();
+    selected = squares[r][c];
+    selected.classList.add("selected");
+}
+
+/**
+Unselects the currently selected square, so that no squares are selected.
+*/
+function unsetSelected() {
+    if (selected != null) {
+        selected.classList.remove("selected");
+    }
+    selected = null;
+}
+
+/**
+Called when the user clicks on a board square. This method determines how to
+react to the player selecting a square. It also constructs the current move
+object and updates the board to reflect the current (unfinished) move.
+@param {integer} r - the row number of the selected square (0 indexed)
+@param {integer} c - the column number of the selected square (0 indexed)
+*/
+function clickSquare(r, c) {
+    
+    if (squares[r][c] !== selected) {
+        
+        move.push([r, c]);
+        if (move.length === 1) {
+            enableButtons(false);
+            
+            var piece = game.board[r][c];
+            if (piece === null) {
+                alert("Please select a piece");
+                move.pop();
+                
+            } else if (piece.player !== player.player_number) {
+                alert("This isn't your piece, dummy");
+                move.pop();
+                
+            } else if (piece.player !== game.turn) {
+                alert("It's not your turn, dummy");
+                move.pop();
+                
+            } else {
+                setSelected(r, c);
+            }
+            
+        } else if (validateMove(game, move)) {
+            enableButtons(true);
+            setSelected(r, c);
+            
+            var tempGame = copyGame(game);
+            makeMove(tempGame, move);
+            drawPieces(tempGame.board);
+            
+        } else {
+            var piece = game.board[r][c];
+            if (piece === null) {
+                move.pop();
+                
+            } else if (piece.player !== player.player_number) {
+                move.pop();
+                
+            } else if (piece.player !== game.turn) {
+                move.pop();
+                
+            } else if (containsArray(move.slice(0, move.length - 1), [r, c])) {
+                move.pop();
+                
+            } else {
+                move = [];
+                move.push([r, c]);
+                
+                setSelected(r, c);
+                drawPieces(game.board);
+            }
+        }
     }
 }
 
@@ -233,13 +327,10 @@ function sendMove() {
 }
 
 function resetBoard() {
-    if (selected !== null) {
-        selected.classList.remove("selected");
-    }
-
-    selected = null;
+    unsetSelected();
     move = [];
     drawPieces(game.board);
+    enableButtons(false);
 }
 
 
@@ -289,113 +380,138 @@ function receiveMessage(msg) {
 
 
 function accept_draw(){
-  var url ="/send-message";
-
-  $.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-			      message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-          document.location.href = "/index.html";
-
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        }
+    var data = {
+        player_id: player.player_id,
+        message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
+    };
+    
+    post("/send-message", data, function(msg) {
+        document.location.href = "/index.html";
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        //document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
 
 }
 
 function reject_draw() {
-  var url ="/send-message";
-  $.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-			message: {"type":"accept_draw" , "text":"Draw rejected: keep playing."}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-          //do nothing?
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            alert ("Error sending message");
+    var data = {
+        player_id: player.player_id,
+        message: {
+            "type": "accept_draw",
+            "text": "Draw rejected: keep playing."
         }
+    };
+    
+    post("/send-message", data, function(msg) {
+        //do nothing?
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        alert ("Error sending message");
+        
+    });
+}
+
+/**
+Request a draw: Opponent will get a message and be prompted to accept or decline the draw
+*/
+function requestDraw() {
+    var data = {
+        player_id: player_id,
+        message: {
+            "type": "request_draw",
+            "text": "Your opponent is requesting a draw."
+        }
+    };
+    
+    post("/send-message", data, function(msg) {
+        //TODO
+        //message should be the opponent's final decision: Accepted or declined
+        //based on message: continure or end game
+        //alert (msg);
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        document.getElementById("content").innerHTML = "Error Fetching " + URL;
+    });
+}
+
+/**
+Forfeit the game by sending a message to the server with text for the opponent
+*/
+function forfeitGame() {
+    var data = {
+        player_id: player_id,
+        message: {
+            "type": "forfeit",
+            "text": "Your opponent forfeited the game. You win!"
+        }
+    };
+    
+    post("/send-message", data, function(msg) {
+        //Game ends....
+
+        // TODO
+        // alert (msg);
+    }, function(xhr, ajaxOptions, thrownError) {
+        document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
 }
 
 function pauseGame() {
-  var url ="/send-message";
-
-  $.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-      message: {"type":"pause" , "text":"Your opponent paused the game."}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-          //do nothing?
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            alert ("Error sending message");
+    var data = {
+        player_id: player.player_id,
+        message: {
+            "type": "pause",
+            "text": "Your opponent paused the game."
         }
+    };
+    
+    post("/send-message", data, function(msg) {
+        //do nothing?
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        alert ("Error sending message");
     });
 }
 
 //Resume Game
 function resumeGame() {
-  var url ="/send-message";
-
-  $.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-      message: {"type":"resume" , "text":""}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-          //do nothing?
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-          alert ("Error sending message");
+    var data = {
+        player_id: player.player_id,
+        message: {
+            "type": "resume",
+            "text": ""
         }
+    };
+    
+    post("/send-message", data, function(msg) {
+        //do nothing?
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        alert ("Error sending message");
     });
 }
 
 //See if there are any updates from the server (messages) every 6 seconds
 loop = setInterval(function(){
-	$.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id
-        }),
-        url: "/get-updates",
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-            if (game.turn !== player.player_number) {
-                game = msg.game;
-                resetBoard();
-            }
-            for (var i = 0; i < msg.messages.length; i++) {
-                receiveMessage(msg.messages[i]);
-            }
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-           // document.getElementById("content").innerHTML = "Error Fetching " + URL;
+    var data = {
+        player_id: player.player_id
+    };
+    
+    post("/get-updates", data, function(msg) {
+        // success
+        if (game.turn !== player.player_number) {
+            game = msg.game;
+            resetBoard();
         }
+        
+        for (var i = 0; i < msg.messages.length; i++) {
+            receiveMessage(msg.messages[i]);
+        }
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        // failure
+        // document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
 }, 6000);
 
@@ -432,26 +548,18 @@ Send message to the server when time expires
 */
 function timeExpired() {
 	//send message to the server "Expired"? with player_id who lost
-	var url ="/send-message"
-	var data;
-
-	$.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-			message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-
-			alert ("Your time expired. You lose! ");
-
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        }
+	var data = {
+        player_id: player.player_id,
+        message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
+    };
+    
+    post("/send-message", data, function(msg) {
+		// success
+        alert ("Your time expired. You lose! ");
+        
+    }, function(xhr, ajaxOptions, thrownError) {
+        // failure
+        //document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
 
 }

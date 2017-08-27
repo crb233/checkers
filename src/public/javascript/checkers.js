@@ -11,6 +11,7 @@ const board_player_rows = 3;
 
 /**
 Creates the piece initially found at the given position on the board
+@return the default piece for that position
 */
 function newDefaultPiece(r, c) {
     if ((c + r) % 2 == 1) {
@@ -32,7 +33,8 @@ function newDefaultPiece(r, c) {
 }
 
 /**
-Creates a board object with the default initial configuration
+Creates and returns a board object with the default initial configuration
+@return a standard board object
 */
 function newBoard() {
     var board = [];
@@ -51,7 +53,9 @@ function newBoard() {
 }
 
 /**
-TODO
+Creates and returns a deep copy of the given checkers board object
+@param {} oldBoard - the original board object
+@return a deep copy of the original board
 */
 function copyBoard(oldBoard) {
     var board = [];
@@ -91,15 +95,17 @@ function newGame(id, is_public, is_active) {
         "public": is_public,
         "active": is_active,
         "player_names": [],
-        "player_time": [],
         "player_pieces": [],
+        "timer": 120,
         "turn": 0,
         "board": newBoard()
     };
 }
 
 /**
-TODO
+Creates and returns a deep copy of the given game object
+@param {} game - the game to be copied
+@return a deep copy of the original game object
 */
 function copyGame(game) {
     return {
@@ -107,8 +113,8 @@ function copyGame(game) {
         "public": game.public,
         "active": game.active,
         "player_names": game.player_names.slice(),
-        "player_time": game.player_time.slice(),
         "player_pieces": game.player_pieces.slice(),
+        "timer": game.timer,
         "turn": game.turn,
         "board": copyBoard(game.board)
     };
@@ -148,14 +154,22 @@ function addMovePosition(move, row, col) {
 }
 
 /**
-TODO
+Returns the piece at the given position on the board, assuming that pos
+represents a valid board position.
+@param {} board - the board object
+@param {} pos - where to get the piece (as a coordinate array [row, column])
+@return the piece a the given position on the board
 */
 function getPiece(board, pos) {
     return board[pos[0]][pos[1]];
 }
 
 /**
-TODO
+Sets the piece at the given position on the board, assuming that pos represents
+a valid board position.
+@param {} board - the board object
+@param {} pos - where to set the piece (as a coordinate array [row, column])
+@param {} piece - the piece to be added to the board
 */
 function setPiece(board, pos, piece) {
     board[pos[0]][pos[1]] = piece;
@@ -182,22 +196,23 @@ function validateMove(game, move) {
 
     var board = game.board;
 
-    var curr = move[0];
-    var next = move[1];
+    var initial = move[0];
+    var second = move[1];
 
-    if (isEmpty(board, curr)) {
+    if (isEmpty(board, initial)) {
         return false;
     }
 
-    if (getPiece(board, curr).player !== game.turn) {
+    if (getPiece(board, initial).player !== game.turn) {
         return false;
     }
 
-    var dist = findDistance(curr, next);
+    var dist = findDistance(initial, second);
     if (dist === 2) {
         // move is a jump
+        var piece = getPiece(game.board, initial);
         for (var i = 0; i < move.length - 1; i++) {
-            if (!validJump(game, move[i], move[i + 1])) {
+            if (!validJump(game, piece, move[i], move[i + 1])) {
                 return false;
             }
         }
@@ -205,7 +220,8 @@ function validateMove(game, move) {
 
     } else if (dist === 1) {
         // move is a step
-        return validStep(game, move[0], move[1]) && move.length == 2;
+        var piece = getPiece(game.board, initial);
+        return validStep(game, piece, move[0], move[1]) && move.length == 2;
 
     } else {
         return false;
@@ -228,11 +244,13 @@ function isDiagonal(pos1, pos2){
 }
 
 /**
-TODO
+Determines if the given piece can move in the direction indicated by the
+starting and ending positions.
+@param {} piece - the moving piece
+@param {} pos1 - the initial position
+@param {} pos2 - the target position
 */
-function correctDirection(game, pos1, pos2) {
-    var piece = getPiece(game.board, pos1);
-
+function correctDirection(piece, pos1, pos2) {
     if (piece === null) {
         return false;
 
@@ -248,9 +266,11 @@ function correctDirection(game, pos1, pos2) {
 }
 
 /**
-Finds the distance between two given positions
-@param {} pos1 - the first given coordinate
-@param {} pos2 - the second given coordinate
+Finds the diagonal distance between two given positions. If the positions are
+not diagonal to each other, this method is not guaranteed to return a meaningful
+result.
+@param {} pos1 - the first coordinate
+@param {} pos2 - the second coordinate
 */
 function findDistance(pos1, pos2){
     var r0 = pos1[1];
@@ -262,10 +282,11 @@ function findDistance(pos1, pos2){
 /**
 Checks to validate a "jump" move by making sure there's an opponent's piece between the two positions
 @param {} game - the checkers game object
+@param {} piece - the checkers piece making the jump
 @param {} pos1 - the initial position of the jump
 @param {} pos2 - the target position of the jump
 */
-function validStep(game, pos1, pos2) {
+function validStep(game, piece, pos1, pos2) {
     if (findDistance(pos1, pos2) === 1) {
         if (!isDiagonal(pos1, pos2)) {
             return false;
@@ -275,19 +296,22 @@ function validStep(game, pos1, pos2) {
             return false;
         }
 
-        return correctDirection(game, pos1, pos2);
+        return correctDirection(piece, pos1, pos2);
     } else {
         return false;
     }
 }
 
 /**
-Checks to validate a "jump" move by making sure there's an opponent's piece between the two positions
+Checks is a jump move is valid by making sure that the positions have a diagonal
+distance of two and that there's an opponent's piece in between
+between the two positions
 @param {} game - the checkers game object
+@param {} piece - the checkers piece making the jump
 @param {} pos1 - the initial position of the jump
 @param {} pos2 - the target position of the jump
 */
-function validJump(game, pos1, pos2){
+function validJump(game, piece, pos1, pos2){
     if (findDistance(pos1, pos2) === 2) {
         var mid_row = (pos1[0] + pos2[0]) / 2;
         var mid_col = (pos1[1] + pos2[1]) / 2;
@@ -305,7 +329,7 @@ function validJump(game, pos1, pos2){
             return false;
         }
 
-        return correctDirection(game, pos1, pos2);
+        return correctDirection(piece, pos1, pos2);
     } else {
         return false;
     }
@@ -352,74 +376,7 @@ function makeMove(game, move) {
     }
 }
 
-/**
-Updates the game state to reverse the changes caused by a move
-@param {} game - the chckers game object
-@param {} move - the move to undo
-*/
-function undoMove(game, move) {
-    // TODO
-    return false;
-}
 
-/**
-Request a draw: Opponent will get a message and be prompted to accept or decline the draw
-*/
-function requestDraw() {
-    var url = "/send-message"
-    var data;
-
-    $.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player_id,
-            message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-            //TO DO
-
-            //message should be the opponent's final decision: Accepted or declined
-            //based on message: continure or end game
-            //alert (msg);
-
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        }
-    });
-}
-
-/**
-Forfeit the game by sending a message to the server with text for the opponent
-*/
-function forfeitGame() {
-    var url = "/send-message";
-    var data;
-
-    $.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            player_id: player_id,
-            message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-        }),
-        url: url,
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-
-            //Game ends....
-
-            //TO DO
-            //alert (msg);
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        }
-    });
-}
 
 
 
@@ -443,8 +400,5 @@ module.exports = {
     "findDistance": findDistance,
     "validJump": validJump,
     "validStep": validStep,
-    "makeMove": makeMove,
-    "undoMove": undoMove,
-    "forfeitGame": forfeitGame,
-    "requestDraw": requestDraw,
+    "makeMove": makeMove
 };
