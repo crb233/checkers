@@ -325,6 +325,10 @@ function makeMove(game, move) {
             setPiece(game.board, p1, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
             
+            if (p1[0] === getKingRow(game.turn)) {
+                getPiece(game.board, p1).king = true;
+            }
+            
         } else {
             var p0 = move[0];
             var pn = move[move.length - 1];
@@ -337,6 +341,10 @@ function makeMove(game, move) {
                 var r = (move[i][0] + move[i + 1][0]) / 2;
                 var c = (move[i][1] + move[i + 1][1]) / 2;
                 setPiece(game.board, [r, c], null);
+            }
+            
+            if (pn[0] === getKingRow(game.turn)) {
+                getPiece(game.board, pn).king = true;
             }
         }
         
