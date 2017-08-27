@@ -117,10 +117,11 @@ function joinGameServer(){
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
             // put player and game into local storage
-			localStorage.setItem("player", JSON.stringify(msg.player));
-			localStorage.setItem("game", JSON.stringify(msg.game));
-			document.location.href = "/board.html";
-		
+					localStorage.setItem("player", JSON.stringify(msg.player));
+					localStorage.setItem("game", JSON.stringify(msg.game));
+					document.location.href = "/board.html";
+					startTimer(2,0);
+
         },
         error: function(xhr, ajaxOptions, thrownError) {
 			console.error("Error fetching " + url);
