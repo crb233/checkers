@@ -271,7 +271,19 @@ second parameter to the callback function.
 @param {} callback - the function to be called when this operation has completed
 */
 function getPlayer(player_id, callback) {
-    colls.players.findOne({ "player_id": player_id }, {}, callback);
+    colls.players.findOne({ "player_id": player_id }, {}, function(err, res) {
+        if (err) {
+            callback(err);
+            return;
+        }
+        
+        if (res === null || typeof res === undefined) {
+            callback(true);
+            return;
+        }
+        
+        callback(false, res);
+    });
 }
 
 /**

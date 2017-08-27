@@ -38,8 +38,8 @@
     		<form id="options" class="form-style-9">
     			<h1> Main Menu </h1>
                 <p>
-                    <button id="hostGame" class="button button5 btn-block" onClick="hostGameForm();return false;">Start Game</button>
-                    <button id="joinGame" class="button button5 btn-block" onClick="joinGameForm();return false;">Join Game</button>
+                    <button id="hostGame" class="button button5 btn-block" onClick="hostGameForm(); return false;">Start Game</button>
+                    <button id="joinGame" class="button button5 btn-block" onClick="joinGameForm(); return false;">Join Game</button>
                 </p>
     		</form>
 		</div>
@@ -70,7 +70,7 @@
             <label> Game ID: </label>
             <input type="text" class="form-field" id="gameID" placeholder="Game-ID" required><br>
             
-			<button class="button button5" onclick="joinGameServer()" value="Submit">Join</button>
+			<button class="button button5" onclick="joinGameServer(); return false;" value="Submit">Join</button>
 		</form>
 			
 		<ul class="games-style" id="gameList"></ul>

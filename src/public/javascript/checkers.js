@@ -51,6 +51,34 @@ function newBoard() {
 }
 
 /**
+TODO
+*/
+function copyBoard(oldBoard) {
+    var board = [];
+    for (var r = 0; r < board_size; r++) {
+        // build up a row of the board
+        var row = [];
+        for (var c = 0; c < board_size; c++) {
+            // copy a single piece
+            var oldPiece = oldBoard[r][c];
+            if (oldPiece === null) {
+                row.push(null);
+                
+            } else {
+                row.push({
+                    "player": oldPiece.player,
+                    "king": oldPiece.king
+                });
+            }
+        }
+        
+        board.push(row);
+    }
+
+    return board;
+}
+
+/**
 Creates and returns a new game object with the given specifications
 @param {string} id - the unique identifier for this game
 @param {boolean} is_public - whether this game is public
@@ -67,6 +95,22 @@ function newGame(id, is_public, is_active) {
         "player_pieces": [],
         "turn": 0,
         "board": newBoard()
+    };
+}
+
+/**
+TODO
+*/
+function copyGame(game) {
+    return {
+        "game_id": game.id,
+        "public": game.public,
+        "active": game.active,
+        "player_names": game.player_names.slice(),
+        "player_time": game.player_time.slice(),
+        "player_pieces": game.player_pieces.slice(),
+        "turn": game.turn,
+        "board": copyBoard(game.board)
     };
 }
 
@@ -108,6 +152,13 @@ TODO
 */
 function getPiece(board, pos) {
     return board[pos[0]][pos[1]];
+}
+
+/**
+TODO
+*/
+function setPiece(board, pos, piece) {
+    board[pos[0]][pos[1]] = piece;
 }
 
 /**
@@ -259,8 +310,30 @@ Updates the game state to reflect the changes caused by a move
 @param {} move - the move to be made
 */
 function makeMove(game, move) {
-    if(validateMove(game, move)){
-		//TO DO
+    if (validateMove(game, move)) {
+		if (findDistance(move[0], move[1]) === 1) {
+            var p0 = move[0];
+            var p1 = move[1];
+            
+            setPiece(game.board, p1, getPiece(game.board, p0));
+            setPiece(game.board, p0, null);
+            
+        } else {
+            var p0 = move[0];
+            var pn = move[move.length - 1];
+            
+            game.player_pieces[game.turn] += move.length - 1;
+            
+            setPiece(game.board, pn, getPiece(game.board, p0));
+            setPiece(game.board, p0, null);
+            for (var i = 0; i < moves.length - 1; i++) {
+                var r = (move[i][0] + move[i + 1][0]) / 2;
+                var c = (move[i][1] + move[i + 1][1]) / 2;
+                setPiece(game.board, [r, c], null);
+            }
+        }
+        
+        game.turn = 1 - game.turn;
 	}
 }
 

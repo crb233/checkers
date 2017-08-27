@@ -4,14 +4,17 @@ const player = JSON.parse(localStorage.getItem("player"));
 // the current game object
 var game = JSON.parse(localStorage.getItem("game"));
 
+// stores the visual state of the board (including unfinished moves)
+var currentBoard = copyBoard(game.board);
+
 // the matrix of html squares (each of which is a div)
 var squares = [];
 
-// currently selected piece
-var selected = null;
-
 // current move
 var move = [];
+
+// currently selected piece
+var selected = null;
 
 //variables used for the timer
 var timer;
@@ -24,47 +27,10 @@ var value = "00:00";
 buildBoard();
 
 // create a new board and draw the pieces
-drawPieces(game.board);
+drawPieces(currentBoard);
 
 
 
-
-// Creates the piece initially found at the given position on the board
-function newDefaultPiece(r, c) {
-    if ((c + r) % 2 == 1) {
-        // we're on an odd board square
-        return null;
-
-    } else if (r < board_player_rows) {
-        // player 0 side
-        return {"player": 0, "king": false};
-
-    } else if (r >= board_size - board_player_rows) {
-        // player 1 side
-        return {"player": 1, "king": false};
-
-    } else {
-        // in the middle
-        return null;
-    }
-}
-
-// Creates a bard object with the default initial configuration
-function newBoard() {
-    var board = [];
-    for (var r = 0; r < board_size; r++) {
-
-        // build up a row of the board
-        var row = [];
-        for (var c = 0; c < board_size; c++) {
-            row.push(newDefaultPiece(r, c));
-        }
-
-        board.push(row);
-    }
-
-    return board;
-}
 
 // Returns the parity of the given position as a string
 function getParityString(r, c) {
@@ -85,7 +51,7 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
-	document.getElementById("game_info").innerHTML = game_id;
+	document.getElementById("game_info").innerHTML = game.game_id;
 	
     var board_elem = document.getElementById("board");
 
@@ -191,9 +157,10 @@ function clickSquare(r, c) {
         selected = squares[r][c];
         selected.classList.add("selected");
         
-        var len = move.length;
-        swapPieces(move[len - 2], move[len - 1]);
-        // change board to reflect move
+        var tempGame = copyGame(game);
+        makeMove(tempGame, move);
+        drawPieces(tempGame.board);
+        
         // make send-move and undo-move buttons clickable
         
     } else {
@@ -222,13 +189,8 @@ function clickSquare(r, c) {
     // }
 }
 
-function undoMove (x,y) {
-    if (selected !== null) {
-        selected.classList.remove("selected");
-    }
-    selected = null;
-    move = [];
-    drawPieces(game.board);
+function undoMove() {
+    resetBoard();
 }
 
 function sendMove() {
@@ -244,19 +206,13 @@ function sendMove() {
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
-			// On success update the move board
-            if (selected !== null) {
-                selected.classList.remove("selected");
-            }
-            
-            selected = null;
-            move = [];
+            // On success update the board
             game = msg.game;
-            drawPieces(game.board);
+            resetBoard();
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(thrownError));
-            alert("Move unsuccessful.");
+            alert("Move failed to send.");
             //document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
@@ -265,9 +221,40 @@ function sendMove() {
     move = [];
 }
 
+function resetBoard() {
+    if (selected !== null) {
+        selected.classList.remove("selected");
+    }
+    
+    selected = null;
+    move = [];
+    drawPieces(game.board);
+}
 
 
 
+
+
+/**
+TODO
+*/
+function receiveMessage(msg) {
+    // TODO
+    switch (msg.type) {
+        case "join":
+            break;
+        case "forfeit":
+            break;
+        case "request_draw":
+            break;
+        case "accept_draw":
+            break;
+        case "reject_draw":
+            break;
+        default:
+            console.error("Unknown message type");
+    }
+}
 
 //See if there are any updates from the server (messages) every 6 seconds
 loop = setInterval(function(){
@@ -280,24 +267,13 @@ loop = setInterval(function(){
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
-
-			//If there are no messages do nothing
-			//else
-			
-			/*
-			if (msg.length != 0) {
-				//Depends ... Switch statement?
-				//message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-				var ans = confirm(msg.type + ": " + msg.text);
-				if (ans) {
-					//if the opponent accepted (forfeit or draw) game ends
-				}
-
-				else {
-					//Game goes on and and send a reject..
-				}
-			}
-			*/
+            if (game.turn !== player.player_number) {
+                game = msg.game;
+                resetBoard();
+            }
+            for (var i = 0; i < msg.messages.length; i++) {
+                receiveMessage(msg.messages[i]);
+            }
         },
         error: function(xhr, ajaxOptions, thrownError) {
            // document.getElementById("content").innerHTML = "Error Fetching " + URL;
