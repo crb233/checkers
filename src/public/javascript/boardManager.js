@@ -37,9 +37,15 @@ var undoButton = document.getElementById("undo");
 
 // STARTUP FUNCTION CALLS
 
-enableButtons(false);
+// create board elements and draw initial board state
 buildBoard();
 drawPieces(game.board);
+
+// disable send-move and undo-move buttons
+enableButtons(false);
+
+// start get-updates loop
+startUpdateLoop();
 
 
 
@@ -532,7 +538,7 @@ function resumeGame() {
 Starts an infinite loop of requesting updates from the server in intervals
 determined by the constant UPDATE_LOOP_TIME
 */
-function startUpdatesLoop() {
+function startUpdateLoop() {
     setInterval(function(){
         var data = {
             player_id: player.player_id
