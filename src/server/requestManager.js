@@ -12,20 +12,15 @@ const default_player_pieces = 0;
 const path = require("path").join;
 
 /** an instance of the databaseManager module for connecting to the database */
-const db = require(path(__dirname, "databaseManager"));
+const dbm = require(path(__dirname, "databaseManager"));
 
 /** an instance of the checkersGame module */
 const checkers = require(path(__dirname, "../public/javascript/checkers"));
 
 // Initialize the database-manager object
-db.connect(function(err) {
-    if (err) {
-        console.error("Failed to connect to database.\nExiting...");
-        process.exit(1);
-    } else {
-        console.log("Connected to database.");
-    }
-});
+function connect(callback) {
+    dbm.connect(callback);
+}
 
 
 
@@ -87,7 +82,7 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function getGames(callback) {
-    db.getGamesList(callback);
+    dbm.getGamesList(callback);
 }
 
 /**
@@ -108,20 +103,20 @@ function newGame(player_name, is_public, callback) {
     var game = checkers.newGame("", is_public, false);
     game.player_names.push(player_name);
     game.player_pieces.push(default_player_pieces);
-    db.addGame(game, function(err, res) {
+    dbm.addGame(game, function(err, res) {
         if (err) {
             callback(err);
             return;
         }
 
         var player = newPlayer(player_name, 0, game.game_id);
-        db.addPlayer(player, function(err, res) {
+        dbm.addPlayer(player, function(err, res) {
             if (err) {
                 callback(err);
                 return;
             }
 
-            db.addOpponent(game.game_id, player.player_id, function(err, res) {
+            dbm.addOpponent(game.game_id, player.player_id, function(err, res) {
                 if (err) {
                     callback(err);
                     return;
@@ -151,7 +146,7 @@ function joinGame(player_name, game_id, callback) {
         return;
     }
 
-    db.getGame(game_id, function(err, game) {
+    dbm.getGame(game_id, function(err, game) {
         if (err) {
             callback(err);
             return;
@@ -163,7 +158,7 @@ function joinGame(player_name, game_id, callback) {
         }
 
         var player = newPlayer(player_name, 1, game.game_id);
-        db.addPlayer(player, function(err, res) {
+        dbm.addPlayer(player, function(err, res) {
             if (err) {
                 callback(err);
                 return;
@@ -172,13 +167,13 @@ function joinGame(player_name, game_id, callback) {
             game.active = true;
             game.player_names.push(player_name);
             game.player_pieces.push(default_player_pieces);
-            db.updateGame(game, function(err, res) {
+            dbm.updateGame(game, function(err, res) {
                 if (err) {
                     callback(err);
                     return;
                 }
 
-                db.addOpponent(game.game_id, player.player_id, function(err, res) {
+                dbm.addOpponent(game.game_id, player.player_id, function(err, res) {
                     if (err) {
                         callback(err);
                         return;
@@ -220,13 +215,13 @@ function makeMove(player_id, move, callback) {
         return;
     }
 
-    db.getPlayer(player_id, function(err, player) {
+    dbm.getPlayer(player_id, function(err, player) {
         if (err) {
             callback(err);
             return;
         }
 
-        db.getGame(player.game_id, function(err, game) {
+        dbm.getGame(player.game_id, function(err, game) {
             if (err) {
                 callback(err);
                 return;
@@ -242,7 +237,7 @@ function makeMove(player_id, move, callback) {
             }
 
             checkers.makeMove(game, move);
-            db.updateGame(game, function(err, res) {
+            dbm.updateGame(game, function(err, res) {
                 if (err) {
                     callback(err);
                     return;
@@ -266,7 +261,7 @@ function getUpdates(player_id, callback) {
         return;
     }
 
-    db.getPlayer(player_id, function(err, player) {
+    dbm.getPlayer(player_id, function(err, player) {
         if (err) {
             callback(err);
             return;
@@ -275,13 +270,13 @@ function getUpdates(player_id, callback) {
         var messages = player.new_messages;
         player.new_messages = [];
 
-        db.updatePlayer(player, function(err, res) {
+        dbm.updatePlayer(player, function(err, res) {
             if (err) {
                 callback(err);
                 return;
             }
 
-            db.getGame(player.game_id, function(err, game) {
+            dbm.getGame(player.game_id, function(err, game) {
                 if (err) {
                     callback(err);
                     return;
@@ -311,13 +306,13 @@ function sendMesssage(player_id, message, callback) {
         return;
     }
 
-    db.getPlayer(player_id, function(err, player) {
+    dbm.getPlayer(player_id, function(err, player) {
         if (err) {
             callback(err);
             return;
         }
 
-        db.getOpponent(player.game_id, function(err, opps) {
+        dbm.getOpponent(player.game_id, function(err, opps) {
             if (err) {
                 callback(err);
                 return;
@@ -329,20 +324,22 @@ function sendMesssage(player_id, message, callback) {
             }
 
             var opp_id = opps.player_ids[1 - player.player_number];
-            db.getPlayer(opp_id, function(err, opponent) {
+            dbm.getPlayer(opp_id, function(err, opponent) {
                 if (err) {
                     callback(err);
                     return;
                 }
 
                 opponent.new_messages.push(message);
-                db.updatePlayer(opponent, callback);
+                dbm.updatePlayer(opponent, callback);
             });
         });
     });
 }
 
 module.exports = {
+    "dbm": dbm,
+    "connect": connect,
     "getGames": getGames,
     "newGame": newGame,
     "joinGame": joinGame,

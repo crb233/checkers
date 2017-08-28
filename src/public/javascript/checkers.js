@@ -109,7 +109,7 @@ Creates and returns a deep copy of the given game object
 */
 function copyGame(game) {
     return {
-        "game_id": game.id,
+        "game_id": game.game_id,
         "public": game.public,
         "active": game.active,
         "player_names": game.player_names.slice(),
@@ -129,28 +129,6 @@ row on their opponent's side)
 */
 function getKingRow(player) {
     return (1 - player) * (board_size - 1);
-}
-
-/**
-Creates and returns a move object which contains only the starting position
-@param {number} row - the row number of the initial position
-@param {number} col - the column number of the initial position
-@return the new move object
-*/
-function newMove(row, col) {
-    var move = [];
-    addMovePosition(move, row, col);
-    return move;
-}
-
-/**
-Updates a move object to represent the next position for a piece to take
-@param {} move - the move object to be updated
-@param {number} row - the row number of the initial position
-@param {number} col - the column number of the initial position
-*/
-function addMovePosition(move, row, col) {
-    move.push([row, col]);
 }
 
 /**
@@ -258,10 +236,10 @@ function correctDirection(piece, pos1, pos2) {
         return true;
 
     } else if (piece.player === 0) {
-        return pos2[0] > pos1[0];
+        return pos1[0] < pos2[0];
 
     } else {
-        return pos2[0] < pos1[0];
+        return pos1[0] > pos2[0];
     }
 }
 
@@ -316,19 +294,19 @@ function validJump(game, piece, pos1, pos2){
         var mid_row = (pos1[0] + pos2[0]) / 2;
         var mid_col = (pos1[1] + pos2[1]) / 2;
         var mid = game.board[mid_row][mid_col];
-
-        if (mid === null || mid.player === game.turn) {
+        
+        if (mid === null || mid.player === piece.player) {
             return false;
         }
-
+        
         if (!isDiagonal(pos1, pos2)) {
             return false;
         }
-
+        
         if (!isEmpty(game.board, pos2)) {
             return false;
         }
-
+        
         return correctDirection(piece, pos1, pos2);
     } else {
         return false;
@@ -345,10 +323,12 @@ function makeMove(game, move) {
         if (findDistance(move[0], move[1]) === 1) {
             var p0 = move[0];
             var p1 = move[1];
-
+            
+            // move the piece
             setPiece(game.board, p1, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
             
+            // change it to a king if neccessary
             if (p1[0] === getKingRow(game.turn)) {
                 getPiece(game.board, p1).king = true;
             }
@@ -356,22 +336,28 @@ function makeMove(game, move) {
         } else {
             var p0 = move[0];
             var pn = move[move.length - 1];
-
+            
+            // add the jumber of pieces captures to the player's total
             game.player_pieces[game.turn] += move.length - 1;
-
+            
+            // move the jumping piece
             setPiece(game.board, pn, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
+            
+            // remove jumped over pieces
             for (var i = 0; i < move.length - 1; i++) {
                 var r = (move[i][0] + move[i + 1][0]) / 2;
                 var c = (move[i][1] + move[i + 1][1]) / 2;
                 setPiece(game.board, [r, c], null);
             }
             
+            // change it to a king if neccessary
             if (pn[0] === getKingRow(game.turn)) {
                 getPiece(game.board, pn).king = true;
             }
         }
-
+        
+        // turn is over, switch to other player's turn
         game.turn = 1 - game.turn;
     }
 }
@@ -388,9 +374,9 @@ module.exports = {
     "newDefaultPiece": newDefaultPiece,
     "newBoard": newBoard,
     "newGame": newGame,
+    "copyGame": copyGame,
+    "copyBoard": copyBoard,
     "getKingRow": getKingRow,
-    "newMove": newMove,
-    "addMovePosition": addMovePosition,
     "validateMove": validateMove,
     "getPiece": getPiece,
     "setPiece": setPiece,

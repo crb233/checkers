@@ -12,6 +12,15 @@ The style and format of each version of this changelog is shown below:
 ```
 
 ## Current
+- added validateMove() and makeMove() to checkers.js
+- added validJump() and validStep() to checkers.js
+- added correctDirection(), isDiagonal(), and findDistance() to checkers.js
+
+## 0.3.0
+- linked the send-message endpoint
+- linked the get-updates endpoint
+- linked the make-move endpoint
+- linked the join-game endpoint
 - linked the new-game endpoint to the database
 - linked the get-games endpoint to the database
 

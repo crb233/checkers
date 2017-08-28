@@ -375,6 +375,8 @@ function getGamesList(callback) {
 }
 
 module.exports = {
+    "createRandomID": createRandomID,
+    "createUrl": createUrl,
     "isConnected": isConnected,
     "loadCollection": loadCollection,
     "connect": connect,
