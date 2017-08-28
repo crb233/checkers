@@ -35,7 +35,7 @@ div.square.odd {
 
 /* style for the mouse hovering over a square */
 div.square:hover {
-    outline-color: #7777ee;
+    outline-color: #aaaaff;
     outline-style: dashed;
     outline-width: 4px;
     outline-offset: -4px;
@@ -43,7 +43,7 @@ div.square:hover {
 
 /* style for a selected square */
 div.square.selected {
-    outline-color: #9999ff;
+    outline-color: #aaaaff;
     outline-style: solid;
     outline-width: 6px;
     outline-offset: -6px;
