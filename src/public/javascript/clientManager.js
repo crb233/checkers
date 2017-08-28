@@ -100,10 +100,6 @@ function joinGameServer(){
 
 	var game_id = document.getElementById('gameID').value
 	var username = document.getElementById('username').value
-
-	//for debugging purposes
-	//alert("Game selected has ID: " + game )
-
 	var url = "/join-game"
 
 	$.ajax({
@@ -120,7 +116,7 @@ function joinGameServer(){
 					localStorage.setItem("player", JSON.stringify(msg.player));
 					localStorage.setItem("game", JSON.stringify(msg.game));
 					document.location.href = "/board.html";
-					startTimer(2,0);
+					//startTimer(2,0);
 
         },
         error: function(xhr, ajaxOptions, thrownError) {
@@ -151,10 +147,11 @@ function getGames() {
 		success: function(msg) {
             console.log(msg)
 			if  (msg.length == 0){
-				document.getElementById("content").innerHTML = "There are currently no public games available. You can start one by hosting your own game!";
+				document.getElementById("error").innerHTML = "There are currently no public games available.</p>You can start one by hosting your own game!";
 
 			}
 			else {
+				document.getElementById("error").innerHTML = "";
 				for (var i = 0; i < msg.length; i++) {
 					var game = msg[i];
 					$('#gameList').append(newGames(game, i));
@@ -194,6 +191,7 @@ function newGames(myHtml, i) {
 
 //Go back to the main menu/page
 function backMain (){
+	document.getElementById("error").innerHTML = "";
   document.getElementById("newGameForm").style.display = "none";
 	document.getElementById("joinGameForm").style.display = "none";
 	document.getElementById("gameList").style.display = "none";
@@ -212,11 +210,12 @@ function requestDraw() {
 	$.ajax({
         type: "POST",
         data: JSON.stringify({
-            player_id: player.opponent_id,
+            player_id: player.player_id,
 			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
 		}),
         url: url,
         dataType: "json",
+				contentType: "application/json; charset=utf-8",
         success: function(msg) {
 					alert ("Your request has been sent.. Waiting on opponent's answer.");
 
@@ -237,11 +236,12 @@ function forfeitGame() {
 	$.ajax({
         type: "POST",
         data: JSON.stringify({
-            player_id: player.opponent_id,
+            player_id: player.player_id,
 			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
 		}),
         url: url,
         dataType: "json",
+				contentType: "application/json; charset=utf-8",
         success: function(msg) {
 					alert ("Thanks for using our checkers app! K bye");
 					document.location.href = "/index.html";

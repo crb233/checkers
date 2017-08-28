@@ -9,7 +9,7 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
 
-    <body>
+    <body onload="startTimer(2,0)">
 	<div id="myNav" class="overlay">
 	  <a href="javascript:void(0)" class="closebtn" onclick="resumeGame(); resumeTimer()">&times;</a>
 	  <div id ="overlay-cnt" class="overlay-content">
@@ -40,7 +40,7 @@
 
 		<div id="content1" style="display: inline-block;">
 		<form id="options" class="form-style-9" style="position: absolute; right: 60px;">
-			<h3>Game-ID:<span id="game_info"></span></h3>
+			<h3>Game-ID: <span id="game_info"></span></h3>
 			<h1> Menu </h1>
 			<p>
 			<center>
@@ -53,9 +53,9 @@
 			<button class="button button5 btn-block" onClick="pauseTimer(); return false;">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
 			</p></center>
 
-			<p><b>Turn:</b>Player: <span id="turn">  </span></p>
+			<p><b>Turn:</b> <span id="turn">  </span></p>
 
-			<p><b>Number of pieces collected: </b> 0</p>
+			<p><b>Number of pieces collected: </b> <span id="pieces"></span></p>
 			<b  style="font-size: 50px;">Timer: <b style="color: green"><div id=timer></div></b>
 
 		  </form>
