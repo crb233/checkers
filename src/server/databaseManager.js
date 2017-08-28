@@ -126,7 +126,6 @@ DB_PASS, DB_ADDR, and DB_NAME. This also loads the database's collections.
 @param {} callback - the function to be called when this operation has completed
 */
 function connect(callback) {
-
     // get database url from environment variables
     const url = createUrl(
         process.env.DB_USER, process.env.DB_PASS,
@@ -166,6 +165,11 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function addPlayer(player, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     // Queries database with newly generated player ID
     (function getID() {
         var id = createRandomID();
@@ -200,6 +204,11 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function addGame(game, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     // Queries database with newly generated game ID
     (function getID() {
         var id = createRandomID();
@@ -230,6 +239,11 @@ function addGame(game, callback) {
 }
 
 function addOpponent(game_id, player_id, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.opponents.findOne({ "game_id": game_id }, {}, function(err, opps) {
         if (err) {
             callback(err);
@@ -271,6 +285,11 @@ second parameter to the callback function.
 @param {} callback - the function to be called when this operation has completed
 */
 function getPlayer(player_id, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.players.findOne({ "player_id": player_id }, {}, function(err, res) {
         if (err) {
             callback(err);
@@ -293,6 +312,11 @@ second parameter to the callback function.
 @param {} callback - the function to be called when this operation has completed
 */
 function getGame(game_id, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.games.findOne({ "game_id": game_id }, {}, callback);
 }
 
@@ -300,6 +324,11 @@ function getGame(game_id, callback) {
 TODO
 */
 function getOpponent(game_id, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.opponents.findOne({ "game_id": game_id }, {}, callback);
 }
 
@@ -309,6 +338,11 @@ Updates a player object in the database
 @param {} callback - the function to be called when this operation has completed
 */
 function updatePlayer(player, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.players.replaceOne({ "player_id": player.player_id }, player, {}, callback);
 }
 
@@ -318,6 +352,11 @@ Updates a game object in the database
 @param {} callback - the function to be called when this operation has completed
 */
 function updateGame(game, callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.games.replaceOne({ "game_id": game.game_id }, game, {}, callback);
 }
 
@@ -327,16 +366,12 @@ the second parameter to the callback function
 @param {} callback - the function to be called when this operation has completed
 */
 function getGamesList(callback) {
+    if (typeof colls.players === "undefined") {
+        callback("Server has not yet connected to the database.");
+        return;
+    }
+    
     colls.games.find({"public": true, "active": false}).toArray(callback);
-}
-
-/**
-Sends a message to a player's opponent by storing it in their opponent's list
-of messages
-@param {} callback - the function to be called when this operation has completed
-*/
-function sendMessage(player_id, message, callback) {
-    // TODO
 }
 
 module.exports = {
@@ -351,6 +386,5 @@ module.exports = {
     "getOpponent": getOpponent,
     "updatePlayer": updatePlayer,
     "updateGame": updateGame,
-    "getGamesList": getGamesList,
-    "sendMessage": sendMessage
+    "getGamesList": getGamesList
 };
