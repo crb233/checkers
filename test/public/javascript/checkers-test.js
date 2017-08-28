@@ -56,7 +56,20 @@ const invalidMove1 =                [[0,0]];
 const invalidMove2 =                [[0,0], [0,1]];
 const invalidMove3 =                [[2,0], [4,2], [5,3]];
 
+//validating Jumps
+const positions = [[4,3],[2,5]]
 
+var validJump = newBasicGame(); //valid Jump
+validJump.turn = 1;
+validJump.board[3][4] = {player:0, king:false};
+
+var invalidJumpOwnPiece = newBasicGame(); //piece jumping over is its own
+invalidJumpOwnPiece.turn = 1;
+invalidJumpOwnPiece.board[3][4] = {player:1, king:false};
+
+var invalidJumpNoPiece = newBasicGame(); //no piece to jump over
+invalidJumpNoPiece.turn = 1;
+invalidJumpNoPiece.board[3][4] = null;
 
 function newBasicGame() {
     game = checkers.newGame("1", true, true);

@@ -23,7 +23,7 @@ function hostGameForm() {
 new game to the database
 */
 function hostGame() {
-	var username = document.getElementById("username").value;
+	var username = document.getElementById("usernameHost").value;
 
 	// value is 1 for private, and 0 for a public game
 	var mode = document.querySelector('input[name="mode"]:checked').value;
@@ -99,7 +99,7 @@ function joinGameServer(){
 	}
 
 	var game_id = document.getElementById('gameID').value
-	var username = document.getElementById('username').value
+	var username = document.getElementById('usernameJoin').value
 	var url = "/join-game"
 
 	$.ajax({
