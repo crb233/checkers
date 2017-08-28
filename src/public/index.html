@@ -50,7 +50,7 @@
     		<h1> New Game </h1>
 
             <label>Username: </label>
-            <input type="text" class="form-field" id="username" placeholder="username" required><br>
+            <input type="text" class="form-field" id="usernameHost" placeholder="username" required><br>
 
             <label> Mode: </label>
             <input type="radio" name="mode" class="form-field" value="1" required> Private <input type="radio" name="mode" class="form-field"class="form-field" value="0" required> Public<br>
@@ -65,14 +65,14 @@
 			<h4><i> Select a public game from the list below or enter the private game ID in the textbox. </i></h4>
 
             <label> Username: </label>
-            <input type="text" class="form-field" id="username" placeholder="username" value="" required><br>
+            <input type="text" class="form-field" id="usernameJoin" placeholder="username" value="" required><br>
 
             <label> Game ID: </label>
             <input type="text" class="form-field" id="gameID" placeholder="Game-ID" required><br>
 
 			<button class="button button5" onclick="joinGameServer(); return false;" value="Submit">Join</button>
 		</form>
-
+    <center><div id="error" style="margin-left: 50px auto;"></div></center>
 		<ul class="games-style" id="gameList"></ul>
 
     </div>

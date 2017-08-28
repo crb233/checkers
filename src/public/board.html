@@ -9,12 +9,12 @@
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
 
-    <body>
+    <body onload="startTimer(2,0)">
 	<div id="myNav" class="overlay">
 	  <a href="javascript:void(0)" class="closebtn" onclick="resumeGame(); resumeTimer()">&times;</a>
 	  <div id ="overlay-cnt" class="overlay-content">
 		<header><font color='white'>GAME IS PAUSED</header>
-		Game ID:<span id="game_info"></span></font>
+		Game ID:<span id="game_info2"></span></font>
 		<article class='games-style'><ol>
 			 <li><b style='font-size: 30px;'>GAME RULES</b></p>
 			 1. Black moves first. Players then alternate moves.</p>
@@ -40,7 +40,7 @@
 
 		<div id="content1" style="display: inline-block;">
 		<form id="options" class="form-style-9" style="position: absolute; right: 60px;">
-			<h3>Game-ID:<span id="game_info"></span></h3>
+			<h3>Game-ID: <span id="game_info" style></span></h3>
 			<h1> Menu </h1>
 			<p>
 			<center>
@@ -53,10 +53,22 @@
 			<button class="button button5 btn-block" onClick="pauseTimer(); return false;">Help <i style="font-size:16px; bottom:0" class="material-icons">help</i></button>
 			</p></center>
 
-			<p><b>Turn:</b>Player: <span id="turn">  </span></p>
-
-			<p><b>Number of pieces collected: </b> 0</p>
-			<b  style="font-size: 50px;">Timer: <b style="color: green"><div id=timer></div></b>
+			<table id="info" style="max-width: 400px;">
+			  <tr>
+			    <th>Players</th>
+			    <th># Pieces collected</th>
+			  </tr>
+				<tr id="player1row">
+			    <td id="player1name"></td>
+			    <td id="player1pieces"></td>
+			  </tr>
+			  <tr id="player2row">
+					<td id="player2name"></td>
+			    <td id="player2pieces"></td>
+			  </tr>
+			</table>
+			<b style="font-size: 30px;">Timer: <span style="color: green"><div id=timer></div></span></b>
+			<div id="timerInfo">Waiting on opponent ...</div>
 
 		  </form>
 		</div>

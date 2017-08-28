@@ -74,7 +74,8 @@ function getPieceImage(piece) {
 
 // Builds the HTML for the board object
 function buildBoard() {
-	document.getElementById("game_info").innerHTML = game.game_id;
+  document.getElementById("game_info").innerHTML = game.game_id;
+  document.getElementById("game_info2").innerHTML = game.game_id;
 
     var board_elem = document.getElementById("board");
 
@@ -100,6 +101,10 @@ function buildBoard() {
 
         // add squares to list
         squares.push(row);
+
+        updateTable();
+
+
     }
 
 	//Pause timer and open screen overlay if 2nd player has not joined yet.
@@ -152,10 +157,10 @@ function enableButtons(enabled) {
     if (typeof enabled === "undefined") {
         enabled = true;
     }
-    
+
     sendButton.disabled = !enabled;
     undoButton.disabled = !enabled;
-    
+
     if (enabled) {
         sendButton.classList.remove("button3");
         undoButton.classList.remove("button3");
@@ -179,11 +184,11 @@ function arraysEqual(a, b) {
     if (a === b) {
         return true;
     }
-    
+
     if (a == null || b == null || a.length !== b.length) {
         return false;
     }
-    
+
     for (var i = 0; i < a.length; ++i) {
         if (a[i] !== b[i]) {
             return false;
@@ -237,56 +242,56 @@ object and updates the board to reflect the current (unfinished) move.
 @param {integer} c - the column number of the selected square (0 indexed)
 */
 function clickSquare(r, c) {
-    
+
     if (squares[r][c] !== selected) {
-        
+
         move.push([r, c]);
         if (move.length === 1) {
             enableButtons(false);
-            
+
             var piece = game.board[r][c];
             if (piece === null) {
                 alert("Please select a piece");
                 move.pop();
-                
+
             } else if (piece.player !== player.player_number) {
                 alert("This isn't your piece, dummy");
                 move.pop();
-                
+
             } else if (piece.player !== game.turn) {
                 alert("It's not your turn, dummy");
                 move.pop();
-                
+
             } else {
                 setSelected(r, c);
             }
-            
+
         } else if (validateMove(game, move)) {
             enableButtons(true);
             setSelected(r, c);
-            
+
             var tempGame = copyGame(game);
             makeMove(tempGame, move);
             drawPieces(tempGame.board);
-            
+
         } else {
             var piece = game.board[r][c];
             if (piece === null) {
                 move.pop();
-                
+
             } else if (piece.player !== player.player_number) {
                 move.pop();
-                
+
             } else if (piece.player !== game.turn) {
                 move.pop();
-                
+
             } else if (containsArray(move.slice(0, move.length - 1), [r, c])) {
                 move.pop();
-                
+
             } else {
                 move = [];
                 move.push([r, c]);
-                
+
                 setSelected(r, c);
                 drawPieces(game.board);
             }
@@ -338,15 +343,16 @@ function resetBoard() {
 Message received from the server/opponent
 */
 function receiveMessage(msg) {
-
+    game = msg.game;
     switch (msg.type) {
         case "join":
             alert(msg.text);
             closeNav();
             startTimer(2,0);
+            updateTable();
             break;
         case "forfeit":
-            alert("Your opponent forfeited the game. You win!");
+            alert(msg.text);
             document.location.href = "/index.html";
             break;
         case "request_draw":
@@ -371,6 +377,9 @@ function receiveMessage(msg) {
         case "resume":
           resumeTimer();
           break;
+        case "expired":
+          timeExpired();
+          break;
         default:
             console.error("Unknown message type");
             alert("Unknown message type");
@@ -384,10 +393,10 @@ function accept_draw(){
         player_id: player.player_id,
         message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
     };
-    
+
     post("/send-message", data, function(msg) {
         document.location.href = "/index.html";
-        
+
     }, function(xhr, ajaxOptions, thrownError) {
         //document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
@@ -402,13 +411,13 @@ function reject_draw() {
             "text": "Draw rejected: keep playing."
         }
     };
-    
+
     post("/send-message", data, function(msg) {
         //do nothing?
-        
+
     }, function(xhr, ajaxOptions, thrownError) {
         alert ("Error sending message");
-        
+
     });
 }
 
@@ -423,13 +432,13 @@ function requestDraw() {
             "text": "Your opponent is requesting a draw."
         }
     };
-    
+
     post("/send-message", data, function(msg) {
         //TODO
         //message should be the opponent's final decision: Accepted or declined
         //based on message: continure or end game
         //alert (msg);
-        
+
     }, function(xhr, ajaxOptions, thrownError) {
         document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
@@ -446,7 +455,28 @@ function forfeitGame() {
             "text": "Your opponent forfeited the game. You win!"
         }
     };
-    
+
+    post("/send-message", data, function(msg) {
+        //Game ends....
+
+        // TODO
+        // alert (msg);
+    }, function(xhr, ajaxOptions, thrownError) {
+        document.getElementById("content").innerHTML = "Error Fetching " + URL;
+    });
+}
+/**
+Forfeit the game by sending a message to the server with text for the opponent
+*/
+function forfeitGame() {
+    var data = {
+        player_id: player_id,
+        message: {
+            "type": "forfeit",
+            "text": "Your opponent forfeited the game. You win!"
+        }
+    };
+
     post("/send-message", data, function(msg) {
         //Game ends....
 
@@ -457,6 +487,7 @@ function forfeitGame() {
     });
 }
 
+
 function pauseGame() {
     var data = {
         player_id: player.player_id,
@@ -465,10 +496,10 @@ function pauseGame() {
             "text": "Your opponent paused the game."
         }
     };
-    
+
     post("/send-message", data, function(msg) {
         //do nothing?
-        
+
     }, function(xhr, ajaxOptions, thrownError) {
         alert ("Error sending message");
     });
@@ -483,10 +514,10 @@ function resumeGame() {
             "text": ""
         }
     };
-    
+
     post("/send-message", data, function(msg) {
         //do nothing?
-        
+
     }, function(xhr, ajaxOptions, thrownError) {
         alert ("Error sending message");
     });
@@ -497,24 +528,56 @@ loop = setInterval(function(){
     var data = {
         player_id: player.player_id
     };
-    
+
     post("/get-updates", data, function(msg) {
         // success
+        
         if (game.turn !== player.player_number) {
             game = msg.game;
             resetBoard();
         }
-        
+
+        game = msg.game;
+        updateTable();
+
         for (var i = 0; i < msg.messages.length; i++) {
             receiveMessage(msg.messages[i]);
         }
-        
+
     }, function(xhr, ajaxOptions, thrownError) {
         // failure
         // document.getElementById("content").innerHTML = "Error Fetching " + URL;
     });
-}, 6000);
+}, 1000);
 
+
+//function to udpate the table with the appropriate info after getting new game object
+
+function updateTable () {
+
+  //Show timer only for the player whose turn it is
+  if (game.turn !== player.player_number) {
+      document.getElementById("timer").style.display = "none";
+      document.getElementById("timerInfo").style.display = "block";
+  }
+
+  else {
+    document.getElementById("timer").style.display = "block";
+    document.getElementById("timerInfo").style.display = "none";
+  }
+
+  if (game.turn === 0) {
+      document.getElementById("player1row").style.background = "#b4eeb4";
+
+  }
+  else {
+    document.getElementById("player2row").style.background = "#b4eeb4";
+  }
+  document.getElementById("player1name").innerHTML = game.player_names[0];
+  document.getElementById("player2name").innerHTML = game.player_names[1];
+  document.getElementById("player1pieces").innerHTML=  game.player_pieces[0];
+  document.getElementById("player2pieces").innerHTML=  game.player_pieces[1];
+}
 
 
 //SIDE MENU FUNCTIONS
@@ -529,7 +592,10 @@ function startTimer(m, s) {
 	if (s == 0) {
 		if (m == 0) {
 			document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
-			//timeExpired();
+      if (game.turn === player.player_number) {
+          timeExpired();
+      }
+
 			return;
 		} else if (m != 0) {
 			m = m - 1;
@@ -541,6 +607,8 @@ function startTimer(m, s) {
 	timer = setTimeout(function() {
 		startTimer(m, s)
 	}, 1000);
+
+  return false;
 }
 
 /**
@@ -550,13 +618,14 @@ function timeExpired() {
 	//send message to the server "Expired"? with player_id who lost
 	var data = {
         player_id: player.player_id,
-        message: {"type":"lose-game" , "text":"Opponent's time expired. You win!"}
+        message: {"type":"forfeit" , "text":"Opponent's time expired. You win!"}
     };
-    
+
     post("/send-message", data, function(msg) {
 		// success
         alert ("Your time expired. You lose! ");
-        
+        document.location.href = "/index.html";
+
     }, function(xhr, ajaxOptions, thrownError) {
         // failure
         //document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -570,7 +639,6 @@ Overlay screen after pausing the game
 */
 
 function openNav() {
-	//pauseTimer();
 	document.getElementById("myNav").style.width = "100%";
 	return false;
 }
@@ -580,9 +648,7 @@ function openNav() {
 Closing the overlay screen after pausing the game
 */
 function closeNav() {
-
 	document.getElementById("myNav").style.width = "0%";
-	//resumeTimer();
 }
 
 /**
