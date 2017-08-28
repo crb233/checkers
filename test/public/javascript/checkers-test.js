@@ -34,7 +34,20 @@ const distance1move =               [[0,0], [1,1]]
 const distance2move =               [[0,0], [2,2]]
 const distance3move =			    [[0,0], [3,3]]
 
+//validating Jumps
+const positions = [[4,3],[2,5]]
 
+var validJump = newBasicGame(); //valid Jump
+validJump.turn = 1;
+validJump.board[3][4] = {player:0, king:false};
+
+var invalidJumpOwnPiece = newBasicGame(); //piece jumping over is its own
+invalidJumpOwnPiece.turn = 1;
+invalidJumpOwnPiece.board[3][4] = {player:1, king:false};
+
+var invalidJumpNoPiece = newBasicGame(); //no piece to jump over
+invalidJumpNoPiece.turn = 1;
+invalidJumpNoPiece.board[3][4] = null;
 
 function newBasicGame() {
     game = checkers.newGame(1, true, true);
@@ -140,11 +153,14 @@ describe("checkers.js", function() {
     describe("validJump()", function() {
         
         var basicGame = newBasicGame();
-        var kingsGame = newKingsGame();
+        var kingsGame = newKingsGame();		
         
         it("should test if validJump function works properly", function() {
             assert(checkers.validJump(basicGame, distance2move[0], distance2move[1]) === false);
             assert(checkers.validJump(basicGame, distance3move[0], distance3move[1]) === false);
+			assert(checkers.validJump(validJump, positions[0], positions[1]) === true);
+			assert(checkers.validJump(invalidJumpOwnPiece, positions[0],positions[1]) === false);
+			assert(checkers.validJump(invalidJumpNoPiece, positions[0], positions[1]) === true);
         });
         
     });
@@ -232,15 +248,24 @@ describe("checkers.js", function() {
  * position2 = [5,0]
  *
  * // Piece between positions is opponent's piece
- *
- *
+ * position1 = [4][3]
+ * position2 = [2][5]
+ * validateJumpgame.turn = 1;
+ * validateJumpgame.board[3][4] = {player:0, king:false};
+ * 
  *
  * // Piece between positions is current player's piece
- *
+ * position1 = [4][3]
+ * position2 = [2][5]
+ * validateJumpgame.turn = 1;
+ * validateJumpgame.board[3][4] = {player:1, king:false};
  *
  *
  * // No piece between positions
- *
+ * position1 = [4][3]
+ * position2 = [2][5]
+ * validateJumpgame.turn = 1;
+ * validateJumpgame.board[3][4] = null;
  *
  *
  */
