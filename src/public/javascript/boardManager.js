@@ -71,6 +71,8 @@ function getPieceImage(piece) {
 // Builds the HTML for the board object
 function buildBoard() {
 	document.getElementById("game_info").innerHTML = game.game_id;
+  document.getElementById("pieces").innerHTML = game.player_pieces[0];
+  document.getElementById("turn").innerHTML = game.player_names[game.turn];
 
     var board_elem = document.getElementById("board");
 
@@ -96,6 +98,8 @@ function buildBoard() {
 
         // add squares to list
         squares.push(row);
+
+
     }
 
 	//Pause timer and open screen overlay if 2nd player has not joined yet.
@@ -252,7 +256,7 @@ function receiveMessage(msg) {
         case "join":
             alert(msg.text);
             closeNav();
-            startTimer(2,0);
+            //startTimer(2,0);
             break;
         case "forfeit":
             alert("Your opponent forfeited the game. You win!");
@@ -397,7 +401,7 @@ loop = setInterval(function(){
            // document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
-}, 6000);
+}, 1000);
 
 
 
@@ -425,6 +429,8 @@ function startTimer(m, s) {
 	timer = setTimeout(function() {
 		startTimer(m, s)
 	}, 1000);
+
+  return false;
 }
 
 /**
@@ -462,7 +468,6 @@ Overlay screen after pausing the game
 */
 
 function openNav() {
-	//pauseTimer();
 	document.getElementById("myNav").style.width = "100%";
 	return false;
 }
@@ -472,9 +477,7 @@ function openNav() {
 Closing the overlay screen after pausing the game
 */
 function closeNav() {
-
 	document.getElementById("myNav").style.width = "0%";
-	//resumeTimer();
 }
 
 /**
