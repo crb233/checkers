@@ -358,7 +358,7 @@ function receiveMessage(msg) {
         case "request_draw":
             var r = confirm(msg.text+". Click OK to accept or CANCEL to keep playing.");
             if (r == true) {
-                txt = "Cool";
+                reject_draw();
             } else {
                 txt = "You win. Thanks for playing!";
                 accept_draw();
@@ -369,16 +369,17 @@ function receiveMessage(msg) {
             document.location.href = "/index.html";
             break;
         case "reject_draw":
-          reject_draw();
+            alert(msg.text);
             break;
         case "pause":
+          alert(msg.text);
           pauseTimer();
           break;
         case "resume":
           resumeTimer();
           break;
         case "expired":
-          timeExpired();
+          alert(msg.text);
           break;
         default:
             console.error("Unknown message type");
@@ -386,45 +387,10 @@ function receiveMessage(msg) {
             break;
     }
 }
-
-
-function accept_draw(){
-    var data = {
-        player_id: player.player_id,
-        message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
-    };
-
-    post("/send-message", data, function(msg) {
-        document.location.href = "/index.html";
-
-    }, function(xhr, ajaxOptions, thrownError) {
-        //document.getElementById("content").innerHTML = "Error Fetching " + URL;
-    });
-
-}
-
-function reject_draw() {
-    var data = {
-        player_id: player.player_id,
-        message: {
-            "type": "accept_draw",
-            "text": "Draw rejected: keep playing."
-        }
-    };
-
-    post("/send-message", data, function(msg) {
-        //do nothing?
-
-    }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
-
-    });
-}
-
 /**
 Request a draw: Opponent will get a message and be prompted to accept or decline the draw
 */
-function requestDraw() {
+function request_draw() {
     var data = {
         player_id: player_id,
         message: {
@@ -434,15 +400,59 @@ function requestDraw() {
     };
 
     post("/send-message", data, function(msg) {
-        //TODO
-        //message should be the opponent's final decision: Accepted or declined
-        //based on message: continure or end game
-        //alert (msg);
+
+        alert ("Your opponent received your request.");
 
     }, function(xhr, ajaxOptions, thrownError) {
-        document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        alert ("Error sending message");
+
     });
 }
+
+
+/**
+Accept a draw: Opponent accepts the draw, and no winners are declared
+*/
+function accept_draw(){
+    var data = {
+        player_id: player.player_id,
+        message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
+    };
+
+    post("/send-message", data, function(msg) {
+
+        alert("The game is declared a draw. No winners!")
+        document.location.href = "/index.html";
+
+    }, function(xhr, ajaxOptions, thrownError) {
+        alert ("Error sending message");
+
+    });
+
+}
+
+/**
+Reject a draw: Opponent rejects the draw, game continues.
+*/
+
+function reject_draw() {
+    var data = {
+        player_id: player.player_id,
+        message: {
+            "type": "accept_draw",
+            "text": "Draw rejected. The game continues."
+        }
+    };
+
+    post("/send-message", data, function(msg) {
+      alert("The game goes on. " + game.player_names[game.turn] +"'s turn.")
+
+    }, function(xhr, ajaxOptions, thrownError) {
+        alert ("Error sending message");
+
+    });
+}
+
 
 /**
 Forfeit the game by sending a message to the server with text for the opponent
@@ -458,35 +468,13 @@ function forfeitGame() {
 
     post("/send-message", data, function(msg) {
         //Game ends....
+        alert ("You forfeited the game. You lose!");
+          document.location.href = "/index.html";
 
-        // TODO
-        // alert (msg);
     }, function(xhr, ajaxOptions, thrownError) {
-        document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        alert ("Error sending message");
     });
 }
-/**
-Forfeit the game by sending a message to the server with text for the opponent
-*/
-function forfeitGame() {
-    var data = {
-        player_id: player_id,
-        message: {
-            "type": "forfeit",
-            "text": "Your opponent forfeited the game. You win!"
-        }
-    };
-
-    post("/send-message", data, function(msg) {
-        //Game ends....
-
-        // TODO
-        // alert (msg);
-    }, function(xhr, ajaxOptions, thrownError) {
-        document.getElementById("content").innerHTML = "Error Fetching " + URL;
-    });
-}
-
 
 function pauseGame() {
     var data = {
@@ -498,7 +486,7 @@ function pauseGame() {
     };
 
     post("/send-message", data, function(msg) {
-        //do nothing?
+        //do nothing
 
     }, function(xhr, ajaxOptions, thrownError) {
         alert ("Error sending message");
@@ -531,7 +519,7 @@ loop = setInterval(function(){
 
     post("/get-updates", data, function(msg) {
         // success
-        
+
         if (game.turn !== player.player_number) {
             game = msg.game;
             resetBoard();
