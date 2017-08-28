@@ -17,6 +17,14 @@ const body_parser = require("body-parser");
 /** an instance of the RequestManager local module for managing different
 kinds of requests */
 const requests = require(path(__dirname, "requestManager"));
+requests.connect(function(err) {
+    if (err) {
+        console.error("Failed to connect to database.\nExiting...");
+        process.exit(1);
+    } else {
+        console.log("Connected to database.");
+    }
+});
 
 /** the port number for this server to use. It is set to the value of the
 environment variable PORT, or 8080 if PORT isn't set. */
