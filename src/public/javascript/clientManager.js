@@ -6,15 +6,11 @@ var gameBoard = [];
 @description Populate the page with the form to submit in order to start a new game
 */
 function hostGameForm() {
-    //var url = "/gameStartReq";
-
-	document.getElementById("mainMenu").style.display = "none";
-	document.getElementById("joinGameForm").style.display = "none";
-	document.getElementById("gameList").style.display = "none";
-	document.getElementById("newGameForm").style.display = "block";
-
+    document.getElementById("mainMenu").style.display = "none";
+    document.getElementById("joinGameForm").style.display = "none";
+    document.getElementById("gameList").style.display = "none";
+    document.getElementById("newGameForm").style.display = "block";
 }
-
 
 /**
 @function
@@ -23,36 +19,34 @@ function hostGameForm() {
 new game to the database
 */
 function hostGame() {
-	var username = document.getElementById("usernameHost").value;
+    var username = document.getElementById("usernameHost").value;
 
-	// value is 1 for private, and 0 for a public game
-	var mode = document.querySelector('input[name="mode"]:checked').value;
+    // value is 1 for private, and 0 for a public game
+    var mode = document.querySelector('input[name="mode"]:checked').value;
 
-	// is it public?
-	var is_public = mode === "0";
+    // is it public?
+    var is_public = mode === "0";
 
-	//alert("Username: " +  username);
+    var url = "/new-game"
 
-	var url = "/new-game"
-
-	$.ajax({
+    $.ajax({
         type: "POST",
         data: JSON.stringify({
             "player_name": username,
-			"public": is_public
+            "public": is_public
         }),
         url: url,
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
             // put player and game into local storage
-			localStorage.setItem("player", JSON.stringify(msg.player));
-			localStorage.setItem("game", JSON.stringify(msg.game));
-			document.location.href = "/board.html";
+            localStorage.setItem("player", JSON.stringify(msg.player));
+            localStorage.setItem("game", JSON.stringify(msg.game));
+            document.location.href = "/board.html";
         },
         error: function(xhr, ajaxOptions, thrownError) {
-			console.error("Error fetching " + url);
-			document.getElementById("content").innerHTML = "Error Fetching " + url;
+            console.error("Error fetching " + url);
+            document.getElementById("content").innerHTML = "Error Fetching " + url;
         }
     });
 }
@@ -64,7 +58,7 @@ function hostGame() {
 @description Hides the list of public games
 */
 function hidegames() {
-
+    
 }
 
 /**
@@ -74,15 +68,14 @@ function hidegames() {
 and calls showgames() to display the list of games available to join
 */
 function joinGameForm(){
+    document.getElementById("mainMenu").style.display = "none";
+    document.getElementById("newGameForm").style.display = "none";
 
-	document.getElementById("mainMenu").style.display = "none";
-	document.getElementById("newGameForm").style.display = "none";
+    document.getElementById("joinGameForm").style.display = "block";
+    document.getElementById("gameList").style.display = "block";
 
-	document.getElementById("joinGameForm").style.display = "block";
-	document.getElementById("gameList").style.display = "block";
-
-	//showGames is called in order to display the list of public games available
-	getGames();
+    //showGames is called in order to display the list of public games available
+    getGames();
 }
 
 /**
@@ -92,35 +85,35 @@ function joinGameForm(){
 according to their selection(Game and username)
 */
 function joinGameServer(){
-	//Check if player selected a public game
-	if ( document.getElementById('gameID').value == '' ) {
-		//game = document.getElementById('gameID').value
-		document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
-	}
+    //Check if player selected a public game
+    if ( document.getElementById('gameID').value == '' ) {
+        //game = document.getElementById('gameID').value
+        document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
+    }
 
-	var game_id = document.getElementById('gameID').value
-	var username = document.getElementById('usernameJoin').value
-	var url = "/join-game"
+    var game_id = document.getElementById('gameID').value
+    var username = document.getElementById('usernameJoin').value
+    var url = "/join-game"
 
-	$.ajax({
+    $.ajax({
         type: "POST",
         data: JSON.stringify({
-			"player_name": username,
-			"game_id": game_id
+            "player_name": username,
+            "game_id": game_id
         }),
         url: url,
         dataType: "json",
         contentType: "application/json; charset=utf-8",
         success: function(msg) {
             // put player and game into local storage
-					localStorage.setItem("player", JSON.stringify(msg.player));
-					localStorage.setItem("game", JSON.stringify(msg.game));
-					document.location.href = "/board.html";
-					//startTimer(2,0);
+            localStorage.setItem("player", JSON.stringify(msg.player));
+            localStorage.setItem("game", JSON.stringify(msg.game));
+            document.location.href = "/board.html";
+            //startTimer(2,0);
 
         },
         error: function(xhr, ajaxOptions, thrownError) {
-			console.error("Error fetching " + url);
+            console.error("Error fetching " + url);
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
         }
     });
@@ -132,34 +125,30 @@ function joinGameServer(){
 @name showGames
 @description Gets the list of public active games
 */
-
 function getGames() {
     var url = "/get-games"
-	var numGames = 0;
-	//empty content of games
-	document.getElementById("gameList").innerHTML = "";
+    var numGames = 0;
+    //empty content of games
+    document.getElementById("gameList").innerHTML = "";
 
     $.ajax({
         type: "POST",
         url: url,
         dataType: "json",
         contentType: "application/json; charset=utf-8",
-		success: function(msg) {
-            console.log(msg)
-			if  (msg.length == 0){
-				document.getElementById("error").innerHTML = "There are currently no public games available.</p>You can start one by hosting your own game!";
+        success: function(msg) {
+            if  (msg.length == 0){
+                document.getElementById("error").innerHTML = "There are currently no public games available.</p>You can start one by hosting your own game!";
 
-			}
-			else {
-				document.getElementById("error").innerHTML = "";
-				for (var i = 0; i < msg.length; i++) {
-					var game = msg[i];
-					$('#gameList').append(newGames(game, i));
+            } else {
+                document.getElementById("error").innerHTML = "";
+                for (var i = 0; i < msg.length; i++) {
+                    var game = msg[i];
+                    $('#gameList').append(newGames(game, i));
+                }
 
-				}
-
-				$('#gameList').append('<li class="game" style="display:block"><article>Stuff</article></li>');
-			}
+                $('#gameList').append('<li class="game" style="display:block"><article>Stuff</article></li>');
+            }
         },
         error: function(xhr, ajaxOptions, thrownError) {
             document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -176,13 +165,13 @@ function getGames() {
 */
 function newGames(myHtml, i) {
     var gui = myHtml['game_id'];
-	var host = myHtml['player_names'][0];
+    var host = myHtml['player_names'][0];
     //var level = myHtml[i].level;
     // Generate the game
     var game = '<li class="game">';
     game += '<input type="radio" name="game" value="' + gui + '" onClick="myf(\''+gui+'\')"><article>';
     game += '<b>Game Level: </b><u>Intermediate</u>';
-	  game += '<p><b>Game ID: </b>' + gui + '</p>';
+    game += '<p><b>Game ID: </b>' + gui + '</p>';
     game += '<p><b>Host: </b>' + host + '</p>';
     game += '</article></input>';
     game += '</li>';
@@ -191,11 +180,11 @@ function newGames(myHtml, i) {
 
 //Go back to the main menu/page
 function backMain (){
-	document.getElementById("error").innerHTML = "";
-  document.getElementById("newGameForm").style.display = "none";
-	document.getElementById("joinGameForm").style.display = "none";
-	document.getElementById("gameList").style.display = "none";
-	document.getElementById("mainMenu").style.display = "block";
+    document.getElementById("error").innerHTML = "";
+    document.getElementById("newGameForm").style.display = "none";
+    document.getElementById("joinGameForm").style.display = "none";
+    document.getElementById("gameList").style.display = "none";
+    document.getElementById("mainMenu").style.display = "block";
 
 }
 
@@ -204,21 +193,20 @@ function backMain (){
 Request a draw: Opponent will get a message and be prompted to accept or decline the draw
 */
 function requestDraw() {
-	var url = "/send-message"
-	var data;
+    var url = "/send-message"
+    var data = {
+        player_id: player.player_id,
+        message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
+    };
 
-	$.ajax({
+    $.ajax({
         type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-			message: {"type":"request_draw" , "text":"Your opponent is requesting a draw."}
-		}),
         url: url,
+        data: JSON.stringify(data),
         dataType: "json",
-				contentType: "application/json; charset=utf-8",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
-					alert ("Your request has been sent.. Waiting on opponent's answer.");
-
+            alert ("Your request has been sent.. Waiting on opponent's answer.");
         },
         error: function(xhr, ajaxOptions, thrownError) {
             alert ("Error sending message");
@@ -230,22 +218,24 @@ function requestDraw() {
 Forfeit the game by sending a message to the server with text for the opponent
 */
 function forfeitGame() {
-	var url = "/send-message"
-	var data;
-
-	$.ajax({
+    var url = "/send-message"
+    var data = {
+        player_id: player.player_id,
+        message: {
+            "type": "forfeit",
+            "text": "Your opponent forfeited the game. You win!"
+        }
+    };
+    
+    $.ajax({
         type: "POST",
-        data: JSON.stringify({
-            player_id: player.player_id,
-			message: {"type":"forfeit" , "text":"Your opponent forfeited the game. You win!"}
-		}),
         url: url,
+        data: JSON.stringify(data),
         dataType: "json",
-				contentType: "application/json; charset=utf-8",
+        contentType: "application/json; charset=utf-8",
         success: function(msg) {
-					alert ("Thanks for using our checkers app! K bye");
-					document.location.href = "/index.html";
-
+            alert ("Thanks for using our checkers app! K bye");
+            document.location.href = "/index.html";
         },
         error: function(xhr, ajaxOptions, thrownError) {
             alert ("Error sending message");
@@ -255,5 +245,5 @@ function forfeitGame() {
 
 //Fill Game ID by clicking on the game
 function myf(gui){
-document.getElementById('gameID').value= gui;
+    document.getElementById('gameID').value= gui;
 }
