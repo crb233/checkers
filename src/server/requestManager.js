@@ -1,4 +1,8 @@
 
+if (typeof describe === "undefined") {
+    describe = function() {};
+}
+
 /**
 @module request-manager
 @description Receives requests from app.js and determines how to proceed with

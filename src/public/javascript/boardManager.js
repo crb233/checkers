@@ -1,16 +1,24 @@
 
+// CONSTANTS
+
+// the delay between get-update requests in milliseconds
+const UPDATE_LOOP_TIME = 1000;
+
+// the player object representing the current user
 const player = JSON.parse(localStorage.getItem("player"));
+
+
+
+
+// VARIABLES
 
 // the current game object
 var game = JSON.parse(localStorage.getItem("game"));
 
-// stores the visual state of the board (including unfinished moves)
-var currentBoard = copyBoard(game.board);
-
 // the matrix of html squares (each of which is a div)
 var squares = [];
 
-// current move
+// current move object (updated as the player selects squares)
 var move = [];
 
 // currently selected piece
@@ -23,26 +31,32 @@ var value = "00:00";
 // button html elements
 var sendButton = document.getElementById("send");
 var undoButton = document.getElementById("undo");
+
+
+
+
+// STARTUP FUNCTION CALLS
+
+// create board elements and draw initial board state
+buildBoard();
+drawPieces(game.board);
+
+// disable send-move and undo-move buttons
 enableButtons(false);
 
-
-
-// build the board HTML
-buildBoard();
-
-// create a new board and draw the pieces
-drawPieces(currentBoard);
+// start get-updates loop
+startUpdateLoop();
 
 
 
 
 
-// post("/new-game", {}, function(msg) {
-//     // success
-// }, function(xhr, ajaxOptions, thrownError) {
-//     // error
-// });
+// FUNCTIONS
 
+/**
+Sends a post request containing JSON data to the given endpoint. Calls one of
+two callback functions depending on the success/error status of the request.
+*/
 function post(endpoint, data, success, error) {
     $.ajax({
         "type": "POST",
@@ -55,7 +69,9 @@ function post(endpoint, data, success, error) {
     });
 }
 
-// Returns the parity of the given position as a string
+/**
+Returns the parity of the given board position as a string
+*/
 function getParityString(r, c) {
     if ((r + c) % 2 === 0) {
         return "even";
@@ -64,7 +80,9 @@ function getParityString(r, c) {
     }
 }
 
-// Returns the address of the image representing the given piece
+/**
+Returns the address of the image representing the given piece
+*/
 function getPieceImage(piece) {
     return "images/"
         + (piece.king ? "king" : "piece")
@@ -72,10 +90,12 @@ function getPieceImage(piece) {
         + ".png";
 }
 
-// Builds the HTML for the board object
+/**
+Builds the HTML for the board object
+*/
 function buildBoard() {
-  document.getElementById("game_info").innerHTML = game.game_id;
-  document.getElementById("game_info2").innerHTML = game.game_id;
+    document.getElementById("game_info").innerHTML = game.game_id;
+    document.getElementById("game_info2").innerHTML = game.game_id;
 
     var board_elem = document.getElementById("board");
 
@@ -103,8 +123,6 @@ function buildBoard() {
         squares.push(row);
 
         updateTable();
-
-
     }
 
 	//Pause timer and open screen overlay if 2nd player has not joined yet.
@@ -138,14 +156,13 @@ function drawPieces(board) {
     }
 
     if (player.player_number === 0) {
-      var boardGUI = document.getElementById('board');
-      var deg = 180;
-      boardGUI.style.webkitTransform = 'rotate('+deg+'deg)';
-      boardGUI.style.mozTransform    = 'rotate('+deg+'deg)';
-      boardGUI.style.msTransform     = 'rotate('+deg+'deg)';
-      boardGUI.style.oTransform      = 'rotate('+deg+'deg)';
-      boardGUI.style.transform       = 'rotate('+deg+'deg)';
-
+        var boardGUI = document.getElementById('board');
+        var deg = 180;
+        boardGUI.style.webkitTransform = 'rotate('+deg+'deg)';
+        boardGUI.style.mozTransform    = 'rotate('+deg+'deg)';
+        boardGUI.style.msTransform     = 'rotate('+deg+'deg)';
+        boardGUI.style.oTransform      = 'rotate('+deg+'deg)';
+        boardGUI.style.transform       = 'rotate('+deg+'deg)';
     }
 }
 
@@ -299,41 +316,18 @@ function clickSquare(r, c) {
     }
 }
 
+/**
+Called when the player presses the "Undo Move" button
+*/
 function undoMove() {
     resetBoard();
 }
 
-function sendMove() {
-	//If move is validated, send the new board object
-
-	$.ajax({
-        type: "POST",
-        data: JSON.stringify({
-            "player_id": player.player_id,
-			"move": move
-        }),
-        url: "/make-move",
-        dataType: "json",
-        contentType: "application/json; charset=utf-8",
-        success: function(msg) {
-            // On success update the board
-            game = msg.game;
-            clearTimeout(timer);
-            startTimer(2,0);
-            resetBoard();
-            updateTable();
-        },
-        error: function(xhr, ajaxOptions, thrownError) {
-            console.log(JSON.stringify(thrownError));
-            alert("Move failed to send.");
-            //document.getElementById("content").innerHTML = "Error Fetching " + URL;
-        }
-    });
-
-    // reset move
-    move = [];
-}
-
+/**
+Resets the game board by unselecting any selected pieces, resetting the move
+object, redrawing the board in its current configuration, and disabling the
+undo and send buttons
+*/
 function resetBoard() {
     unsetSelected();
     move = [];
@@ -343,11 +337,10 @@ function resetBoard() {
 
 
 /**
-Message received from the server/opponent
+Receives message objects from the server and acts according to their content
 */
-function receiveMessage(message, gameMsg) {
-    game = gameMsg;
-    switch (message.type) {
+function receiveMessage(msg) {
+    switch (msg.type) {
         case "join":
             alert(message.text);
             closeNav();
@@ -355,10 +348,12 @@ function receiveMessage(message, gameMsg) {
             startTimer(2,0);
             updateTable();
             break;
+
         case "forfeit":
             alert(message.text);
             document.location.href = "/index.html";
             break;
+
         case "request_draw":
             var r = confirm(message.text+". Click OK to accept or CANCEL to keep playing.");
             if (r == true) {
@@ -368,31 +363,61 @@ function receiveMessage(message, gameMsg) {
                 accept_draw();
             }
             break;
+
         case "accept_draw":
             alert(message.text);
             document.location.href = "/index.html";
             break;
+
         case "reject_draw":
             alert(message.text);
             break;
+
         case "pause":
           alert(message.text);
           pauseTimer();
           break;
+
         case "resume":
           resumeTimer();
           break;
+
         case "expired":
           alert(message.text);
           break;
+
         default:
             console.error("Unknown message type");
             alert("Unknown message type");
             break;
     }
 }
+
 /**
-Request a draw: Opponent will get a message and be prompted to accept or decline the draw
+Sends the current move to the opponent
+*/
+function sendMove() {
+	var data = {
+        "player_id": player.player_id,
+        "move": move
+    };
+
+    post("/make-move", data, function(msg) {
+        // On success update the board
+        game = msg.game;
+        resetBoard();
+    }, function(xhr, ajaxOptions, thrownError) {
+        console.log(JSON.stringify(thrownError));
+        alert("Move failed to send.");
+    });
+
+    // reset move
+    move = [];
+}
+
+/**
+Requests a draw. Opponent will receive a message and be prompted to accept or
+decline the draw
 */
 function request_draw() {
     var data = {
@@ -404,62 +429,56 @@ function request_draw() {
     };
 
     post("/send-message", data, function(msg) {
-
-        alert ("Your opponent received your request.");
-
+        // nothing to do
     }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
-
+        alert("Failed to send draw request to opponent.");
     });
 }
 
 
 /**
-Accept a draw: Opponent accepts the draw, and no winners are declared
+Accepts a draw. Game will end such that there are no winners
 */
 function accept_draw(){
     var data = {
         player_id: player.player_id,
-        message: {"type":"accept_draw" , "text":"Draw accepted: no winners!"}
-    };
-
-    post("/send-message", data, function(msg) {
-
-        alert("The game is declared a draw. No winners!")
-        document.location.href = "/index.html";
-
-    }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
-
-    });
-
-}
-
-/**
-Reject a draw: Opponent rejects the draw, game continues.
-*/
-
-function reject_draw() {
-    var data = {
-        player_id: player.player_id,
         message: {
             "type": "accept_draw",
-            "text": "Draw rejected. The game continues."
+            "text": "Draw accepted! There are no winners"
         }
     };
 
     post("/send-message", data, function(msg) {
-      alert("The game goes on. " + game.player_names[game.turn] +"'s turn.")
-
+        alert("The game is declared a draw. No winners!");
+        document.location.href = "/index.html";
     }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
+        alert("Failed to accept the opponent's draw request.");
+    });
+}
 
+/**
+Rejects a draw. Reject the opponent's draw proposal and the game continues.
+*/
+function reject_draw() {
+    var data = {
+        player_id: player.player_id,
+        message: {
+            "type": "reject_draw",
+            "text": "Draw rejected. The game continues..."
+        }
+    };
+
+    post("/send-message", data, function(msg) {
+        // do nothing
+    }, function(xhr, ajaxOptions, thrownError) {
+        alert("Failed to reject the opponent's draw request.");
     });
 }
 
 
 /**
-Forfeit the game by sending a message to the server with text for the opponent
+Forfeits the game by sending a forfeit message to the server, which will be
+passed on to the opponent
 */
 function forfeitGame() {
     var data = {
@@ -471,15 +490,16 @@ function forfeitGame() {
     };
 
     post("/send-message", data, function(msg) {
-        //Game ends....
-        alert ("You forfeited the game. You lose!");
-          document.location.href = "/index.html";
-
+        alert("You forfeited the game. You lose!");
+        document.location.href = "/index.html";
     }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
+        alert("Error sending message");
     });
 }
 
+/**
+Pauses the game
+*/
 function pauseGame() {
     var data = {
         player_id: player.player_id,
@@ -490,14 +510,15 @@ function pauseGame() {
     };
 
     post("/send-message", data, function(msg) {
-        //do nothing
-
+        // do najaxothing
     }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
+        alert("Error sending message");
     });
 }
 
-//Resume Game
+/**
+Resumes the game (if it has been paused)
+*/
 function resumeGame() {
     var data = {
         player_id: player.player_id,
@@ -508,88 +529,86 @@ function resumeGame() {
     };
 
     post("/send-message", data, function(msg) {
-        //do nothing?
-
+        // do nothing
     }, function(xhr, ajaxOptions, thrownError) {
         alert ("Error sending message");
     });
 }
 
-//See if there are any updates from the server (messages) every 6 seconds
-loop = setInterval(function(){
-    var data = {
-        player_id: player.player_id
-    };
+/**
+Starts an infinite loop of requesting updates from the server in intervals
+determined by the constant UPDATE_LOOP_TIME
+*/
+function startUpdateLoop() {
+    setInterval(function(){
+        var data = {
+            player_id: player.player_id
+        };
 
-    post("/get-updates", data, function(msg) {
-        // success
+        post("/get-updates", data, function(msg) {
+            // success
 
-        if (game.turn !== player.player_number) {
+            if (game.turn !== player.player_number) {
+                game = msg.game;
+                resetBoard();
+            }
+
             game = msg.game;
-            resetBoard();
-        }
+            updateTable();
 
-        game = msg.game;
-        updateTable();
+            for (var i = 0; i < msg.messages.length; i++) {
+                receiveMessage(msg.messages[i]);
+            }
 
-        for (var i = 0; i < msg.messages.length; i++) {
-            receiveMessage(msg.messages[i], msg.game);
-        }
-
-    }, function(xhr, ajaxOptions, thrownError) {
-        // failure
-        // document.getElementById("content").innerHTML = "Error Fetching " + URL;
-    });
-}, 1000);
-
-
-//function to udpate the table with the appropriate info after getting new game object
-
-function updateTable () {
-
-  //Show timer only for the player whose turn it is
-  if (game.turn !== player.player_number) {
-      document.getElementById("timer").style.display = "none";
-      document.getElementById("timerInfo").style.display = "block";
-  }
-
-  else {
-    document.getElementById("timer").style.display = "block";
-    document.getElementById("timerInfo").style.display = "none";
-  }
-
-  if (game.turn === 0) {
-      document.getElementById("player1row").style.background = "#b4eeb4";
-      document.getElementById("player2row").style.background = "#ffffff";
-  }
-  else {
-    document.getElementById("player2row").style.background = "#b4eeb4";
-    document.getElementById("player1row").style.background = "#ffffff";
-  }
-  document.getElementById("player1name").innerHTML = game.player_names[0];
-  document.getElementById("player2name").innerHTML = game.player_names[1];
-  document.getElementById("player1pieces").innerHTML=  game.player_pieces[0];
-  document.getElementById("player2pieces").innerHTML=  game.player_pieces[1];
+        }, function(xhr, ajaxOptions, thrownError) {
+            // failure
+            // document.getElementById("content").innerHTML = "Error Fetching " + URL;
+        });
+    }, UPDATE_LOOP_TIME);
 }
 
+/**
+Udpates the information table after getting a new game object
+*/
+function updateTable () {
+    //Show timer only for the player whose turn it is
+    if (game.turn !== player.player_number) {
+        document.getElementById("timer").style.display = "none";
+        document.getElementById("timerInfo").style.display = "block";
+    } else {
+        document.getElementById("timer").style.display = "block";
+        document.getElementById("timerInfo").style.display = "none";
+    }
 
-//SIDE MENU FUNCTIONS
+    if (game.turn === 0) {
+        document.getElementById("player1row").style.background = "#b4eeb4";
+    } else {
+        document.getElementById("player2row").style.background = "#b4eeb4";
+    }
+
+    document.getElementById("player1name").innerHTML = game.player_names[0];
+    document.getElementById("player2name").innerHTML = game.player_names[1];
+    document.getElementById("player1pieces").innerHTML=  game.player_pieces[0];
+    document.getElementById("player2pieces").innerHTML=  game.player_pieces[1];
+}
+
+// SIDE MENU FUNCTIONS
+
 /**
 Start timer for the player when page first loads
 @param {} minutes - how many minutes for countdown
 @param {} seconds - how minutes seconds for countdown
 */
-
 function startTimer(m, s) {
 	document.getElementById("timer").innerHTML = m + ":" + s;
 	if (s == 0) {
 		if (m == 0) {
 			document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
-      if (game.turn === player.player_number) {
-          timeExpired();
-      }
-
+            if (game.turn === player.player_number) {
+                timeExpired();
+            }
 			return;
+
 		} else if (m != 0) {
 			m = m - 1;
 			s = 60;
@@ -601,7 +620,7 @@ function startTimer(m, s) {
 		startTimer(m, s)
 	}, 1000);
 
-  return false;
+    return false;
 }
 
 /**
@@ -630,22 +649,20 @@ function timeExpired() {
 Overlay screen after pausing the game
 @return: false - Prevent page from refreshing
 */
-
 function openNav() {
 	document.getElementById("myNav").style.width = "100%";
 	return false;
 }
 
-
 /**
-Closing the overlay screen after pausing the game
+Closes the overlay screen after pausing the game
 */
 function closeNav() {
 	document.getElementById("myNav").style.width = "0%";
 }
 
 /**
-Pause the timer and open the overlay screen
+Pauses the timer and opens the overlay screen
 */
 function pauseTimer() {
 	value = document.getElementById("timer").innerHTML;
@@ -653,9 +670,8 @@ function pauseTimer() {
 	openNav();
 }
 
-
 /**
-Resume the timer
+Resumes the timer
 */
 function resumeTimer() {
 	var t = value.split(":");
@@ -663,9 +679,8 @@ function resumeTimer() {
 	startTimer(parseInt(t[0], 10), parseInt(t[1], 10));
 }
 
-
 /**
-Display Help Menu	with game rules. Might not be needed since we will show the menu regardless
+Displays the help menu with game rules.
 */
 function helpMenu(){
 	pauseTimer();
