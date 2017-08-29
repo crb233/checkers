@@ -164,11 +164,11 @@ function enableButtons(enabled) {
     if (enabled) {
         sendButton.classList.remove("button3");
         undoButton.classList.remove("button3");
-        sendButton.classList.add("button5");
-        undoButton.classList.add("button5");
+        //sendButton.classList.add("button5");
+        //undoButton.classList.add("button5");
     } else {
-        sendButton.classList.remove("button5");
-        undoButton.classList.remove("button5");
+        //sendButton.classList.remove("button5");
+        //undoButton.classList.remove("button5");
         sendButton.classList.add("button3");
         undoButton.classList.add("button3");
     }
@@ -318,7 +318,10 @@ function sendMove() {
         success: function(msg) {
             // On success update the board
             game = msg.game;
+            clearTimeout(timer);
+            startTimer(2,0);
             resetBoard();
+            updateTable();
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.log(JSON.stringify(thrownError));
@@ -342,21 +345,22 @@ function resetBoard() {
 /**
 Message received from the server/opponent
 */
-function receiveMessage(msg) {
-    game = msg.game;
-    switch (msg.type) {
+function receiveMessage(message, gameMsg) {
+    game = gameMsg;
+    switch (message.type) {
         case "join":
-            alert(msg.text);
+            alert(message.text);
             closeNav();
+            clearTimeout(timer);
             startTimer(2,0);
             updateTable();
             break;
         case "forfeit":
-            alert(msg.text);
+            alert(message.text);
             document.location.href = "/index.html";
             break;
         case "request_draw":
-            var r = confirm(msg.text+". Click OK to accept or CANCEL to keep playing.");
+            var r = confirm(message.text+". Click OK to accept or CANCEL to keep playing.");
             if (r == true) {
                 reject_draw();
             } else {
@@ -365,21 +369,21 @@ function receiveMessage(msg) {
             }
             break;
         case "accept_draw":
-            alert(msg.text);
+            alert(message.text);
             document.location.href = "/index.html";
             break;
         case "reject_draw":
-            alert(msg.text);
+            alert(message.text);
             break;
         case "pause":
-          alert(msg.text);
+          alert(message.text);
           pauseTimer();
           break;
         case "resume":
           resumeTimer();
           break;
         case "expired":
-          alert(msg.text);
+          alert(message.text);
           break;
         default:
             console.error("Unknown message type");
@@ -392,7 +396,7 @@ Request a draw: Opponent will get a message and be prompted to accept or decline
 */
 function request_draw() {
     var data = {
-        player_id: player_id,
+        player_id: player.player_id,
         message: {
             "type": "request_draw",
             "text": "Your opponent is requesting a draw."
@@ -459,7 +463,7 @@ Forfeit the game by sending a message to the server with text for the opponent
 */
 function forfeitGame() {
     var data = {
-        player_id: player_id,
+        player_id: player.player_id,
         message: {
             "type": "forfeit",
             "text": "Your opponent forfeited the game. You win!"
@@ -529,7 +533,7 @@ loop = setInterval(function(){
         updateTable();
 
         for (var i = 0; i < msg.messages.length; i++) {
-            receiveMessage(msg.messages[i]);
+            receiveMessage(msg.messages[i], msg.game);
         }
 
     }, function(xhr, ajaxOptions, thrownError) {
@@ -556,10 +560,11 @@ function updateTable () {
 
   if (game.turn === 0) {
       document.getElementById("player1row").style.background = "#b4eeb4";
-
+      document.getElementById("player2row").style.background = "#ffffff";
   }
   else {
     document.getElementById("player2row").style.background = "#b4eeb4";
+    document.getElementById("player1row").style.background = "#ffffff";
   }
   document.getElementById("player1name").innerHTML = game.player_names[0];
   document.getElementById("player2name").innerHTML = game.player_names[1];
