@@ -25,8 +25,8 @@ var move = [];
 var selected = null;
 
 //variables used for the timer
-var timer;
-var value = "00:00";
+var clock_timer;
+var time_remaining;
 
 // button html elements
 var sendButton = document.getElementById("send");
@@ -35,17 +35,20 @@ var undoButton = document.getElementById("undo");
 
 
 
+
 // STARTUP FUNCTION CALLS
 
-// create board elements and draw initial board state
-buildBoard();
-drawPieces(game.board);
-
-// disable send-move and undo-move buttons
-enableButtons(false);
-
-// start get-updates loop
-startUpdateLoop();
+function startup() {
+    // create board elements and draw initial board state
+    buildBoard();
+    drawPieces(game.board);
+    
+    // disable send-move and undo-move buttons
+    enableButtons(false);
+    
+    // start get-updates loop
+    startUpdateLoop();
+}
 
 
 
@@ -344,7 +347,7 @@ function receiveMessage(msg) {
         case "join":
             alert(msg.text);
             closeNav();
-            startTimer(2,0);
+            startTimer(game.timer);
             updateTable();
             break;
             
@@ -354,11 +357,9 @@ function receiveMessage(msg) {
             break;
             
         case "request_draw":
-            var r = confirm(msg.text+". Click OK to accept or CANCEL to keep playing.");
-            if (r == true) {
-                reject_draw();
+            if (confirm(msg.text + ".\nClick Ok to accept or Cancel to keep playing.")) {
+                rejectDraw();
             } else {
-                txt = "You win. Thanks for playing!";
                 accept_draw();
             }
             break;
@@ -373,18 +374,18 @@ function receiveMessage(msg) {
             break;
             
         case "pause":
-          alert(msg.text);
-          pauseTimer();
-          break;
-          
+            alert(msg.text);
+            pauseTimer();
+            break;
+            
         case "resume":
-          resumeTimer();
-          break;
-          
+            resumeTimer();
+            break;
+            
         case "expired":
-          alert(msg.text);
-          break;
-          
+            alert(msg.text);
+            break;
+            
         default:
             console.error("Unknown message type");
             alert("Unknown message type");
@@ -400,6 +401,10 @@ function sendMove() {
         "player_id": player.player_id,
         "move": move
     };
+    
+    // stop the timer
+    time_remaining = -1;
+    clearInterval(clock_timer);
     
     post("/make-move", data, function(msg) {
         // On success update the board
@@ -458,7 +463,7 @@ function accept_draw(){
 /**
 Rejects a draw. Reject the opponent's draw proposal and the game continues.
 */
-function reject_draw() {
+function rejectDraw() {
     var data = {
         player_id: player.player_id,
         message: {
@@ -509,7 +514,7 @@ function pauseGame() {
     };
 
     post("/send-message", data, function(msg) {
-        // do najaxothing
+        // do nothing
     }, function(xhr, ajaxOptions, thrownError) {
         alert("Error sending message");
     });
@@ -526,11 +531,11 @@ function resumeGame() {
             "text": ""
         }
     };
-
+    
     post("/send-message", data, function(msg) {
         // do nothing
     }, function(xhr, ajaxOptions, thrownError) {
-        alert ("Error sending message");
+        alert("Error sending message");
     });
 }
 
@@ -538,8 +543,10 @@ function resumeGame() {
 Starts an infinite loop of requesting updates from the server in intervals
 determined by the constant UPDATE_LOOP_TIME
 */
+var loop;
 function startUpdateLoop() {
-    setInterval(function(){
+    loop = setInterval(function(){
+        
         var data = {
             player_id: player.player_id
         };
@@ -547,9 +554,15 @@ function startUpdateLoop() {
         post("/get-updates", data, function(msg) {
             // success
             
+            // if it was your opponent's turn
             if (game.turn !== player.player_number) {
                 game = msg.game;
                 resetBoard();
+                
+                // if it's now your turn
+                if (game.turn === player.player_number) {
+                    startTimer(game.timer);
+                }
             }
             
             game = msg.game;
@@ -597,29 +610,42 @@ function updateTable () {
 // SIDE MENU FUNCTIONS
 
 /**
+Returns a string representing the given time in minutes and seconds
+*/
+function formatTime(time) {
+    if (time < 0) time = 0;
+    
+    var min = Math.floor(time / 60);
+    var sec = time % 60;
+    
+    if (sec < 10) {
+        return min + ":0" + sec;
+    } else {
+        return min + ":" + sec;
+    }
+}
+
+/**
 Start timer for the player when page first loads
 @param {} minutes - how many minutes for countdown
 @param {} seconds - how minutes seconds for countdown
 */
-function startTimer(m, s) {
-	document.getElementById("timer").innerHTML = m + ":" + s;
-	if (s == 0) {
-		if (m == 0) {
-			document.getElementById("timer").innerHTML = "<font color='red'>EXPIRED</font>";
-            if (game.turn === player.player_number) {
-                timeExpired();
-            }
-			return;
-            
-		} else if (m != 0) {
-			m = m - 1;
-			s = 60;
-		}
-	}
-
-	s = s - 1;
-	timer = setTimeout(function() {
-		startTimer(m, s)
+function startTimer(starting_time) {
+	time_remaining = starting_time;
+    
+    var timer_elem = document.getElementById("timer");
+    timer_elem.innerHTML = formatTime(time_remaining);
+    
+	clock_timer = setInterval(function() {
+        if (time_remaining > 0) {
+            time_remaining -= 1;
+            timer_elem.innerHTML = formatTime(time_remaining);
+        } else if (time_remaining === 0) {
+            time_remaining = -1;
+            clearInterval(clock_timer);
+            timer_elem.innerHTML = "<font color='red'>" + formatTime(time_remaining) + "</font>";
+            timeExpired();
+        }
 	}, 1000);
     
     return false;
@@ -632,14 +658,16 @@ function timeExpired() {
 	//send message to the server "Expired"? with player_id who lost
 	var data = {
         player_id: player.player_id,
-        message: {"type":"forfeit" , "text":"Opponent's time expired. You win!"}
+        message: {
+            "type": "forfeit",
+            "text": "Opponent's time expired. You win!"
+        }
     };
 
     post("/send-message", data, function(msg) {
 		// success
-        alert ("Your time expired. You lose! ");
+        alert ("Your time expired. You lose!");
         document.location.href = "/index.html";
-
     }, function(xhr, ajaxOptions, thrownError) {
         // failure
         //document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -667,8 +695,7 @@ function closeNav() {
 Pauses the timer and opens the overlay screen
 */
 function pauseTimer() {
-	value = document.getElementById("timer").innerHTML;
-	clearTimeout(timer);
+	clearInterval(clock_timer);
 	openNav();
 }
 
@@ -676,9 +703,8 @@ function pauseTimer() {
 Resumes the timer
 */
 function resumeTimer() {
-	var t = value.split(":");
 	closeNav();
-	startTimer(parseInt(t[0], 10), parseInt(t[1], 10));
+	startTimer(time_remaining);
 }
 
 /**
@@ -701,5 +727,4 @@ function helpMenu(){
 	gameRules += '<b><p style="font-size: 25px; color: red">If your time expires, you lose the game! Think fast.</p></b></li>'
 	gameRules += "</ol></article>"
 	document.getElementById("overlay-cnt").innerHTML =  gameRules;
-
 }

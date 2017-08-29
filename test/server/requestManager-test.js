@@ -87,7 +87,7 @@ before(function(done) {
             });
         });
     });
-})
+});
 
 describe("requestManager.js", function() {
     

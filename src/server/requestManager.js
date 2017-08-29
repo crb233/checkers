@@ -140,6 +140,7 @@ TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function joinGame(player_name, game_id, callback) {
+    
     if (!isString(player_name)) {
         callback("Parameter player_name must be a string");
         return;

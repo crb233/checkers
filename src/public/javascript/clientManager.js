@@ -20,10 +20,10 @@ new game to the database
 */
 function hostGame() {
     var username = document.getElementById("usernameHost").value;
-
+	
     // value is 1 for private, and 0 for a public game
     var mode = document.querySelector('input[name="mode"]:checked').value;
-
+	
     // is it public?
     var is_public = mode === "0";
 
@@ -109,8 +109,6 @@ function joinGameServer(){
             localStorage.setItem("player", JSON.stringify(msg.player));
             localStorage.setItem("game", JSON.stringify(msg.game));
             document.location.href = "/board.html";
-            //startTimer(2,0);
-
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.error("Error fetching " + url);
