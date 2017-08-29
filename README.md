@@ -26,6 +26,10 @@ Project release notes are contained in `CHANGELOG.md`
 The final test case document can be found at
 `doc/Checkers Test Case Document.pdf`
 
+We used a package to automatically generate documentation for many of our
+modules, functions, and variables. This can be generated through NPM by running
+`$ npm run make-doc` and then viewed in `doc/api/index.html`
+
 
 
 ## Platforms and Services
