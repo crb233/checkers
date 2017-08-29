@@ -374,6 +374,48 @@ function getGamesList(callback) {
     colls.games.find({"public": true, "active": false}).toArray(callback);
 }
 
+/**
+Deletes the game object, both player objects, and the opponents object from the
+database. If any one fails to be deleted, an error message will be logged and it
+will still try to delete other objects
+*/
+function deleteAll(game_id, callback) {
+    console.log("Deleting game " + game_id);
+    
+    getOpponent(game_id, function(err, opps) {
+        if (err) return callback(err);
+        
+        var p1_id = opps.player_ids[0];
+        var p2_id = opps.player_ids[1];
+        colls.players.deleteOne({ "player_id": p1_id }, {}, function(err, opps) {
+            if (err) console.log(err);
+            
+            colls.players.deleteOne({ "player_id": p2_id }, {}, function(err, opps) {
+                if (err) console.log(err);
+                
+                colls.games.deleteOne({ "game_id": game_id }, {}, function(err, opps) {
+                    if (err) console.log(err);
+                    
+                    colls.opponents.deleteOne({ "player_id": game_id }, {}, function(err, opps) {
+                        if (err) console.log(err);
+                        
+                        callback(false);
+                    });
+                });
+            });
+        });
+    });
+}
+
+/**
+Returns a list of players who haven't responded in the given time
+*/
+function getUnresponsivePlayers(difference, callback) {
+    time = new Date().getTime() - difference;
+    
+    colls.players.find({ "last_request": { "$lt": time } }).toArray(callback);
+}
+
 module.exports = {
     "createRandomID": createRandomID,
     "createUrl": createUrl,
@@ -388,5 +430,7 @@ module.exports = {
     "getOpponent": getOpponent,
     "updatePlayer": updatePlayer,
     "updateGame": updateGame,
-    "getGamesList": getGamesList
+    "getGamesList": getGamesList,
+    "deleteAll": deleteAll,
+    "getUnresponsivePlayers": getUnresponsivePlayers
 };

@@ -1,6 +1,9 @@
 
 // CONSTANTS
 
+// the default notification sound name
+const NOTIFICATION = "coins";
+
 // the delay between get-update requests in milliseconds
 const UPDATE_LOOP_TIME = 1000;
 
@@ -55,6 +58,18 @@ function startup() {
 
 
 // FUNCTIONS
+
+/**
+Plays a sound through the browser
+*/
+function playSound(name) {
+    var filename = "/sounds/" + name;
+    document.getElementById("sound").innerHTML =
+        '<audio autoplay="autoplay"><source src="'
+        + filename + '.mp3" type="audio/mpeg" /><source src="'
+        + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="'
+        + filename +'.mp3" /></audio>';
+}
 
 /**
 Sends a post request containing JSON data to the given endpoint. Calls one of
@@ -443,7 +458,7 @@ function request_draw() {
 /**
 Accepts a draw. Game will end such that there are no winners
 */
-function accept_draw(){
+function accept_draw() {
     var data = {
         player_id: player.player_id,
         message: {
