@@ -42,10 +42,10 @@ function startup() {
     // create board elements and draw initial board state
     buildBoard();
     drawPieces(game.board);
-    
+
     // disable send-move and undo-move buttons
     enableButtons(false);
-    
+
     // start get-updates loop
     startUpdateLoop();
 }
@@ -345,14 +345,14 @@ Receives message objects from the server and acts according to their content
 function receiveMessage(msg) {
     switch (msg.type) {
         case "join":
-            alert(message.text);
+            alert(msg.text);
             closeNav();
             startTimer(game.timer);
             updateTable();
             break;
 
         case "forfeit":
-            alert(message.text);
+            alert(msg.text);
             document.location.href = "/index.html";
             break;
 
@@ -365,27 +365,27 @@ function receiveMessage(msg) {
             break;
 
         case "accept_draw":
-            alert(message.text);
+            alert(msg.text);
             document.location.href = "/index.html";
             break;
 
         case "reject_draw":
-            alert(message.text);
+            alert(msg.text);
             break;
 
         case "pause":
             alert(msg.text);
             pauseTimer();
             break;
-            
+
         case "resume":
             resumeTimer();
             break;
-            
+
         case "expired":
             alert(msg.text);
             break;
-            
+
         default:
             console.error("Unknown message type");
             alert("Unknown message type");
@@ -401,11 +401,11 @@ function sendMove() {
         "player_id": player.player_id,
         "move": move
     };
-    
+
     // stop the timer
     time_remaining = -1;
     clearInterval(clock_timer);
-    
+
     post("/make-move", data, function(msg) {
         // On success update the board
         game = msg.game;
@@ -531,7 +531,7 @@ function resumeGame() {
             "text": ""
         }
     };
-    
+
     post("/send-message", data, function(msg) {
         // do nothing
     }, function(xhr, ajaxOptions, thrownError) {
@@ -546,19 +546,19 @@ determined by the constant UPDATE_LOOP_TIME
 var loop;
 function startUpdateLoop() {
     loop = setInterval(function(){
-        
+
         var data = {
             player_id: player.player_id
         };
 
         post("/get-updates", data, function(msg) {
             // success
-            
+
             // if it was your opponent's turn
             if (game.turn !== player.player_number) {
                 game = msg.game;
                 resetBoard();
-                
+
                 // if it's now your turn
                 if (game.turn === player.player_number) {
                     startTimer(game.timer);
@@ -594,8 +594,10 @@ function updateTable () {
 
     if (game.turn === 0) {
         document.getElementById("player1row").style.background = "#b4eeb4";
+        document.getElementById("player2row").style.background = "#ffffff";
     } else {
         document.getElementById("player2row").style.background = "#b4eeb4";
+        document.getElementById("player1row").style.background = "#ffffff";
     }
 
     document.getElementById("player1name").innerHTML = game.player_names[0];
@@ -611,10 +613,10 @@ Returns a string representing the given time in minutes and seconds
 */
 function formatTime(time) {
     if (time < 0) time = 0;
-    
+
     var min = Math.floor(time / 60);
     var sec = time % 60;
-    
+
     if (sec < 10) {
         return min + ":0" + sec;
     } else {
@@ -629,10 +631,10 @@ Start timer for the player when page first loads
 */
 function startTimer(starting_time) {
 	time_remaining = starting_time;
-    
+
     var timer_elem = document.getElementById("timer");
     timer_elem.innerHTML = formatTime(time_remaining);
-    
+
 	clock_timer = setInterval(function() {
         if (time_remaining > 0) {
             time_remaining -= 1;
