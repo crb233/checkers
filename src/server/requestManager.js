@@ -149,11 +149,10 @@ function joinGame(player_name, game_id, callback) {
     }
 
     dbm.getGame(game_id, function(err, game) {
-        if (err) {
-            callback(err);
-            return;
-        }
-
+        if (err) return callback(err);
+        
+        if (!game) return callback("Requested game is unavailable");
+        
         if (game.active || game.player_names.length != 1) {
             callback("This game is no longer available");
             return;
@@ -237,6 +236,7 @@ function makeMove(player_id, move, callback) {
 
             if (!checkers.validateMove(game, move)) {
                 callback("The attempted move was invalid");
+                return;
             }
 
             checkers.makeMove(game, move);
