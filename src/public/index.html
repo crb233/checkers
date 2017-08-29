@@ -50,12 +50,12 @@
     		<h1> New Game </h1>
 
             <label>Username: </label>
-            <input type="text" class="form-field" id="usernameHost" placeholder="username" required><br>
+            <input type="text" class="form-field" id="usernameHost" placeholder="username" maxlength="15" required><br>
 
             <label> Mode: </label>
-            <input type="radio" name="mode" class="form-field" value="0" required checked> Public
-            <input type="radio" name="mode" class="form-field" value="1" required> Private <br>
-
+            <input type="radio" name="mode" class="form-field"class="form-field" value="0" checked="checked" required> Public
+            <input type="radio" name="mode" class="form-field" value="1" required> Private
+          </br>
     		<button class="button button5" onclick="hostGame(); return false;" value="Submit">Submit</button>
 		</form>
 
@@ -66,15 +66,16 @@
 			<h4><i> Select a public game from the list below or enter the private game ID in the textbox. </i></h4>
 
             <label> Username: </label>
-            <input type="text" class="form-field" id="usernameJoin" placeholder="username" value="" required><br>
+            <input type="text" class="form-field" id="usernameJoin" placeholder="username" value="" maxlength="15" required><br>
 
             <label> Game ID: </label>
             <input type="text" class="form-field" id="gameID" placeholder="Game-ID" required><br>
 
 			<button class="button button5" onclick="joinGameServer(); return false;" value="Submit">Join</button>
+      <span id="refresh" style=" position: relative; left: 180px;cursor:pointer" class="glyphicon" onClick="getGames()">&#xe031;Refresh</span>
 		</form>
     <center><div id="error" style="margin-left: 50px auto;"></div></center>
-		<ul class="games-style" id="gameList"></ul>
+		<ul class="games-style" style="max-width: 450px;" id="gameList"></ul>
 
     </div>
 
