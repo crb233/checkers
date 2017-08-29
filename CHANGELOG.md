@@ -10,7 +10,8 @@ The style and format of each version of this changelog is shown below:
 - removed that
 - fixed bug #number
 ```
-## 0.9.0
+
+## 1.1.0
 - added sound notification when player makes a move
 - played a full game that tested all the functionalities
 - played a game with a player in another continent to test network latency
