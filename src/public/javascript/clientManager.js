@@ -119,6 +119,7 @@ function joinGameServer(){
             localStorage.setItem("player", JSON.stringify(msg.player));
             localStorage.setItem("game", JSON.stringify(msg.game));
             document.location.href = "/board.html";
+						
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.error("Error fetching " + url);
