@@ -358,9 +358,9 @@ function receiveMessage(msg) {
 
         case "request_draw":
             if (confirm(msg.text + ".\nClick Ok to accept or Cancel to keep playing.")) {
-                rejectDraw();
-            } else {
                 accept_draw();
+            } else {
+                rejectDraw();
             }
             break;
 
