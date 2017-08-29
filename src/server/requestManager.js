@@ -29,7 +29,7 @@ function connect(callback) {
 
 
 /**
-TODO
+Creates and returns a new player object with default values
 */
 function newPlayer(player_name, player_number, game_id) {
     return {
@@ -42,14 +42,23 @@ function newPlayer(player_name, player_number, game_id) {
     };
 }
 
+/**
+Determines if a value represents a JavaScript boolean
+*/
 function isBoolean(obj) {
     return typeof obj === "boolean";
 }
 
+/**
+Determines if a value represents a JavaScript string
+*/
 function isString(obj) {
     return typeof obj === "string" || obj instanceof String;
 }
 
+/**
+Determines if a value represents a correctly formatted move object
+*/
 function isMove(obj) {
     if (!Array.isArray(obj)) {
         return false;
@@ -67,6 +76,9 @@ function isMove(obj) {
     return true;
 }
 
+/**
+Determines if a value represents a correctly formatted message object
+*/
 function isMessage(obj) {
     return typeof obj === "object" && isString(obj.type) && isString(obj.text);
 }
@@ -78,7 +90,7 @@ function isMessage(obj) {
 
 
 /**
-TODO
+Receives get-games requests from the client
 @param {} callback - the function to be called when this operation has completed
 */
 function getGames(callback) {
@@ -86,7 +98,7 @@ function getGames(callback) {
 }
 
 /**
-TODO
+Receives new-game requests from the client
 @param {} callback - the function to be called when this operation has completed
 */
 function newGame(player_name, is_public, callback) {
@@ -133,7 +145,7 @@ function newGame(player_name, is_public, callback) {
 }
 
 /**
-TODO
+Receives join-game requests from the client
 @param {} callback - the function to be called when this operation has completed
 */
 function joinGame(player_name, game_id, callback) {
@@ -149,11 +161,10 @@ function joinGame(player_name, game_id, callback) {
     }
 
     dbm.getGame(game_id, function(err, game) {
-        if (err) {
-            callback(err);
-            return;
-        }
-
+        if (err) return callback(err);
+        
+        if (!game) return callback("Requested game is unavailable");
+        
         if (game.active || game.player_names.length != 1) {
             callback("This game is no longer available");
             return;
@@ -204,7 +215,7 @@ function joinGame(player_name, game_id, callback) {
 }
 
 /**
-TODO
+Receives make-move requests from the client
 @param {} callback - the function to be called when this operation has completed
 */
 function makeMove(player_id, move, callback) {
@@ -237,6 +248,7 @@ function makeMove(player_id, move, callback) {
 
             if (!checkers.validateMove(game, move)) {
                 callback("The attempted move was invalid");
+                return;
             }
 
             checkers.makeMove(game, move);
@@ -255,7 +267,7 @@ function makeMove(player_id, move, callback) {
 }
 
 /**
-TODO
+Receives get-updates requests from the client
 @param {} callback - the function to be called when this operation has completed
 */
 function getUpdates(player_id, callback) {
@@ -305,7 +317,7 @@ function getUpdates(player_id, callback) {
 }
 
 /**
-TODO
+Receives send-message requests from the client
 @param {} callback - the function to be called when this operation has completed
 */
 function sendMesssage(player_id, message, callback) {

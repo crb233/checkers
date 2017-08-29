@@ -172,7 +172,7 @@ function getGames() {
 /**
 @function
 @name newGames
-@description TODO
+@description Creates a new game element to be displayed in the games list
 */
 function newGames(myHtml, i) {
     var gui = myHtml['game_id'];
