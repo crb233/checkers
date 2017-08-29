@@ -3,6 +3,7 @@
 
 // the default notification sound name
 const NOTIFICATION = "coins";
+const INVALID = "credulous";
 
 // the delay between get-update requests in milliseconds
 const UPDATE_LOOP_TIME = 1000;
@@ -288,13 +289,13 @@ function clickSquare(r, c) {
             if (piece === null) {
                 alert("Please select a piece");
                 move.pop();
-
-            } else if (piece.player !== player.player_number) {
-                alert("This isn't your piece, dummy");
+                
+            } else if (piece.player !== game.turn) {
+                alert("It's not your turn");
                 move.pop();
 
-            } else if (piece.player !== game.turn) {
-                alert("It's not your turn, dummy");
+            } else if (piece.player !== player.player_number) {
+                alert("This isn't your piece");
                 move.pop();
 
             } else {
@@ -360,6 +361,7 @@ Receives message objects from the server and acts according to their content
 function receiveMessage(msg) {
     switch (msg.type) {
         case "join":
+            playSound(NOTIFICATION);
             alert(msg.text);
             closeNav();
             startTimer(game.timer);
@@ -589,6 +591,7 @@ function startUpdateLoop() {
 
                 // if it's now your turn
                 if (game.turn === player.player_number) {
+                    playSound(NOTIFICATION);
                     startTimer(game.timer);
                 }
             }

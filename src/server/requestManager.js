@@ -291,7 +291,7 @@ function getUpdates(player_id, callback) {
                         case "lose":
                         case "accept_draw":
                         case "forfeit":
-                            deleteAll(player.game_id, function() {});
+                            dbm.deleteAll(player.game_id, function() {});
                     }
                 }
                 
