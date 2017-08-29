@@ -287,15 +287,15 @@ function clickSquare(r, c) {
 
             var piece = game.board[r][c];
             if (piece === null) {
-                alert("Please select a piece");
+                alert("Please select a piece first");
                 move.pop();
-                
-            } else if (piece.player !== game.turn) {
-                alert("It's not your turn");
+
+            } else if (player.player_number !== game.turn) {
+                alert("It's not your turn, dummy");
                 move.pop();
 
             } else if (piece.player !== player.player_number) {
-                alert("This isn't your piece");
+                alert("This isn't your piece, dummy");
                 move.pop();
 
             } else {
