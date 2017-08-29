@@ -294,19 +294,19 @@ function validJump(game, piece, pos1, pos2){
         var mid_row = (pos1[0] + pos2[0]) / 2;
         var mid_col = (pos1[1] + pos2[1]) / 2;
         var mid = game.board[mid_row][mid_col];
-        
+
         if (mid === null || mid.player === piece.player) {
             return false;
         }
-        
+
         if (!isDiagonal(pos1, pos2)) {
             return false;
         }
-        
+
         if (!isEmpty(game.board, pos2)) {
             return false;
         }
-        
+
         return correctDirection(piece, pos1, pos2);
     } else {
         return false;
@@ -323,47 +323,58 @@ function makeMove(game, move) {
         if (findDistance(move[0], move[1]) === 1) {
             var p0 = move[0];
             var p1 = move[1];
-            
+
             // move the piece
             setPiece(game.board, p1, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
-            
+
             // change it to a king if neccessary
             if (p1[0] === getKingRow(game.turn)) {
                 getPiece(game.board, p1).king = true;
             }
-            
+
         } else {
             var p0 = move[0];
             var pn = move[move.length - 1];
-            
+
             // add the jumber of pieces captures to the player's total
             game.player_pieces[game.turn] += move.length - 1;
-            
+
             // move the jumping piece
             setPiece(game.board, pn, getPiece(game.board, p0));
             setPiece(game.board, p0, null);
-            
+
             // remove jumped over pieces
             for (var i = 0; i < move.length - 1; i++) {
                 var r = (move[i][0] + move[i + 1][0]) / 2;
                 var c = (move[i][1] + move[i + 1][1]) / 2;
                 setPiece(game.board, [r, c], null);
             }
-            
+
             // change it to a king if neccessary
             if (pn[0] === getKingRow(game.turn)) {
                 getPiece(game.board, pn).king = true;
             }
         }
-        
+
         // turn is over, switch to other player's turn
         game.turn = 1 - game.turn;
     }
 }
 
 
+function isGameOver(game) {
 
+  if (game.player_pieces[0] === 12) {
+    return 0;
+  }
+  else if (game.player_pieces[1] === 12) {
+    return 1;
+  }
+  else {
+    return -1;
+  }
+}
 
 
 if (typeof module === "undefined") {

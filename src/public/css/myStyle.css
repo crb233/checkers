@@ -60,8 +60,8 @@ margin:0px auto;
     width:25%;
     height:100%;
     background:#b72222;
-	
-	
+
+
 }
 
 #content {
@@ -72,12 +72,12 @@ margin:0px auto;
     width:80%;
     height:100%;
     font:16px/26px Georgia, Garamond, Serif;
-	overflow:scroll;
+	  overflow:scroll;
     list-style-type: none;
-	height: 100vh;
-	min-height: 100px;
-	
-	
+  	height: 100vh;
+  	min-height: 100px;
+
+
 }
 
 
@@ -88,7 +88,7 @@ margin:0px auto;
     padding: 0;
     width: 700px;
     list-style-type: none;
-	
+
 }
 
 article h1 {
@@ -124,7 +124,7 @@ article p {
 
 
 .button {
-	
+
 	background-color: #4CAF50; /* Green */
     border: none;
     color: white;
@@ -138,8 +138,8 @@ article p {
 }
 
 .button2 {background-color: #008CBA;} /* Blue */
-.button3 {background-color: #f44336;} /* Red */ 
-.button4 {background-color: #e7e7e7; color: black;} /* Gray */ 
+.button3 {background-color: #f44336;} /* Red */
+.button4 {background-color: #e7e7e7; color: black;} /* Gray */
 .button5 {background-color: #555555;} /* Black */
 
 
@@ -228,7 +228,7 @@ article p {
 .form-style-9 ul li input[type="submit"]:hover {
     background: linear-gradient(to bottom, #b72222 5%, #b72222 100%);
     background-color: #b72222;
-	
+
 
 
 }

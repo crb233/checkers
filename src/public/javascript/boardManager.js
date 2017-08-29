@@ -414,6 +414,7 @@ function receiveMessage(msg) {
 Sends the current move to the opponent
 */
 function sendMove() {
+  var winner;
 	var data = {
         "player_id": player.player_id,
         "move": move
@@ -434,6 +435,7 @@ function sendMove() {
 
     // reset move
     move = [];
+
 }
 
 /**
@@ -570,6 +572,17 @@ function startUpdateLoop() {
 
         post("/get-updates", data, function(msg) {
             // success
+
+            //check if there are any winners
+            var winner = isGameOver(msg.game);
+
+            //1st player wins
+            if (winner === player.player_number) {
+              alert (game.player_names[winner] + ", you collected 12 pieces. WINNER!");
+            } else if (winner !== -1) {
+              alert ("You lose! " + game.player_names[winner] + " collected 12 pieces.");
+
+            }
 
             // if it was your opponent's turn
             if (game.turn !== player.player_number) {

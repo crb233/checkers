@@ -20,10 +20,10 @@ new game to the database
 */
 function hostGame() {
     var username = document.getElementById("usernameHost").value;
-	
+
     // value is 1 for private, and 0 for a public game
     var mode = document.querySelector('input[name="mode"]:checked').value;
-	
+
     // is it public?
     var is_public = mode === "0";
 
@@ -112,7 +112,9 @@ function joinGameServer(){
         },
         error: function(xhr, ajaxOptions, thrownError) {
             console.error("Error fetching " + url);
-            document.getElementById("content").innerHTML = "Error Fetching " + URL;
+            alert("ID not valid. Please enter a valid Game-ID");
+						document.getElementById('gameID').value == ''
+
         }
     });
 }
