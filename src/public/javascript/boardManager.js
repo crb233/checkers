@@ -35,7 +35,7 @@ var time_remaining;
 // button html elements
 var sendButton = document.getElementById("send");
 var undoButton = document.getElementById("undo");
-
+var closebtn   = document.getElementById("close");
 
 
 
@@ -147,6 +147,7 @@ function buildBoard() {
 	//Pause timer and open screen overlay if 2nd player has not joined yet.
 	if (game.player_names.length !== 2) {
 		pauseTimer();
+    closebtn.classList.add("disabled");
 	}
 }
 
@@ -363,6 +364,8 @@ function receiveMessage(msg) {
         case "join":
             playSound(NOTIFICATION);
             alert(msg.text);
+            //enable the close button
+            closebtn.classList.remove('disabled');
             closeNav();
             startTimer(game.timer);
             updateTable();
