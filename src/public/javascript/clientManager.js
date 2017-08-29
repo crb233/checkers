@@ -27,6 +27,11 @@ function hostGame() {
     // is it public?
     var is_public = mode === "0";
 
+		if (document.getElementById('usernameHost').value == '') {
+			alert ("Enter your username.");
+			return;
+		}
+
     var url = "/new-game"
 
     $.ajax({
@@ -90,6 +95,11 @@ function joinGameServer(){
         //game = document.getElementById('gameID').value
         document.getElementById('gameID').value = document.querySelector('input[name=game]:checked').value
     }
+
+		if (document.getElementById('usernameJoin').value == '') {
+			alert ("Enter your username.");
+			return;
+		}
 
     var game_id = document.getElementById('gameID').value
     var username = document.getElementById('usernameJoin').value
