@@ -161,7 +161,6 @@ function connect(callback) {
 /**
 Creates a new player with the given username and player number by querying the
 database until it generates a unique player ID.
-TODO
 @param {} callback - the function to be called when this operation has completed
 */
 function addPlayer(player, callback) {
@@ -200,7 +199,8 @@ function addPlayer(player, callback) {
 }
 
 /**
-TODO
+Adds the given game to the database after selecting a new and unique game_id
+for it
 @param {} callback - the function to be called when this operation has completed
 */
 function addGame(game, callback) {
@@ -321,7 +321,7 @@ function getGame(game_id, callback) {
 }
 
 /**
-TODO
+Retrieves and returns the opponents object with the given game_id
 */
 function getOpponent(game_id, callback) {
     if (typeof colls.players === "undefined") {
