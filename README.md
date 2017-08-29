@@ -3,14 +3,32 @@
 Our CS 451 final project hosted on [GitHub](https://github.com/crb233/checkers).
 Implements a user-friendly web application for playing checkers online.
 
+
+
 ## Authors
 
 Curtis Bechtel, Hajer Karoui, Sam Nathanson, and Julie Soderstrom
+
+
 
 ## Notes
 
 This project is being written as a publicly available web application with a
 central server to connect players with each other.
+
+Screenshots as proof of code coverage can be found at `doc/code_coverage/`.
+
+Screenshots as proof of static code analysis can be found at
+`doc/static_analysis/`.
+
+Project release notes are contained in `CHANGELOG.md`
+
+The final test case document can be found at
+`doc/Checkers Test Case Document.pdf`
+
+
+
+## Platforms and Services
 
 The server side code is written in Node.js using NPM packages such as Express
 and BodyParser. It is being hosted on [Heroku](cs-451-checkers.herokuapp.com).
@@ -19,6 +37,8 @@ The database uses MongoDB and is hosted on mLab.
 
 The client is written in HTML, CSS, and JavaScript with the use of JQuery for
 easier asynchronous HTTP requests.
+
+
 
 ## Getting Started
 
