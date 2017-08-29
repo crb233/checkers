@@ -1,8 +1,4 @@
 
-if (typeof describe === "undefined") {
-    describe = function() {};
-}
-
 /**
 @module request-manager
 @description Receives requests from app.js and determines how to proceed with
@@ -114,6 +110,7 @@ function newGame(player_name, is_public, callback) {
         }
 
         var player = newPlayer(player_name, 0, game.game_id);
+        player.last_request = new Date().getTime();
         dbm.addPlayer(player, function(err, res) {
             if (err) {
                 callback(err);
@@ -161,8 +158,9 @@ function joinGame(player_name, game_id, callback) {
             callback("This game is no longer available");
             return;
         }
-
+        
         var player = newPlayer(player_name, 1, game.game_id);
+        player.last_request = new Date().getTime();
         dbm.addPlayer(player, function(err, res) {
             if (err) {
                 callback(err);
@@ -274,7 +272,7 @@ function getUpdates(player_id, callback) {
 
         var messages = player.new_messages;
         player.new_messages = [];
-
+        player.last_request = new Date().getTime();
         dbm.updatePlayer(player, function(err, res) {
             if (err) {
                 callback(err);
@@ -286,7 +284,17 @@ function getUpdates(player_id, callback) {
                     callback(err);
                     return;
                 }
-
+                
+                for (var i = 0; i < messages.length; i++) {
+                    var m = messages[i];
+                    switch (m.type) {
+                        case "lose":
+                        case "accept_draw":
+                        case "forfeit":
+                            deleteAll(player.game_id, function() {});
+                    }
+                }
+                
                 callback(false, {
                     "game": game,
                     "messages": messages
