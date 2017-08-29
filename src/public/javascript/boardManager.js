@@ -99,9 +99,9 @@ Builds the HTML for the board object
 function buildBoard() {
     document.getElementById("game_info").innerHTML = game.game_id;
     document.getElementById("game_info2").innerHTML = game.game_id;
-    
+
     var board_elem = document.getElementById("board");
-    
+
     // create a row
     for (var r = 0; r < board_size; r++) {
         var row_elem = document.createElement("div");
@@ -184,11 +184,11 @@ function enableButtons(enabled) {
     if (enabled) {
         sendButton.classList.remove("button3");
         undoButton.classList.remove("button3");
-        sendButton.classList.add("button5");
-        undoButton.classList.add("button5");
+        //sendButton.classList.add("button5");
+        //undoButton.classList.add("button5");
     } else {
-        sendButton.classList.remove("button5");
-        undoButton.classList.remove("button5");
+        //sendButton.classList.remove("button5");
+        //undoButton.classList.remove("button5");
         sendButton.classList.add("button3");
         undoButton.classList.add("button3");
     }
@@ -345,17 +345,17 @@ Receives message objects from the server and acts according to their content
 function receiveMessage(msg) {
     switch (msg.type) {
         case "join":
-            alert(msg.text);
+            alert(message.text);
             closeNav();
             startTimer(game.timer);
             updateTable();
             break;
-            
+
         case "forfeit":
-            alert(msg.text);
+            alert(message.text);
             document.location.href = "/index.html";
             break;
-            
+
         case "request_draw":
             if (confirm(msg.text + ".\nClick Ok to accept or Cancel to keep playing.")) {
                 rejectDraw();
@@ -363,16 +363,16 @@ function receiveMessage(msg) {
                 accept_draw();
             }
             break;
-            
+
         case "accept_draw":
-            alert(msg.text);
+            alert(message.text);
             document.location.href = "/index.html";
             break;
-            
+
         case "reject_draw":
-            alert(msg.text);
+            alert(message.text);
             break;
-            
+
         case "pause":
             alert(msg.text);
             pauseTimer();
@@ -425,7 +425,7 @@ decline the draw
 */
 function request_draw() {
     var data = {
-        player_id: player_id,
+        player_id: player.player_id,
         message: {
             "type": "request_draw",
             "text": "Your opponent is requesting a draw."
@@ -486,7 +486,7 @@ passed on to the opponent
 */
 function forfeitGame() {
     var data = {
-        player_id: player_id,
+        player_id: player.player_id,
         message: {
             "type": "forfeit",
             "text": "Your opponent forfeited the game. You win!"
@@ -550,7 +550,7 @@ function startUpdateLoop() {
         var data = {
             player_id: player.player_id
         };
-        
+
         post("/get-updates", data, function(msg) {
             // success
             
@@ -564,14 +564,14 @@ function startUpdateLoop() {
                     startTimer(game.timer);
                 }
             }
-            
+
             game = msg.game;
             updateTable();
-            
+
             for (var i = 0; i < msg.messages.length; i++) {
                 receiveMessage(msg.messages[i]);
             }
-            
+
         }, function(xhr, ajaxOptions, thrownError) {
             // failure
             // document.getElementById("content").innerHTML = "Error Fetching " + URL;
@@ -591,21 +591,18 @@ function updateTable () {
         document.getElementById("timer").style.display = "block";
         document.getElementById("timerInfo").style.display = "none";
     }
-    
+
     if (game.turn === 0) {
         document.getElementById("player1row").style.background = "#b4eeb4";
     } else {
         document.getElementById("player2row").style.background = "#b4eeb4";
     }
-    
+
     document.getElementById("player1name").innerHTML = game.player_names[0];
     document.getElementById("player2name").innerHTML = game.player_names[1];
     document.getElementById("player1pieces").innerHTML=  game.player_pieces[0];
     document.getElementById("player2pieces").innerHTML=  game.player_pieces[1];
 }
-
-
-
 
 // SIDE MENU FUNCTIONS
 
@@ -647,7 +644,7 @@ function startTimer(starting_time) {
             timeExpired();
         }
 	}, 1000);
-    
+
     return false;
 }
 

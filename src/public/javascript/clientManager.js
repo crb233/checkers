@@ -58,7 +58,7 @@ function hostGame() {
 @description Hides the list of public games
 */
 function hidegames() {
-    
+
 }
 
 /**
@@ -224,7 +224,7 @@ function forfeitGame() {
             "text": "Your opponent forfeited the game. You win!"
         }
     };
-    
+
     $.ajax({
         type: "POST",
         url: url,
